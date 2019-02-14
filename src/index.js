@@ -3,19 +3,28 @@
  * @license MIT Licence
  */
 
-const Topic = require('./topic.js');
+const app = require('express')();
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const Auth =  require('./core/auth.js');
 
- /**
-  * EventSet 
-  */
+app.use(cors());
+app.use(cookieParser());
+app.use(Auth.isAuthenticated.bind(Auth));
 
+const bodyParser = require('body-parser');
+// support encoded bodies
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const EventSet = function() {
+app.use('/manager', require('./route/route.manager.js'));
+app.use('/dispatch', require('./route/route.dispatch.js'));
+app.use('/login', require('./route/route.login.js'));
 
-    this.createTopic = function(topicName) {
-        var _topic = new Topic(topicName);
-        return _topic;
-    }
-}
+// 2 -  run the server
+const hostname = 'localhost';
+const port = 1234;
 
-module.exports = new EventSet();
+app.listen(port, hostname , function () {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
+

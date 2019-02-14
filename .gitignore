@@ -1,0 +1,5 @@
+doc/
+draft/
+log/
+node_modules/
+.vscode/

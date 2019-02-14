@@ -1,0 +1,30 @@
+
+### Create Entity : {service , event , listener}
+POST http://localhost:1234/manager/entity
+Content-Type: application/x-www-form-urlencoded
+
+type=service&name=service.com
+# type=event&parent_id=1
+# type=listener&parent_id=1-1
+
+### DELETE Entity
+DELETE http://localhost:1234/manager/entity?type=event&id=1-1
+Cookie : auth_token=30e8a5db1b732678bcad529d61fc84aa;
+
+### Get ONE/LIST
+GET http://localhost:1234/manager/entity?id=1
+Cookie : auth_token=30e8a5db1b732678bcad529d61fc84aa;
+
+### Disptach event
+POST http://localhost:1234/dispatch
+Content-Type: application/x-www-form-urlencoded
+Cookie : auth_token=30e8a5db1b732678bcad529d61fc84aa;
+
+event_id=1-1
+&message=hello world
+
+### CREATE Auth Token
+POST http://localhost:1234/login
+Content-Type: application/x-www-form-urlencoded
+
+user=user-value&pass=pass-value
