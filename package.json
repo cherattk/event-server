@@ -1,13 +1,12 @@
 {
     "name": "eventserver",
     "version": "0.1.0",
-    "description": "Pub-Sub Server",
+    "description": "Event Server",
     "author": "Karim Cheratt",
     "keywords": [
-        "eventserver",
+        "event server",
         "pub-sub",
-        "event-driven",
-        "publish-subscrib"
+        "event-driven"
     ],
     "license": "MIT",
     "main": "index.js",
