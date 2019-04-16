@@ -15,10 +15,12 @@ const Util = {
    */
   clean: function (input) {
     if (!this.isString(input)) {
-      var errorMsg = `Util.clean() : input argument must be of type string`;
+      var errorMsg = `
+      Util.clean() : input argument must be of type string 
+      ${typeof input} type given `;
       throw new TypeError(errorMsg);
     }
-    return input.toLowerCase().replace(/\s|\//g, "");
+    return input.trim().toLowerCase().replace(/\s+/g, "-");
   },
 
   /**
@@ -35,7 +37,7 @@ const Util = {
    * @return {string} unique ID
    */
 
-  genID: function () {
+  generateID: function () {
     return (new Date()).getMilliseconds().toString();
   }
 }

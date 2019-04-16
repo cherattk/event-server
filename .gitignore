@@ -1,5 +1,5 @@
 doc/
-draft/
-log/
 node_modules/
 .vscode/
+draft/
+client.rest
