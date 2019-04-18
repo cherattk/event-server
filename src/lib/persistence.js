@@ -1,4 +1,8 @@
-
+/**
+ * @module Persistence
+ * @copyright Copyright (c) 2018 cheratt karim
+ * @license MIT Licence
+ */
 function Persistence(dbDriver) {
 
   const __dbDriver = dbDriver;
@@ -16,10 +20,10 @@ function Persistence(dbDriver) {
   }
   
   this.getError = function(criteria) {
+    return __dbDriver.get(criteria);
   }
 }
 
 module.exports = function(dbDriver){
-  // const nano = require('nano');
   return new Persistence(dbDriver);
 }

@@ -10,9 +10,9 @@ const EventDispatcher = require('../../src/server/event-dispatcher');
 
 const Fixture = require('../fixture/fixture-factory');
 
-const MapLoader = {
-  loadEventMap : () => Fixture.EventMap(),
-  saveEventMap : () => 0,
+const EntityLoader = {
+  loadEventStore : () => Fixture.EventStore(),
+  saveEntityStore : () => 0,
 }
 
 const Persistence  = {
@@ -22,9 +22,9 @@ const Persistence  = {
 
 // *********************************************************************
 
-describe("Test EventDispatcher", function () {
+describe(" EventDispatcher", function () {
 
-  it("Test .notifyListener() : Successfully notify listener", function (done) {
+  it(" .notifyListener() Successfully notify listener", function (done) {
 
     const listenerUrl = "http://listener.com";
     nock(listenerUrl).post('/').reply(200, "listener-response");
@@ -36,7 +36,7 @@ describe("Test EventDispatcher", function () {
       url : listenerUrl
     };
 
-    EventDispatcher(MapLoader)
+    EventDispatcher(EntityLoader)
       .notifyListener(messageObject , listenerObject)
       .then(function(result){
         assert.strictEqual( result ,  "listener-response");
@@ -46,7 +46,7 @@ describe("Test EventDispatcher", function () {
   
   });
 
-  it("Test .notifyListener() : Catch 404 Error - Listener Not Found", function (done) {
+  it(" .notifyListener() Catch 404 Error - Listener Not Found", function (done) {
 
     const listenerUrl = "http://listener.com";
     const notFoundPath = "/not-found";
@@ -60,7 +60,7 @@ describe("Test EventDispatcher", function () {
       url : listenerUrl + notFoundPath
     };
 
-    EventDispatcher(MapLoader)
+    EventDispatcher(EntityLoader)
       .notifyListener(messageObject , listenerObject)
       .catch(function(error){
         assert.strictEqual( error.statusCode,  404);
@@ -70,21 +70,21 @@ describe("Test EventDispatcher", function () {
   
   });
 
-  it("Test .getListener()", function () {
+  it(" .getListener() returns valid Listener Array", function () {
 
-    var dispatcher = EventDispatcher(MapLoader);
+    var dispatcher = EventDispatcher(EntityLoader);
 
     var event_id =  Fixture.eventData().id;
     var listener = dispatcher.getListener(event_id);
 
     assert.strictEqual(Array.isArray(listener) , true);
-    assert.strictEqual(listener.length , 2);
+    assert.strictEqual(listener.length , 1);
   
   });
 
-  it("Test .dispatchEvent() : Successfully dispatch event", function (done) {
+  it(" .dispatchEvent() Successfully dispatch event", function (done) {
 
-    var dispatcher = EventDispatcher(MapLoader , Persistence);
+    var dispatcher = EventDispatcher(EntityLoader , Persistence);
 
     var event_id =  Fixture.eventData().id;
 

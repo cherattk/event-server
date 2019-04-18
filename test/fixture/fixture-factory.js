@@ -14,7 +14,8 @@ const Fixture = {
       type : "event",
       id : Fixture.serviceData().id + "::" + "fake-event",
       name : "fake-event-name",
-      service_id : Fixture.serviceData().id
+      service_id : Fixture.serviceData().id,
+      listener : []
     }
   },
 
@@ -38,9 +39,25 @@ const Fixture = {
     }
   },
 
-  EntityMap : function() {
+  EventStore : function() {
+    const __eventStore = new Map(
+      [
+        [
+          Fixture.eventData().id,
+          Object.assign(
+          Fixture.eventData() , {
+            listener : [Fixture.listener_1_Data()]
+          }),
+        ]
+      ]
+    );
 
-    var fakeMap = {
+    return __eventStore;
+  },
+
+  EntityStore : function() {
+
+    var fakeStore = {
       /** service Map :
        * Map<service-id , objectData >
        * objectData : { entity : serviceData , event : Map<event-id , eventData> }
@@ -49,12 +66,12 @@ const Fixture = {
       /**
        * event Map 
        * Map<event-id , objectData >
-       * objectData : { entity : serviceData , listener : Map<listener-id , listenerData> }
+       * objectData : { entity : eventData , listener : Map<listener-id , listenerData> }
        */
       event : new Map() ,
     };
 
-    fakeMap.service.set(
+    fakeStore.service.set(
       Fixture.serviceData().id , 
       {
         entity : Fixture.serviceData(),
@@ -66,7 +83,7 @@ const Fixture = {
       }
     );
     
-    fakeMap.event.set(
+    fakeStore.event.set(
       Fixture.eventData().id , 
       {
         entity : Fixture.eventData(),
@@ -79,7 +96,7 @@ const Fixture = {
       }
     );
 
-    return fakeMap;
+    return fakeStore;
   }
 }
 

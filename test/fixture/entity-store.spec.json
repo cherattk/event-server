@@ -1,0 +1,29 @@
+[
+  {
+    "type" : "service",
+    "id" : "service-1-id",
+    "name" : "fake-service-1-name",
+    "domain" : "www.service-1.com",
+    "desc" : "fake service description",
+    "event" : [
+      {
+        "type" : "event",
+        "id" : "event-1-id",
+        "service_id" : "service-1-id",
+        "name" : "fake-event-1-name",
+        "desc" : "fake event description",
+        "listener" : [
+          {
+            "type" : "listener",
+            "id" : "event-1-id",
+            "event_id" : "service-1-id",
+            "service_id" : "service-2-id",
+            "name" : "fake-listener-1-name",
+            "desc" : "fake listener 1 description",
+            "endpoint" : "www.listener-domain.com"
+          }
+        ]
+      }
+    ]
+  }
+]

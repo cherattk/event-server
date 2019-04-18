@@ -1,44 +1,63 @@
+const assert =  require('assert');
 const sinon =  require('sinon');
 const nano = require('nano');
 const Persistence = require('../../src/lib/persistence');
 
-// =======================================================
+const dbDriver = {
+  insert : () => 0,
+  get : () => 0
+}
 
 describe("Test Persistence", function () {
 
-  it("Test .saveEvent()", function () {
 
-    var nanoDriver = nano('http://test.com').use('db_name');
-    var __mock = sinon.mock(nanoDriver).expects('insert').once();
+  beforeEach(function setupSpy(){
+    sinon.spy(dbDriver , 'insert');
+    sinon.spy(dbDriver , 'get');
+  });
+  
+  afterEach(function restoreSpy(){
+    dbDriver.insert.restore();
+    dbDriver.get.restore();
+  });
 
-    var __event = {
-      event_id : "event-id",
-      message : "hello world!"
-    };
-    const __DataBase = Persistence(nanoDriver , null);
-    __DataBase.saveEvent(__event);
-    __mock.verify();
+  it(" .saveEvent(event) calls dbDriver.insert(event)", function () {
+    
+    var __event = {data : "data-event"};
+    Persistence(dbDriver).saveEvent(__event);
+
+    assert(dbDriver.insert.calledOnce);
+    assert(dbDriver.insert.calledWith(__event));
 
   });
   
-  it("Test .getEvent()", function () {
+  it(" .getEvent(criteria) calls dbDriver.get(criteria)", function () {
+    
+    const __criteria = {field: "field-event"};
+    Persistence(dbDriver).getEvent(__criteria);
 
-    var nanoDriver = nano('http://test.com').use('db_name');
-    var __mock = sinon.mock(nanoDriver).expects('get').once();
-
-    const __DataBase = Persistence(nanoDriver);
-    __DataBase.getEvent();
-    __mock.verify();
+    assert(dbDriver.get.calledOnce);
+    assert(dbDriver.get.calledWith(__criteria));
 
   });
 
-  // it("Test .saveError()", function () {
+  it(" .saveError(error) calls dbDriver.insert(error)", function () {
 
-  //   var __error = { error_message : "error message!"};
-  //   __DataBase.saveError(__error).then(function(response){
-  //       assert.strictEqual(response.ok , true);
-  //   });
+    var __event = {data : "data-error"};
+    Persistence(dbDriver).saveEvent(__event);
 
-  // });
+    assert(dbDriver.insert.calledOnce);
+    assert(dbDriver.insert.calledWith(__event));
+  });
+
+  it(" .getError(criteria) calls dbDriver.get(criteria)", function () {
+
+    var __criteria = { field : "field-error"};
+    Persistence(dbDriver).getError(__criteria);
+
+    assert(dbDriver.get.calledOnce);
+    assert(dbDriver.get.calledWith(__criteria));
+
+  });
 
 });

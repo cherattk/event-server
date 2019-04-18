@@ -1,27 +1,34 @@
-const fs = require('fs');
+/**
+ * @module EventDispatcher
+ * @copyright Copyright (c) 2018 cheratt karim
+ * @license MIT Licence
+ */
+
 const HttpRequest = require('request-promise-native');
 
-function EventDispatcher(MapLoader , Persistence){
+function EventDispatcher(EntityLoader , Persistence){
 
-  const __eventMap = MapLoader.loadEventMap();
+  const __eventStore = EntityLoader.loadEventStore();
 
   const __Persistence = Persistence;
 
   this.getListener = function(event_id){
-    var event =  __eventMap.event.get(event_id);
-    return Array.from(event.listener.values());
+    var event =  __eventStore.get(event_id);
+    // return Array.from(event.listener.values());
+    return event.listener;
   }
 
   this.notifyListener = function (eventMessage, listener) {
 
     const postData = JSON.stringify(eventMessage);
-    var options = {
+    const options = {
       method: 'POST',
       uri: listener.url,
       form: postData,
       json: true // body to JSON
     };
-    var requestPromise = HttpRequest(options);
+
+    const requestPromise = HttpRequest(options);
     return requestPromise;
   }
 
@@ -52,12 +59,9 @@ function EventDispatcher(MapLoader , Persistence){
     else{
         Response.status(400).end();
     }
-
-
-
   }
 }
 
-module.exports = function(MapLoader , Persistence){
-  return new EventDispatcher(MapLoader , Persistence);
+module.exports = function(EntityLoader , Persistence){
+  return new EventDispatcher(EntityLoader , Persistence);
 };
