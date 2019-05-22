@@ -1,13 +1,12 @@
 const assert = require('assert');
 
-const Util = require('../../src/lib/util.js');
+const Util = require('../../src/core/util');
 
 // *********************************************************************
 
-describe("Test Util", function () {
+describe("Util", function () {
 
   it("Test .clean() ", function () {
-
     var actual = Util.clean("   UPPERCASE    whitespace ");
     assert.strictEqual(actual, "uppercase-whitespace");
   });

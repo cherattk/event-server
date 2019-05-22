@@ -1,0 +1,61 @@
+{
+  "service" : [
+    {
+      "type" : "service",
+      "id"   :  "s-1",
+      "name" : "service-1-name",
+      "domain" : "www.service-1.com",
+      "desc" : " service description"
+    },
+    {
+      "type" : "service",
+      "id"   :  "s-2",
+      "name" : "service-2-name",
+      "domain" : "www.service-2.com",
+      "desc" : " service 2 description"
+    }
+  ],
+
+  "event" : [
+    {
+      "type" : "event",
+      "id"   : "e-1",
+      "service_id"   : "s-1",
+      "name" : "event-1-name",
+      "desc" : "event 1 description"
+    }
+  ],
+
+  "listener" : [
+    {
+      "type" : "listener",
+      "id"   : "r-1",
+      "service_id"   : "s-2",
+      "event_id"   : "e-1",
+      "name" : "listener-1-name",
+      "domain" : "www.listener-1.com",
+      "path" : "/path-1",
+      "desc" : " listener 1 description"
+    },
+    {
+      "type" : "listener",
+      "id"   : "r-2",
+      "service_id"   : "s-2",
+      "event_id"   : "e-1",
+      "name" : "listener-2-name",
+      "domain" : "www.listener-2.com",
+      "path" : "/path-2",
+      "desc" : "listener 2 description"
+    },
+    {
+      "type" : "listener",
+      "id"   : "r-1",
+      "service_id"   : "s-2",
+      "event_id"   : "e-2",
+      "name" : "listener-3-name",
+      "domain" : "www.listener-3.com",
+      "path" : "/path-3",
+      "desc" : "listener 3 description"
+    }
+  ]
+}

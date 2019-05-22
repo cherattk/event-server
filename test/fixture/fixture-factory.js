@@ -1,20 +1,30 @@
 const Fixture = {
 
-  serviceData : () => {
+  service_1_Data : () => {
     return { 
       type : "service",
-      id : "fake-service-id",
-      name : "fake-service-name",
-      domain : 'www.service.com'
+      id : "s-1",
+      name : "service-1-name",
+      domain : 'www.service-1.com',
+      desc: 'Service description'
+    }
+  },
+  service_2_Data : () => {
+    return { 
+      type : "service",
+      id : "s-1",
+      name : "service-1-name",
+      domain : 'www.service-1.com',
+      desc: 'Service description'
     }
   },
 
   eventData : () => {
     return { 
       type : "event",
-      id : Fixture.serviceData().id + "::" + "fake-event",
+      id : "e-1",
+      service_id : Fixture.service_1_Data().id,
       name : "fake-event-name",
-      service_id : Fixture.serviceData().id,
       listener : []
     }
   },
@@ -22,82 +32,92 @@ const Fixture = {
   listener_1_Data : () => {
     return { 
       type : "listener",
-      id   : Fixture.eventData().id + "::" + "fake-listener" + '-1' ,
-      url  : "fake-url-1",
-      event_id : Fixture.eventData().id,
-      service_id : Fixture.serviceData().id
+      id   : Fixture.eventData().id ,
+      service_id : Fixture.service_2_Data().id ,
+      event_id   : Fixture.eventData().id ,
+      name : 'listener-1',
+      domain  : Fixture.service_2_Data().domain,
+      path : '/'
     }
   },
 
   listener_2_Data : () => {
-    return { 
+    return {
       type : "listener",
-      id : Fixture.eventData().id + "::" + "fake-listener" + '-2',
-      url : "fake-url-2",
+      id :  'l-2',
+      service_id : Fixture.service_2_Data().id,
       event_id : Fixture.eventData().id,
-      service_id : Fixture.serviceData().id
+      name : 'listener-2',
+      domain  : Fixture.service_2_Data().domain,
+      path : '/'
     }
   },
 
-  EventStore : function() {
-    const __eventStore = new Map(
-      [
-        [
-          Fixture.eventData().id,
-          Object.assign(
-          Fixture.eventData() , {
-            listener : [Fixture.listener_1_Data()]
-          }),
-        ]
-      ]
-    );
+  // used by dispatcher
+  EventList : function() {
 
-    return __eventStore;
+    let list = new Map();
+
+    let eventData = Fixture.eventData();
+        eventData.listener.push( Fixture.listener_1_Data() );
+        eventData.listener.push( Fixture.listener_2_Data() );
+
+    list.set(eventData.id , eventData);
+
+    return list;
   },
 
-  EntityStore : function() {
+  // used by manager
+  EventMap : function() {
 
-    var fakeStore = {
-      /** service Map :
-       * Map<service-id , objectData >
-       * objectData : { entity : serviceData , event : Map<event-id , eventData> }
-       */
+    var _map = {
       service : new Map() ,
-      /**
-       * event Map 
-       * Map<event-id , objectData >
-       * objectData : { entity : eventData , listener : Map<listener-id , listenerData> }
-       */
-      event : new Map() ,
+      event : new Map(),
+      listener : new Map()
     };
 
-    fakeStore.service.set(
-      Fixture.serviceData().id , 
-      {
-        entity : Fixture.serviceData(),
-        event : new Map(
-          [
-            [ Fixture.eventData().id, Fixture.eventData() ]
-          ]
-        )
-      }
+    // service ------------------------
+    _map.service.set(
+      Fixture.service_1_Data().id , 
+      Fixture.service_1_Data()
+    );
+    _map.service.set(
+      Fixture.service_2_Data().id , 
+      Fixture.service_2_Data()
     );
     
-    fakeStore.event.set(
+    // event ------------------------
+    _map.event.set(
       Fixture.eventData().id , 
-      {
-        entity : Fixture.eventData(),
-        listener : new Map(
-          [
-            [ Fixture.listener_1_Data().id, Fixture.listener_1_Data() ],
-            [ Fixture.listener_2_Data().id, Fixture.listener_2_Data() ]
-          ]
-        )
-      }
+      Fixture.eventData()
     );
 
-    return fakeStore;
-  }
+    // listener ------------------------
+    _map.listener.set(
+      Fixture.listener_1_Data().id , 
+      Fixture.listener_1_Data()
+    );
+
+    _map.listener.set(
+      Fixture.listener_2_Data().id , 
+      Fixture.listener_2_Data()
+    );
+
+    return _map;
+  },
+
+  // log Format 
+  loggingFormat : {
+    publishQuery : {
+
+    },
+    event : {
+
+    },
+    error : {
+      
+    }
+  } 
 }
 
 module.exports = Fixture;

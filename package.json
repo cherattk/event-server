@@ -13,7 +13,8 @@
     "scripts": {
         "start": "node src/index.js",
         "mocha": "node_modules/.bin/_mocha",
-        "test": "mocha --colors test/test/*.js"
+        "test:unit": "mocha --colors test/unit/*.js",
+        "test:func": "mocha --colors test/func/*.js"
     },
     "devDependencies": {
         "chai": "^4.2.0",
@@ -37,6 +38,7 @@
         "cors": "^2.8.5",
         "express": "^4.16.4",
         "nano": "^8.0.1",
+        "prompt": "^1.0.0",
         "request": "^2.88.0",
         "request-promise-native": "^1.0.7"
     }

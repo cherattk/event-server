@@ -6,7 +6,7 @@
 
 const fs = require('fs');
 
-const Util = {
+module.exports = {
 
   /**
    * Convert input string to lowercase and remove whitespaces and slashes
@@ -29,17 +29,5 @@ const Util = {
    */
   isString: function (input) {
     return (typeof input === 'string' && input !== '');
-  },
-
-  /**
-   * Generate Uniq ID
-   * 
-   * @return {string} unique ID
-   */
-
-  generateID: function () {
-    return (new Date()).getMilliseconds().toString();
   }
 }
-
-module.exports = Util;
