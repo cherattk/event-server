@@ -14,7 +14,6 @@ Express.use(cookieParser());
 Express.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 const RequestPromiseNative = require('request-promise-native');
-const EventLoader = require('../core/event-loader');
 
 const dbName = 'event_db';
 const dbDriver = require('nano')({
@@ -30,7 +29,7 @@ module.exports = function EventServer(config) {
   const {event_map_file , hostname , port} = config;
 
   const dispatcher = new EventDispatcher(
-    EventLoader(event_map_file) , 
+    event_map_file , 
     RequestPromiseNative , 
     Logging
   );

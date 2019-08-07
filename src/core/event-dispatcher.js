@@ -4,27 +4,9 @@
  * @license MIT Licence
  */
 
-const fs = require('fs');
+module.exports = function EventDispatcher(EventLoader, HttpClient, Logging) {
 
-function loadEventList(MapFile) {
-
-  const fileContent = fs.readFileSync(MapFile, "utf8");
-  const jsonContent = JSON.parse(fileContent);
-
-  const eventList = new Map();
-  jsonContent.event.map(function (event) {
-    event.listener = jsonContent.listener.filter(function (listener) {
-      return (listener.event_id === event.id);
-    });
-
-    eventList.set(event.id, event);
-  });
-  return eventList;
-}
-
-function EventDispatcher(MapFile, HttpClient, Logging) {
-
-  const _eventMap = loadEventList(MapFile);
+  const _eventMap = EventLoader.loadEventList();
 
   this.getListener = function (event_id) {
     var event = _eventMap.get(event_id);
@@ -80,7 +62,3 @@ function EventDispatcher(MapFile, HttpClient, Logging) {
   };
 
 };
-
-module.exports = {
-  loadEventList , EventDispatcher
-}

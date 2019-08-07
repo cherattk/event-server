@@ -10,10 +10,12 @@ const httpMocks = require('node-mocks-http');
 const sinon = require('sinon');
 
 // *********************************************************************
-const path = require('path');
-const FixtureMapFile = path.resolve('./test/fixture/event-map.test.json');
-const EventDispatcher = require('../../src/core/event-dispatcher').EventDispatcher;
+const EventDispatcher = require('../../src/core/event-dispatcher');
 const Fixture = require('../fixture/fixture-factory');
+
+const _MockMapLoader = {
+  loadEventList : Fixture.EventList
+}
 
 const _MockHttpClient = {
   post: () => null
@@ -33,19 +35,9 @@ const _MockLogging = {
 
 describe("EventDispatcher", function () {
 
-  it('.loadEventList() Test Entities Format', function () {
-
-    var dispatcher = new EventDispatcher(FixtureMapFile, null, null);
-
-    var _map = dispatcher.loadEventList();
-    //
-    assert(_map instanceof Map);
-
-  });
-
   it(" .getListener() returns valid Listener Array", function () {
 
-    var dispatcher = new EventDispatcher(FixtureMapFile, null, null);
+    var dispatcher = new EventDispatcher(_MockMapLoader, null, null);
 
     // get the first event in the fixture event map
     // @see fixture FixtureMapFile
@@ -64,19 +56,11 @@ describe("EventDispatcher", function () {
     sinon.spy(_MockLogging, 'query');
     sinon.spy(_MockLogging, 'event');
 
-    const dispatcher = new EventDispatcher(FixtureMapFile, _MockHttpClient, _MockLogging);
+    const dispatcher = new EventDispatcher(_MockMapLoader, _MockHttpClient, _MockLogging);
 
     const publishQuery = {
-      // @see FixtureMapFile
       event_id: 'e-1',
       message: { data: "test" }
-    };
-
-    const notify_listener_1_request = {
-      json : true,
-      form : JSON.stringify(publishQuery.message),
-      // listener endpoint @see FixtureMapFile
-      url : 'www.listener-2.com/path-2'
     };
     
     var Request = httpMocks.createRequest({  body : publishQuery });
@@ -94,17 +78,29 @@ describe("EventDispatcher", function () {
 
     // notifiy listener(s)
     assert(_MockHttpClient.post.calledTwice);
-    assert(_MockHttpClient.post.calledWith(notify_listener_1_request));
+    
+    // assert(_MockHttpClient.post.firstCall.calledWith({
+    //   json : true,
+    //   form : JSON.stringify(publishQuery.message),
+    //   url : Fixture.listener_1_Data().domain + Fixture.listener_1_Data().path
+    // }));
 
-    done();
+    assert(_MockHttpClient.post.secondCall.calledWith({
+      json : true,
+      form : JSON.stringify(publishQuery.message),
+      url : Fixture.listener_2_Data().domain + Fixture.listener_2_Data().path
+    }));
+
+
     _MockHttpClient.post.restore();
     _MockLogging.query.restore();
     _MockLogging.event.restore();
+    done();
   });
 
   it('.validPublishQuery() returns true', function () {
 
-    const dispatcher = new EventDispatcher(FixtureMapFile, null, null);
+    const dispatcher = new EventDispatcher(_MockMapLoader, null, null);
 
     const event = Fixture.eventData();
     const requiredField = {

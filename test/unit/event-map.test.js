@@ -2,6 +2,7 @@ const assert = require('assert');
 const expect = require('chai').expect;
 const sinon = require('sinon');
 
+const path = require('path');
 const FixtureMapFile = path.resolve('./test/fixture/event-map.test.json');
 const EventMap = require('../../src/core/event-map');
 
@@ -11,51 +12,12 @@ describe("EventMap", function () {
     sinon.restore();
   });
 
-  it(".loadEventMap() Test Entities Format", function () {
-
-    var eventMap = new EventMap();
-
-    var _map = eventMap.loadEventMap(FixtureMapFile);
-
-    //
-    assert(_map.service instanceof Map);
-    assert(_map.event instanceof Map);
-    assert(_map.listener instanceof Map);
-
-    // 1 - Service Properties
-    const service_id = Fixture.serviceData().id;
-    const service = eventMap.service.get(service_id);
-    expect(service).to.have.property('type');
-    expect(service).to.have.property('id');
-    expect(service).to.have.property('name');
-    expect(service).to.have.property('domain');
-    expect(service).to.have.property('desc');
-
-    // 2 - Event Properties
-    const event_id = Fixture.eventData().id;
-    const event = eventMap.event.get(event_id);
-    expect(event).to.have.property('type');
-    expect(event).to.have.property('id');
-    expect(event).to.have.property('name');
-    expect(event).to.have.property('desc');
-
-
-    // 3- Listener Properties
-    const listener_id = Fixture.listener_1_Data().id;
-    const listener = eventMap.listener.get(listener_id);
-    expect(listener).to.have.property('type');
-    expect(listener).to.have.property('id');
-    expect(listener).to.have.property('name');
-    expect(listener).to.have.property('desc');
-    expect(listener).to.have.property('domain');
-    expect(listener).to.have.property('path');
-
-  });
+  
 
   it(".generateID() : generate ID for entity", function () {
           
     // the format : [parent_id]::[element-token]
-    var eventMap = new EventMap();
+    var eventMap = new EventMap(FixtureMapFile);
 
     const result_1 = eventMap.generateID('service');
     assert(result_1 === "s-2");
@@ -68,15 +30,10 @@ describe("EventMap", function () {
 
   });
   
-  
-
-  it('.getMap() returns entity map from entity id' , function(){
-
-  });
 
   it(".set()", function () {
 
-    var eventMap = new EventMap();
+    var eventMap = new EventMap(FixtureMapFile);
     var result = eventMap.set({
           type: "service", // required
           name: "entity-data"
@@ -101,7 +58,7 @@ describe("EventMap", function () {
 
   it(".getById()", function () {
 
-    var eventMap = new EventMap();
+    var eventMap = new EventMap(FixtureMapFile);
 
     const listener_id = Fixture.listener_1_Data().id;
     var result = eventMap.getById("listener", listener_id);
@@ -112,7 +69,7 @@ describe("EventMap", function () {
 
   it(".getList() returns service list", function () {
 
-    const eventMap = new EventMap();
+    const eventMap = new EventMap(FixtureMapFile);
     const service_list = eventMap.getList('service');
 
     assert.strictEqual(Array.isArray(service_list) , true);
@@ -125,7 +82,7 @@ describe("EventMap", function () {
 
   it(".getList() returns listener list", function () {
 
-    const eventMap = new EventMap();
+    const eventMap = new EventMap(FixtureMapFile);
     
     const event_id = Fixture.eventData().id;
     const listener_list = eventMap.getList('listener', {

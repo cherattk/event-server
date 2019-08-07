@@ -12,9 +12,18 @@ const Fixture = {
   service_2_Data : () => {
     return { 
       type : "service",
-      id : "s-1",
-      name : "service-1-name",
-      domain : 'www.service-1.com',
+      id : "s-2",
+      name : "service-2-name",
+      domain : 'www.service-2.com',
+      desc: 'Service description'
+    }
+  },
+  service_3_Data : () => {
+    return { 
+      type : "service",
+      id : "s-3",
+      name : "service-3-name",
+      domain : 'www.service-3.com',
       desc: 'Service description'
     }
   },
@@ -37,7 +46,7 @@ const Fixture = {
       event_id   : Fixture.eventData().id ,
       name : 'listener-1',
       domain  : Fixture.service_2_Data().domain,
-      path : '/'
+      path : '/listener-1-path'
     }
   },
 
@@ -45,11 +54,11 @@ const Fixture = {
     return {
       type : "listener",
       id :  'l-2',
-      service_id : Fixture.service_2_Data().id,
+      service_id : Fixture.service_3_Data().id,
       event_id : Fixture.eventData().id,
       name : 'listener-2',
-      domain  : Fixture.service_2_Data().domain,
-      path : '/'
+      domain  : Fixture.service_3_Data().domain,
+      path : '/listener-2-path'
     }
   },
 
