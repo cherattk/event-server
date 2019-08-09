@@ -1,7 +1,6 @@
 import React from 'react';
 import ElementEvent from './element-event';
-import DataManager from './data-manager';
-import FormEvent from './form-event';
+import DataManager from './module/data-manager';
 
 export default class ListEvent extends React.Component {
 
@@ -35,7 +34,6 @@ export default class ListEvent extends React.Component {
         <ul>
           {list_event}
         </ul>
-        <FormEvent/>
       </div>
     );
   }

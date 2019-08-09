@@ -1,5 +1,6 @@
 import React from 'react';
 import ListEvent from './list-event';
+import UIEvent from './ui-event';
 
 export default class ElementService extends React.Component {
 
@@ -15,6 +16,10 @@ export default class ElementService extends React.Component {
     this.setState(function (state) {
       return { showEventList: !state.showEventList };
     })
+  }
+
+  getServiceForm(){
+    UIEvent.dispatch('show-service-form' ,  this.state.service);
   }
 
   render() {
@@ -33,9 +38,9 @@ export default class ElementService extends React.Component {
           <br />
 
           <div className="el-control">
-            <button class="btn btn-primary" type="button" 
-                    data-toggle="modal" data-target="#serviceForm">
-              Edit
+            <button className="btn btn-primary" type="button"
+                    onClick={this.getServiceForm.bind(this)}>
+              Edit Service
             </button>
           </div>
         </div>

@@ -4,12 +4,38 @@
  * @license MIT Licence
  */
 
-module.exports = function EventDispatcher(EventLoader, HttpClient, Logging) {
+ const fs = require('fs');
 
-  const _eventMap = EventLoader.loadEventList();
+ function eventListener(file){
+  const fileContent = fs.readFileSync(file, "utf8");
+    
+    const eventList = new Map();
+    try {
+      const jsonContent = JSON.parse(fileContent);
+      jsonContent.event.map(function (event) {
+        event.listener = jsonContent.listener.filter(function (listener) {
+          return (listener.event_id === event.id);
+        });
+        eventList.set(event.id, event);
+      });
+    } catch (error) {
+      // console.error(error);
+    }
+
+    return eventList;
+ }
+
+module.exports = function EventDispatcher(mapFile, HttpClient, Logging) {
+
+  const _eventMap = eventListener(mapFile);
+
+  // implemented to test eventListener() return value
+  this.loadEventListener = function (map_file) {
+    return eventListener(map_file);
+  }
 
   this.getListener = function (event_id) {
-    var event = _eventMap.get(event_id);
+    var event = _eventMap.size > 0 /* if not empty map */ && _eventMap.get(event_id);
     if (event) {
       return event.listener;
     }

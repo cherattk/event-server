@@ -1,7 +1,6 @@
 import React from 'react';
 import ElementService from './element-service';
-import DataManager from './data-manager';
-import FormService from './form-service';
+import DataManager from './module/data-manager';
 
 export default class ListService extends React.Component {
 
@@ -32,8 +31,7 @@ export default class ListService extends React.Component {
       <div className="list-service">
         <ul>
           {list}
-        </ul>
-        <FormService/>
+        </ul>        
       </div>      
     );
   }

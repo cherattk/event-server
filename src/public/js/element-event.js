@@ -1,5 +1,6 @@
 import React from 'react';
 import ListListener from './list-listener';
+import UIEvent from './ui-event';
 
 export default class ElementEvent extends React.Component {
 
@@ -8,6 +9,11 @@ export default class ElementEvent extends React.Component {
     this.state = {
       event: props.data
     }
+  }
+
+  getEventForm(e){
+    UIEvent.dispatch('show-event-form' ,  this.state.event);
+    console.log(e.taget);
   }
 
   render() {
@@ -25,9 +31,9 @@ export default class ElementEvent extends React.Component {
             <br />
 
             <div className="el-control">
-              <button class="btn btn-primary" type="button"
-                      data-toggle="modal" data-target="#eventForm">
-                Edit
+              <button className="btn btn-primary" type="button"
+                     onClick={this.getEventForm.bind(this)}>
+                Edit Event
               </button>
             </div>
           </div>

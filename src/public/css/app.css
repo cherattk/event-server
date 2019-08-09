@@ -30,9 +30,13 @@ ul {
 .toggle-list-event{
   display:block;
   padding:7px 10px;
-  border:1px solid #ddd;
+  border:1px solid #b3d7ff;
   background-color:#f0f8ff;
   margin-top:10px;
+}
+.toggle-list-event:hover{
+  cursor:pointer;
+  background-color:#c0deff;
 }
 .el-service{
   margin:0 0 20px 0;

@@ -11,19 +11,22 @@ module.exports = function MapLoader(MapFile) {
    * this method is used by eventserver for dispatching
    * @see EventDispatcher class
    */
-  this.loadEventList = function () {
+  this.loadEventListener = function () {
 
     const fileContent = fs.readFileSync(MapFile, "utf8");
-    const jsonContent = JSON.parse(fileContent);
-
+    
     const eventList = new Map();
-    jsonContent.event.map(function (event) {
-      event.listener = jsonContent.listener.filter(function (listener) {
-        return (listener.event_id === event.id);
+    try {
+      const jsonContent = JSON.parse(fileContent);
+      jsonContent.event.map(function (event) {
+        event.listener = jsonContent.listener.filter(function (listener) {
+          return (listener.event_id === event.id);
+        });
+        eventList.set(event.id, event);
       });
-
-      eventList.set(event.id, event);
-    });
+    } catch (error) {
+      // console.error(error);
+    }
 
     return eventList;
   }

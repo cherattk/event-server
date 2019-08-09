@@ -4,12 +4,11 @@
  * @license MIT Licence
  */
 
-const fs = require('fs');
 
 /**
- * Used to manage entity
+ * Used to manage entities
  */
-function EventMap(mapLoader) {
+export default function EventMap(data) {
 
   const prefix = {
     service: 's-',
@@ -17,7 +16,17 @@ function EventMap(mapLoader) {
     listener: 'r-'
   };
 
-  const _eventMap = mapLoader.loadEventMap();
+  const _eventMap = {
+    service: new Map(),
+    event: new Map(),
+    listener: new Map()
+  };
+
+  ['service', 'event', 'listener'].map(function (type) {
+    data[type].map(function (item) {
+      _eventMap[type].set(item.id, item);
+    });
+  });
 
   this.generateID = function (entityType) {
     return prefix[entityType] + (_eventMap[entityType].size + 1);
@@ -27,7 +36,7 @@ function EventMap(mapLoader) {
     var entity = Object.assign({}, entityData);
     var _map = _eventMap[entity.type];
     _map.set(entity.id, entity);
-    saveEventMap(eventMapFile, _eventMap);
+    //saveEventMap(eventMapFile, _eventMap);
     return entity;
   }
 
@@ -35,7 +44,7 @@ function EventMap(mapLoader) {
     var _map = _eventMap[type];
     var result = _map.delete(id);
     if (result) {
-      saveEventMap(eventMapFile, _eventMap);
+      //saveEventMap(eventMapFile, _eventMap);
     }
     return result;
   }
@@ -76,3 +85,4 @@ function EventMap(mapLoader) {
     return result;
   }
 }
+

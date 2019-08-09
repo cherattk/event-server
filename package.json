@@ -11,12 +11,11 @@
     "license": "MIT",
     "main": "index.js",
     "scripts": {
-        "start:event-server": "node src/eventserver/index.js",
-        "start:admin": "node src/admin/index.js",
+        "start": "node ./index.js",
         "mocha": "node_modules/.bin/_mocha",
         "test:func": "mocha --colors test/func/*.js",
         "test:unit": "mocha --colors test/unit/*.js",
-        "build:admin": "rimraf -r src/admin-ui/dist.js && node src/admin-ui/build.js"
+        "build:public": "rimraf -r src/public/dist.js && node src/public/build.js"
     },
     "devDependencies": {
         "@babel/core": "^7.4.5",

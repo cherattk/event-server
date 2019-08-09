@@ -4,7 +4,7 @@ const sinon = require('sinon');
 
 const httpMocks = require('node-mocks-http');
 
-const EventManager = require('../../src/admin/event-manager');
+const EventManager = require('../../src/core/event-manager');
 
 const _MockEventMap = {
   setEntity : () => null, 
