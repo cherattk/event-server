@@ -4,35 +4,35 @@
  * @license MIT Licence
  */
 
- const fs = require('fs');
 
- function eventListener(file){
-  const fileContent = fs.readFileSync(file, "utf8");
-    
-    const eventList = new Map();
-    try {
-      const jsonContent = JSON.parse(fileContent);
-      jsonContent.event.map(function (event) {
-        event.listener = jsonContent.listener.filter(function (listener) {
-          return (listener.event_id === event.id);
-        });
-        eventList.set(event.id, event);
+/**
+ * 
+ * @param {string} filePath
+ * @returns {Map<id , event>}
+ */
+function loadListenerMap(filePath) {
+  // Map <event_id , eventObject>
+  const EventListenerMap = new Map();
+  try {
+    const jsonContent = require(filePath);
+    jsonContent.event.map(function (event) {
+      // 1- set Array of listeners into event object
+      event.listener = jsonContent.listener.filter(function (listener) {
+        return (listener.event_id === event.id);
       });
-    } catch (error) {
-      // console.error(error);
-    }
-
-    return eventList;
- }
-
-module.exports = function EventDispatcher(mapFile, HttpClient, Logging) {
-
-  const _eventMap = eventListener(mapFile);
-
-  // implemented to test eventListener() return value
-  this.loadEventListener = function (map_file) {
-    return eventListener(map_file);
+      // 2- set event object inot the Map<id , eventObject>
+      EventListenerMap.set(event.id, event);
+    });
+  } catch (error) {
+    // console.error(error);
   }
+
+  return EventListenerMap;
+}
+
+function EventDispatcher(mapFilePath, HttpClient, Logging) {
+
+  const _eventMap = loadListenerMap(mapFilePath);
 
   this.getListener = function (event_id) {
     var event = _eventMap.size > 0 /* if not empty map */ && _eventMap.get(event_id);
@@ -43,48 +43,60 @@ module.exports = function EventDispatcher(mapFile, HttpClient, Logging) {
   };
 
   /**
-   * check if query has a valid event_id value
+   * check if query has a valid field : {event_id , message}
    * @param
    */
-  this.validPublishQuery = function (pubQuery) {
-    const valid = (typeof pubQuery.event_id !== "undefined" && pubQuery.event_id)
+  this.validQuery = function (query) {
+    const valid = (typeof query.event_id !== "undefined" && query.event_id)
       &&
-      (typeof pubQuery.message !== "undefined" && pubQuery.message)
-      &&
-      _eventMap.has(pubQuery.event_id);
-      
+      (typeof query.message !== "undefined" && !!query.message);
+
     return valid;
   };
 
   this.dispatchEvent = function (Request, Response) {
 
-    var pubQuery = Object.assign({}, Request.body);
+    var query = Object.assign({}, Request.body);
+    
+    if (this.validQuery(query)) {
 
-    Logging.query({ query : pubQuery });
+      var _validEvent = _eventMap.get(query.event_id);
+      var _Event = Object.assign({} , _validEvent , query.message);
 
-    if (this.validPublishQuery(pubQuery)) {
+      if(_validEvent){
+        Logging.event(_Event);
+      }
+      else {
+        Logging.errorInvalidEvent(query);
+      }
 
-      Logging.event({ event : pubQuery.event_id });
+      const requestOption = { json: true };
 
-      const requestOption = { json : true };
-      
-      var listener = this.getListener(pubQuery.event_id);
+      var listener = this.getListener(query.event_id);
       for (let idx = 0, max = listener.length; idx < max; idx++) {
 
-        requestOption.url = listener[idx].domain + listener[idx].path;
-        requestOption.form = JSON.stringify(pubQuery.message);
+        requestOption.url = listener[idx].endpoint;
+        requestOption.form = JSON.stringify(query.message);
 
-        HttpClient.post(requestOption).catch((dispatchError) => {          
-            Logging.error({ error : dispatchError });
+        HttpClient.post(requestOption).catch((dispatchError) => {
+          Logging.errorDispatching({
+            event : _Event,
+            listener : listener[idx],
+            error: dispatchError,
           });
+        });
       }
 
       Response.status(200).end();
     }
     else {
+      Logging.errorBadQuery(query);
       // bad query
       Response.status(400).end();
     }
   };
 
 };
+
+
+module.exports = { loadListenerMap, EventDispatcher };

@@ -1,105 +1,91 @@
 const assert = require('assert');
 const expect = require('chai').expect;
-const sinon = require('sinon');
 
-const path = require('path');
-const FixtureMapFile = path.resolve('./test/fixture/event-map.test.json');
-const EventMap = require('../../src/core/event-map');
+const EventMap = require('../../src/adminer/public/js/module/event-map');
+
+const fixtureEntities = require('../fixture/fixture-event-map.json');
 
 describe("EventMap", function () {
 
-  beforeEach(function(){
-    sinon.restore();
-  });
+  it(".getById()", function () {
 
-  
+    var eventMap = new EventMap(fixtureEntities);
 
-  it(".generateID() : generate ID for entity", function () {
-          
-    // the format : [parent_id]::[element-token]
-    var eventMap = new EventMap(FixtureMapFile);
+    var result = eventMap.getById("service", 's-1');
 
-    const result_1 = eventMap.generateID('service');
-    assert(result_1 === "s-2");
-    
-    const result_2 = eventMap.generateID('event');
-    assert(result_2 === "e-2");
-
-    const result_3 = eventMap.generateID('listener');    
-    assert(result_3 === "r-3");
-
-  });
-  
-
-  it(".set()", function () {
-
-    var eventMap = new EventMap(FixtureMapFile);
-    var result = eventMap.set({
-          type: "service", // required
-          name: "entity-data"
-        });
-
-    expect(result).has.property('type');
     expect(result).has.property('id');
+    expect(result).has.property('name');
+    expect(result).has.property('host');
+    expect(result).has.property('description');
+
+
+  });
+
+  it(".setEntity()", function () {
+
+    var eventMap = new EventMap(fixtureEntities);
+    var result = eventMap.setEntity({
+      type: "service", // required
+      name: "service-name"
+    });
+
+    expect(result).has.property('id');
+    expect(result).has.property('type');
     expect(result).has.property('name');
 
   });
 
   it(".removeById()", function () {
 
-    var eventMap = new EventMap();
+    let eventMap = new EventMap(fixtureEntities);
 
-    // get id of the first fake service
-    const service_id = Fixture.service_1_Data().id;
-    var result = eventMap.removeById("service", service_id);
-
+    const service_id = 's-1';
+    let result = eventMap.removeById("service", service_id);
     assert.strictEqual(result, true);
-  });
 
-  it(".getById()", function () {
-
-    var eventMap = new EventMap(FixtureMapFile);
-
-    const listener_id = Fixture.listener_1_Data().id;
-    var result = eventMap.getById("listener", listener_id);
-
-    assert.strictEqual(result.id, listener_id);
+    /** event with id === 'e-1' was attached to service('s-1') */
+    let event = eventMap.getById('event' , 'e-1');
+    /** 
+     * now the event('e-1') is attached to any service 
+     * but it still available in the event list
+    */
+     assert(event.service_id === '');
+     assert(event.id === 'e-1');
+     assert(event.name === 'event-1');
 
   });
 
   it(".getList() returns service list", function () {
 
-    const eventMap = new EventMap(FixtureMapFile);
+    const eventMap = new EventMap(fixtureEntities);
     const service_list = eventMap.getList('service');
 
-    assert.strictEqual(Array.isArray(service_list) , true);
-    expect(service_list[0]).has.property('type');
-    expect(service_list[0]).has.property('id');
-    expect(service_list[0]).has.property('name');
-    expect(service_list[0]).has.property('desc');
+    assert.ok(service_list instanceof Map);
+    assert.ok(service_list.size === 3);
+
+    let service_1 = service_list.get('s-1');
+    expect(service_1.id === 's-1');
 
   });
 
-  it(".getList() returns listener list", function () {
+  it(".getList() returns list with criteria", function () {
 
-    const eventMap = new EventMap(FixtureMapFile);
-    
-    const event_id = Fixture.eventData().id;
+    const eventMap = new EventMap(fixtureEntities);
+
+    const event_id = 'e-1';
     const listener_list = eventMap.getList('listener', {
       event_id : event_id // criteria
     });
 
-    assert.strictEqual(Array.isArray(listener_list) , true);
-    assert.strictEqual(listener_list.length , 2);
+    assert.ok(listener_list instanceof Map);
+    assert.strictEqual(listener_list.size, 2);
 
-    expect(listener_list[0]).has.property('type');
-    expect(listener_list[0]).has.property('id');
-    expect(listener_list[0]).has.property('name');
-    expect(listener_list[0]).has.property('domain');
-    expect(listener_list[0]).has.property('path');
+    let listener = listener_list.get('l-1');
+    assert(listener.event_id === 'e-1');
+    
 
   });
 
-  
+
 
 });

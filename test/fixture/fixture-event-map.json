@@ -1,0 +1,47 @@
+{
+  "service": [
+    {
+      "id": "s-1",
+      "name": "service-1",
+      "host": "www.service-1.com",
+      "description": "lorem ipsum"
+    },
+    {
+      "id": "s-2",
+      "name": "service-2",
+      "host": "www.service-2.com",
+      "description": "lorem ipsum"
+    },
+    {
+      "id": "s-3",
+      "name": "service-3",
+      "host": "www.service-3.com",
+      "description": "lorem ipsum"
+    }
+  ],
+  "event": [
+    {
+      "id" : "e-1", "service_id":"s-1" , "name":"event-1" , "description" : "lorem ipsum"
+    },
+    {
+      "id" : "e-2", "service_id":"s-2" , "name":"event-2" , "description" : "lorem ipsum"
+    }
+  ],
+  "listener": [
+    {
+      "id" : "l-1", "event_id" : "e-1" , "endpoint" : "www.listener-1.com/path"
+    },
+    {
+      "id" : "l-2", "event_id" : "e-1", "endpoint" : "www.listener-2.com/path"
+    },
+    {
+      "id" : "l-3", "event_id" : "e-2", "endpoint" : "www.listener-3.com/path"
+    },
+    {
+      "id" : "l-4", "event_id" : "e-2", "endpoint" : "www.listener-4.com/path"
+    },
+    {
+      "id" : "l-5", "event_id" : "e-2", "endpoint" : "www.listener-5.com/path"
+    }
+  ]
+}

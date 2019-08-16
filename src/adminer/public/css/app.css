@@ -1,0 +1,185 @@
+
+
+/******************************************************/
+
+.app-container {
+  padding: 100px 0;
+}
+
+.app-container .app-header {
+  padding: 10px 0;
+}
+
+.app-logout-button {
+  width: 100px;
+}
+
+.app-module-nav {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.app-module-nav>.nav-tabs {
+  margin-bottom: -1px;
+}
+
+.app-brand {
+  border: 2px solid #fff;
+  text-transform: uppercase;
+  color: #fff;
+  border-radius: 20px;
+  padding: 0 10px;
+}
+
+.tab-content {
+  padding:20px 0;
+}
+
+.tab-content h1 {
+  margin: 0 0 20px 0;
+  padding: 10px 30px;
+  background-color: aliceblue;
+  font-size: 26px;
+}
+
+/******************************************************/
+
+.el-control {
+  padding: 10px 0;
+}
+
+.el-control button {
+  min-width: 100px;
+}
+
+.toggle-content {
+  display: block;
+  padding: 10px 20px;
+  background-color: #b3d7ff;
+  color: #004085;
+  margin: 10px 0 0 0;
+  font-size: 16px;
+}
+
+.toggle-content:hover {
+  cursor: pointer;
+}
+
+.el-service {
+  margin: 0 0 30px 0;
+  padding: 30px;
+  border: 1px solid #c7c7c7;
+  box-shadow: 0 1px 1px #e7ebef;
+  background-color: #f8f8f9;
+}
+
+.list-event {
+  background-color: #fff;
+  border-top: 0;
+}
+
+.el-event {
+  display: table;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid #cde1f9;
+  border-top: 0;
+}
+
+.el-content label {
+  font-weight: bold;
+}
+
+.el-event>div {
+  vertical-align: top;
+  display: table-cell;
+}
+
+.el-event .el-content {
+  padding: 10px;
+}
+
+.el-event h4 {
+  font-size: 16px;
+  background-color: aliceblue;
+  border-bottom: 1px solid transparent;
+  padding: 10px;
+  color: #0953a2;
+}
+
+.el-event>div:nth-of-type(1) {
+  width: 45%;
+}
+
+.el-event>div:nth-of-type(2) {
+  width: 55%;
+}
+
+.list-listener li {
+  padding: 10px;
+  background-color: #fff;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+}
+
+.app-modal-form textarea {
+  min-height: 200px;
+}
+
+/*******************************************************/
+
+.activity-head, .element-activity {
+  display: table;
+  width: 100%;
+}
+
+.activity-head {
+  color: #fff;
+}
+
+.activity-head span, .element-activity span {
+  width: 20%;
+  display: table-cell;
+  border: 1px solid #fff;
+  padding: 10px 20px;
+}
+
+.element-activity {
+  cursor: pointer;
+  background-color: #e2f1ff;
+}
+
+.element-activity:hover {
+  background-color: #d5e8f9;
+}
+
+.element-activity-content {
+  background-color: #e2f1ff;
+  padding:30px;
+  margin-bottom: 30px;
+  border:1px solid #fff;
+}
+
+.element-activity-content > div {
+  padding:20px;
+  background-color: #fff;
+  border: 1px solid #d6e9fd;
+}
+
+.element-activity-content label {
+  font-weight: bold;
+  margin: 10px 10px 0 0;
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+.element-activity-content pre {
+  padding: 15px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.element-activity-content p {
+  margin: 0;
+}

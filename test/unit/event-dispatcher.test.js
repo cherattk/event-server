@@ -1,3 +1,4 @@
+const path = require('path');
 const assert = require('assert');
 const expect = require('chai').expect;
 
@@ -10,12 +11,9 @@ const httpMocks = require('node-mocks-http');
 const sinon = require('sinon');
 
 // *********************************************************************
-const EventDispatcher = require('../../src/core/event-dispatcher');
-const Fixture = require('../fixture/fixture-factory');
+const Dispatcher = require('../../src/core/event-dispatcher');
 
-const _MockMapLoader = {
-  loadEventList : Fixture.EventList
-}
+const fixtureEntities = path.resolve('./test/fixture/fixture-event-map.json');
 
 const _MockHttpClient = {
   post: () => null
@@ -33,14 +31,46 @@ const _MockLogging = {
 
 // *********************************************************************
 
+describe("Test loadListenerMap()" , function(){
+
+  it(".loadListenerMap() returns valid Listener Map", function () {
+
+    var listenerMap = Dispatcher.loadListenerMap(fixtureEntities);
+
+    assert(listenerMap instanceof Map);
+
+    /**
+     * for the tested value @see fixture-event-map.json
+     */
+    let event_id = 'e-1'; 
+    let eventObject = listenerMap.get(event_id);    
+    expect(eventObject).to.have.property('id');
+    expect(eventObject).to.have.property('name');
+    expect(eventObject).to.have.property('service_id');
+    expect(eventObject).to.have.property('description');
+    expect(eventObject).to.have.property('description');
+    expect(eventObject).to.have.property('listener');
+
+    // very important test listeners attached to the event
+    assert(eventObject.listener instanceof Array);
+    expect(eventObject.listener[0]).to.have.property('id');
+    expect(eventObject.listener[0]).to.have.property('event_id');
+    expect(eventObject.listener[0]).to.have.property('endpoint');
+    assert(eventObject.listener[0].event_id === event_id);
+
+  });
+
+});
+
 describe("EventDispatcher", function () {
 
   it(" .getListener() returns valid Listener Array", function () {
 
-    var dispatcher = new EventDispatcher(_MockMapLoader, null, null);
+    let EventDispatcher = Dispatcher.EventDispatcher;
+    var dispatcher = new EventDispatcher(fixtureEntities, null, null);
 
     // get the first event in the fixture event map
-    // @see fixture FixtureMapFile
+    // @see fixture-event-map.json
     var event_id = 'e-1';
     var listener = dispatcher.getListener(event_id);
 
@@ -56,7 +86,8 @@ describe("EventDispatcher", function () {
     sinon.spy(_MockLogging, 'query');
     sinon.spy(_MockLogging, 'event');
 
-    const dispatcher = new EventDispatcher(_MockMapLoader, _MockHttpClient, _MockLogging);
+    let EventDispatcher = Dispatcher.EventDispatcher;
+    const dispatcher = new EventDispatcher(fixtureEntities, _MockHttpClient, _MockLogging);
 
     const publishQuery = {
       event_id: 'e-1',
@@ -68,27 +99,32 @@ describe("EventDispatcher", function () {
 
     dispatcher.dispatchEvent(Request, Response);
 
-    // log publisher query
-    assert(_MockLogging.query.calledOnce);
-    assert(_MockLogging.query.calledWith( {query : publishQuery} ) );    
-    
+
     // log event information
     assert(_MockLogging.event.calledOnce);
-    assert(_MockLogging.event.calledWith( {event : publishQuery.event_id } ) );
+    assert(_MockLogging.event.calledWith( {
+        event_id: publishQuery.event_id,
+        message : publishQuery.message
+      }) );
 
-    // notifiy listener(s)
+    /**
+     * notifiy listener(s)
+     * The post() method is called for every listener attached to the event.
+     * In this test there is 2 listeners attached to the event('e-1').
+     * @see fixture-event-map.json
+     **/
     assert(_MockHttpClient.post.calledTwice);
     
     // assert(_MockHttpClient.post.firstCall.calledWith({
     //   json : true,
     //   form : JSON.stringify(publishQuery.message),
-    //   url : Fixture.listener_1_Data().domain + Fixture.listener_1_Data().path
+    //   url : "www.listener-1.com/path"
     // }));
 
     assert(_MockHttpClient.post.secondCall.calledWith({
       json : true,
       form : JSON.stringify(publishQuery.message),
-      url : Fixture.listener_2_Data().domain + Fixture.listener_2_Data().path
+      url : "www.listener-2.com/path"
     }));
 
 
@@ -100,35 +136,19 @@ describe("EventDispatcher", function () {
 
   it('.validPublishQuery() returns true', function () {
 
-    const dispatcher = new EventDispatcher(_MockMapLoader, null, null);
+    let EventDispatcher = Dispatcher.EventDispatcher;
+    const dispatcher = new EventDispatcher(fixtureEntities, null, null);
 
-    const event = Fixture.eventData();
     const requiredField = {
-      event_id: event.id,
+      event_id: 'e-1',
       message: "not-empty-message"
     };
 
     // valid publisher query
-    const valid = dispatcher.validPublishQuery(requiredField);
+    const valid = dispatcher.validQuery(requiredField);
 
     assert.strictEqual(valid, true);
 
-  });
-
-
-  it('.dispatchEvent() calls Logging.query()', function () {
-    assert(false);
-  });
-
-  it('.dispatchEvent() calls Logging.error()', function () {
-
-    // read error log entry
-    const errorLog = {};
-    expect(errorLog).to.have.property('id');
-    expect(errorLog).to.have.property('time');
-    expect(errorLog).to.have.property('listener');
-    expect(errorLog).to.have.property('message');
-    expect(errorLog).to.have.property('status_code');
   });
 
 });
