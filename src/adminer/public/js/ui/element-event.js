@@ -1,7 +1,7 @@
 import React from 'react';
 import ListListener from './list-listener';
-import UIEvent from './module/ui-event';
-import DataManager from './module/event-map-manager';
+import UIEvent from '../service/ui-event';
+import DataManager from '../service/event-map-manager';
 
 export default class ElementEvent extends React.Component {
 

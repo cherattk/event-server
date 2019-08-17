@@ -1,6 +1,6 @@
 import React from 'react';
 import ElementService from './element-service';
-import EventMapManager from './module/event-map-manager';
+import EventMapManager from '../service/event-map-manager';
 
 export default class ListService extends React.Component {
 

@@ -26884,42 +26884,39 @@ function functionBindPolyfill(context) {
 /**
  * @module EventSet
  * @license MIT Licence
- * @copyright Copyright (c) 2018-2019 cheratt karim
+ * @copyright Copyright (c) 2018-present cheratt karim
  *                                              
  */
 
 const Topic = require('./topic.js');
 const Util = require('./util.js');
 
- /**
-  * EventSet 
-  */
-
-
+/**
+ * EventSet 
+ */
 function EventSet() {
 
-    var _topicList = new Map();
+  var _topicList = new Map();
 
-    this.Topic = function(topicName) {
-        
-        if(!Util.isString(topicName)){
-            var errorMsg = `EventSet.createTopic() : topicName argument must be of type string`;            
-            throw new TypeError(errorMsg);
-        }
+  this.Topic = function (topicName) {
 
-        var _topic = null;
-        var topicToken = Util.clean(topicName);   
-
-        if(_topicList.has(topicToken)){
-            _topic = _topicList.get(topicName);
-        }
-        else{
-            _topic = new Topic(topicName);
-            _topicList.set(topicName , _topic);
-        }
-
-        return _topic;
+    if (!Util.isString(topicName)) {
+      throw new TypeError(`package eventset : EventSet.createTopic() : topicName argument must be of type string`);
     }
+
+    var _topic = null;
+    var topicToken = Util.clean(topicName);
+
+    if (_topicList.has(topicToken)) {
+      _topic = _topicList.get(topicName);
+    }
+    else {
+      _topic = new Topic(topicName);
+      _topicList.set(topicName, _topic);
+    }
+
+    return _topic;
+  }
 }
 
 module.exports = new EventSet();
@@ -26928,169 +26925,169 @@ module.exports = new EventSet();
 /**
  * @module Topic
  * @license MIT Licence
- * @copyright Copyright (c) 2018-2019 cheratt karim
+ * @copyright Copyright (c) 2018-present cheratt karim
  */
 
- const Util = require('./util.js');
+const Util = require('./util.js');
 
- /**
-  * 
-  * @param {string} topicName
-  * 
-  * @retruns {Object} New Topic instance 
-  */
-function Topic(topicName){
+/**
+ * Create a new Topic Object to store a set of events
+ * 
+ * @param {string} topicName
+ * @retruns {Object} New Topic instance 
+ */
 
-    if(!Util.isString(topicName)){
-        var errorMsg = `Topic.Topic() : topicName argument must be of type string`;            
-        throw new TypeError(errorMsg);
+function Topic(topicName) {
+
+  if (!Util.isString(topicName)) {
+    throw new TypeError(`package eventset : Topic.Topic() : topicName argument must be of type string`);
+  }
+
+  var _eventMap = new Map();
+
+  /**
+   * Get Topic Name
+   * 
+   * @returns {string} topic name
+   */
+  this.getName = function () {
+    return topicName;
+  }
+
+  /**
+   * Get all registered events
+   * 
+   * @returns {Array<string>} An array of event names
+   */
+  this.getEvent = function () {
+    var result = Array.from(_eventMap.keys());
+    return result;
+  }
+
+  /**
+   * Register the event to the topic
+   * 
+   * @param   {string} eventName - event name
+   * 
+   * @returns {Array<string>} An array of event names
+   */
+  this.addEvent = function (eventName) {
+    if (!Util.isString(eventName)) {
+      throw new TypeError(`package eventset : Topic.addEvent() : eventName argument must be of type string`);
     }
 
-    var _eventMap = new Map();
+    var eventToken = Util.clean(eventName);
 
-    /**
-     * Get Topic Name
-     * 
-     * @returns {string} topic name
-     */
-    this.getName = function(){
-        return topicName;
+    if (!_eventMap.has(eventToken)) {
+      _eventMap.set(eventToken, new Map());
+    }
+    return this.getEvent();
+  }
+
+  /**
+   * Remove the event from the topic and all its attached listeners
+   * 
+   * @param {string} eventName 
+   * @returns {Array<string>} An array of events names
+   */
+
+  this.removeEvent = function (eventName) {
+    if (!Util.isString(eventName)) {
+      throw new TypeError(`package eventset : Topic.removeEvent() : eventName argument must be of type string`);
     }
 
+    var eventToken = Util.clean(eventName);
 
-    /**
-     * Get all registered events
-     * 
-     * @returns {Array<string>} An array of event names
-     */
-    this.getEvent = function (){
-        var result = Array.from(_eventMap.keys());
-        return result;
+    if (_eventMap.has(eventToken)) {
+      _eventMap.delete(eventToken);
+    }
+    return this.getEvent();
+  }
+
+  /**
+   * Register event listener
+   * 
+   * @param {string} eventName
+   * @param {Function} listener
+   * 
+   * @returns {string} listener identifier
+   */
+  this.addListener = function (eventName, listener) {
+    if (!Util.isString(eventName)) {
+      throw new TypeError(`package eventset : Topic.addListener() : eventName argument must be a String type`);
     }
 
-    /**
-     * Register the event to the topic
-     * 
-     * @param   {string} eventName - event name
-     * 
-     * @returns {Array<string>} An array of event names
-     */
-    this.addEvent = function (eventName){
-        if(!Util.isString(eventName)){
-            var errorMsg = `Topic.addEvent() : first argument must be of type string`;            
-            throw new TypeError(errorMsg);
-        }
-
-        var eventToken = Util.clean(eventName);
-
-        if(!_eventMap.has(eventToken)){
-            _eventMap.set(eventToken , new Map());
-        }
-        return this.getEvent();
+    if (typeof listener !== 'function') {
+      throw new Error(`package eventset : Topic.addListener() : the listener argument must be a Function`);
     }
 
-    /**
-     * Remove the event from the topic and all its event listeners
-     * 
-     * @param {string} eventName
-     * 
-     * @returns {Array<string>} An array of events names
-     */
-
-    this.removeEvent = function(eventName) {
-        if(!Util.isString(eventName)){
-            var errorMsg = `Topic.removeEvent() : first argument must be of type string`;            
-            throw new TypeError(errorMsg);
-        }
-
-        var eventToken = Util.clean(eventName);
-
-        if(_eventMap.has(eventToken)){
-            _eventMap.delete(eventToken);
-        }
-        return this.getEvent();
+    var eventToken = Util.clean(eventName);
+    if (!_eventMap.has(eventToken)) {
+      throw new Error(`package eventset : Topic.addListener() Invalid event name : 
+                        event named ${eventName} does not exists`);
     }
 
-    /**
-     * Register event listener
-     * 
-     * @param {string} eventName
-     * @param {any} listener
-     * 
-     * @returns {string} listener identifier
-     */
-    this.addListener = function(eventName , listener){
-        if(!Util.isString(eventName)){
-            throw new TypeError(`Topic.addListener() : first argument must be a String type`);
-        }
+    var listenerMap = _eventMap.get(eventToken);
+    var listenerId = eventToken + '/' + (listenerMap.size + 1).toString();
+    listenerMap.set(listenerId, listener);
 
-        if(typeof listener !== 'function'){
-            throw new Error(`Topic.addListener() : second argument must be a Function type`);
-        }
+    return listenerId;
+  }
 
-        var eventToken = Util.clean(eventName);
-        if(!_eventMap.has(eventToken)){
-            throw new Error( 'Invalid event name : ' + eventName);
-        }
 
-        var listenerMap = _eventMap.get(eventToken);
-        var listenerId = eventToken + '/' + (listenerMap.size + 1).toString();
-            listenerMap.set(listenerId , listener);
-        
-        return listenerId;
+  /**
+   * Remove listener
+   * 
+   * @param {string} listenerId
+   * 
+   * @retruns {boolean} true if it succeeds, false otherwise
+   */
+  this.removeListener = function (listenerId) {
+    if (!Util.isString(listenerId)) {
+      throw new TypeError(`package eventset : Topic.removeListener() : listenerId argument must be of type string`);
     }
+
+    var eventToken = listenerId.split("/", 1)[0];
+    if (!_eventMap.has(eventToken)) {
+      throw new Error(`package eventset : Invalid listener identifier :
+                        listener with idetifier ${eventToken} does not exists`);
+    }
+
+    var listenerMap = _eventMap.get(eventToken);
+    var deleteResult = listenerMap.delete(listenerId);
+    return deleteResult;
+  }
+
+
+  /**
+   * Trigger event
+   * 
+   * @returns {undefined}
+   */
+  this.dispatch = function (eventName, message) {
+    if (!Util.isString(eventName)) {
+      throw new TypeError(`package eventset : Topic.dispatch() : eventName argument must be of type string`);
+    }
+    var eventToken = Util.clean(eventName);
+    if (!_eventMap.has(eventToken)) {
+      throw new Error(`package eventset : Topic.dispatch() Invalid event name : 
+                        event named ${eventName} does not exists`);
+    }
+
+    var event = { topic: topicName, event: eventName };
     
-
-    /**
-     * Remove listener
-     * 
-     * @param {string} listenerId
-     * 
-     * @retruns {boolean} true if it succeeds, false otherwise
-     */
-    this.removeListener = function(listenerId){
-        if(!Util.isString(listenerId)){
-            var errorMsg = `Topic.removeListener() : listenerId argument must be of type string`;            
-            throw new TypeError(errorMsg);
-        }
-
-        var eventToken = listenerId.split("/" , 1)[0];
-        if(!_eventMap.has(eventToken)){
-            throw new Error( 'Invalid listener identifier : ' + listenerId);
-        }
-
-        var listenerMap  = _eventMap.get(eventToken);
-        var deleteResult = listenerMap.delete(listenerId);
-        return deleteResult;
+    // check if the message is of a valid type
+    // JSON.stringify() returns undefined for "Function" and "undefined" value
+    var copyMessage = JSON.stringify(message);
+    if(typeof copyMessage !== 'undefined'){
+      event.message = JSON.parse(copyMessage);
     }
 
-
-    /**
-     * Dispatch event
-     * 
-     * @returns {undefined}
-     */
-    this.dispatch = function(eventName , message){
-        if(!Util.isString(eventName)){
-            throw new TypeError(`Topic.dispatch() : first argument must be of type string`);
-        }        
-        var eventToken = Util.clean(eventName);
-        if(!_eventMap.has(eventToken)){
-            throw new Error('Invalid event name : ' + eventName);
-        }
-
-        var copyMessage = JSON.parse(JSON.stringify(message));
-        var event  = {
-            topicName    : topicName,
-            eventName    : eventName, 
-            eventMessage : copyMessage
-        };
-        
-        var listenerMap = _eventMap.get(eventToken);
-        listenerMap.forEach(function(listener){
-            listener(event);
-        });
-    }
+    var listenerMap = _eventMap.get(eventToken);
+    listenerMap.forEach(function (listener) {
+      listener(event);
+    });
+  }
 }
 
 module.exports = Topic;
@@ -27098,32 +27095,31 @@ module.exports = Topic;
 /**
  * @module Util
  * @license MIT Licence
- * @copyright Copyright (c) 2018-2019 cheratt karim
+ * @copyright Copyright (c) 2018-present cheratt karim
  */
 
 
 const Util = {
-    
-    /**
-     * Convert input string to lowercase and remove whitespaces and slashes
-     * 
-     * @param {string} value to clean 
-     */
-    clean : function(input){
-        if(!this.isString(input)){
-            var errorMsg = `Util.clean() : input argument must be of type string`;            
-            throw new TypeError(errorMsg);
-        }
-        return input.toLowerCase().replace(/\s|\//g, "");
-    },
 
-    /**
-     * 
-     * @param {string} input
-     */
-    isString : function(input){
-        return (typeof input === 'string' && input !== '');
+  /**
+   * Convert input string to lowercase and remove whitespaces and slashes
+   * 
+   * @param {string} value to clean 
+   */
+  clean: function (input) {
+    if (!this.isString(input)) {
+      throw new TypeError(`package eventset : Util.clean(input) : input argument must be of type string`);
     }
+    return input.toLowerCase().replace(/\s|\//g, "");
+  },
+
+  /**
+   * 
+   * @param {string} input
+   */
+  isString: function (input) {
+    return (typeof input === 'string' && input !== '');
+  }
 
 };
 
@@ -105667,6 +105663,185 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _uiEvent = _interopRequireDefault(require("./ui-event"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+/**
+ * @module EventMapMananger
+ * @copyright Copyright (c) 2019-present cheratt karim
+ * @license MIT Licence
+ */
+var _eventMap = null;
+var EventMapMananger = {
+  setEventMap: function setEventMap(EventMap) {
+    if (!_eventMap) {
+      _eventMap = EventMap;
+    }
+  },
+  ////////////////////////////////////////////////////////////
+  setData: function setData(entity) {
+    _eventMap.setEntity(entity);
+
+    var eventName = 'data-update-' + entity.type;
+
+    _uiEvent["default"].dispatch(eventName, {
+      id: entity.id
+    });
+  },
+  ////////////////////////////////////////////////////////////
+  getData: function getData(type, id) {
+    return _eventMap.getById(type, id);
+  },
+  ///////////////////////////////////////////////////////////
+  getDataList: function getDataList(type, criteria) {
+    var list = _eventMap.getList(type, criteria);
+
+    return list;
+  }
+};
+var _default = EventMapMananger;
+exports["default"] = _default;
+
+},{"./ui-event":406}],405:[function(require,module,exports){
+"use strict";
+
+/**
+ * @module EventMap
+ * @copyright Copyright (c) 2019-present cheratt karim
+ * @license MIT Licence
+ */
+
+/**
+ * Used to manage (set/delete) entities
+ * It converts entities JSON Object to a Map Object to manage entities
+ * @params {Object} entitiesMap
+ */
+module.exports = function EventMap(entities) {
+  var prefix = {
+    service: 's-',
+    event: 'e-',
+    listener: 'l-'
+  };
+  var _eventMap = {
+    service: new Map(),
+    event: new Map(),
+    listener: new Map()
+  };
+  ['service', 'event', 'listener'].map(function (type) {
+    entities[type].map(function (item) {
+      _eventMap[type].set(item.id, item);
+    });
+  });
+
+  this.generateID = function (entityType) {
+    return prefix[entityType] + new Date().getTime();
+  };
+
+  this.setEntity = function (entityData) {
+    var entity = Object.assign({}, entityData);
+
+    if (!entityData.id) {
+      entity.id = this.generateID(entityData.type);
+    }
+
+    var _map = _eventMap[entity.type];
+
+    _map.set(entity.id, entity);
+
+    return entity;
+  };
+
+  this.removeById = function (type, id) {
+    var _map = _eventMap[type];
+
+    var result = _map["delete"](id);
+
+    if (type === 'service') {
+      _eventMap.event.forEach(function (event) {
+        if (event.service_id === id) {
+          event.service_id = '';
+        }
+      });
+    }
+
+    if (type === 'event') {
+      _eventMap.listener.forEach(function (listener) {
+        if (listener.event_id === id) {
+          listener.event_id = '';
+        }
+      });
+    }
+
+    return result;
+  };
+
+  this.getById = function (type, id) {
+    var _map = _eventMap[type];
+    return _map.get(id);
+  };
+  /**
+   * 
+   * @returns Map<id , entity>
+   */
+
+
+  this.getList = function (type, criteria) {
+    var _map = _eventMap[type];
+    var field = !!criteria && Object.keys(criteria);
+
+    if (field.length > 0) {
+      var result = new Map();
+
+      _map.forEach(function (element) {
+        var ok = true;
+        field.forEach(function (_field) {
+          ok = ok && element[_field] === criteria[_field];
+        });
+
+        if (ok) {
+          result.set(element.id, element);
+        }
+      });
+
+      return result;
+    } // return all values
+
+
+    return _map;
+  };
+};
+
+},{}],406:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _eventset = _interopRequireDefault(require("eventset"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var UIEvent = _eventset["default"].Topic('ui-event');
+
+UIEvent.addEvent('show-event');
+UIEvent.addEvent('show-service-form');
+UIEvent.addEvent('show-event-form');
+UIEvent.addEvent('data-update-service');
+UIEvent.addEvent('data-update-event');
+var _default = UIEvent;
+exports["default"] = _default;
+
+},{"eventset":152}],407:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
 var _react = _interopRequireDefault(require("react"));
 
 var _listActivityEvent = _interopRequireDefault(require("./list-activity-event"));
@@ -105742,7 +105917,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerActivity;
 
-},{"./list-activity-error":412,"./list-activity-event":413,"react":285}],405:[function(require,module,exports){
+},{"./list-activity-error":415,"./list-activity-event":416,"react":285}],408:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105755,10 +105930,11 @@ var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function ElementActivityError(props) {
-  return _react["default"].createElement("div", null, _react["default"].createElement("pre", null, JSON.stringify(props.errorContent)));
+  var activity = props.activity;
+  return _react["default"].createElement("div", null, _react["default"].createElement("label", null, "Error type : "), activity.error_type, " ", _react["default"].createElement("br", null), _react["default"].createElement("pre", null, JSON.stringify(props.activity.content)));
 }
 
-},{"react":285}],406:[function(require,module,exports){
+},{"react":285}],409:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105818,7 +105994,7 @@ function (_React$Component) {
 
 exports["default"] = ElementActivityEvent;
 
-},{"react":285}],407:[function(require,module,exports){
+},{"react":285}],410:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105830,9 +106006,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _listListener = _interopRequireDefault(require("./list-listener"));
 
-var _uiEvent = _interopRequireDefault(require("./module/ui-event"));
+var _uiEvent = _interopRequireDefault(require("../service/ui-event"));
 
-var _eventMapManager = _interopRequireDefault(require("./module/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -105915,7 +106091,7 @@ function (_React$Component) {
 
 exports["default"] = ElementEvent;
 
-},{"./list-listener":415,"./module/event-map-manager":418,"./module/ui-event":420,"react":285}],408:[function(require,module,exports){
+},{"../service/event-map-manager":404,"../service/ui-event":406,"./list-listener":418,"react":285}],411:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105977,7 +106153,7 @@ function (_React$Component) {
 
 exports["default"] = ElementListener;
 
-},{"react":285}],409:[function(require,module,exports){
+},{"react":285}],412:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105989,9 +106165,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _listEvent = _interopRequireDefault(require("./list-event"));
 
-var _uiEvent = _interopRequireDefault(require("./module/ui-event"));
+var _uiEvent = _interopRequireDefault(require("../service/ui-event"));
 
-var _eventMapManager = _interopRequireDefault(require("./module/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106031,13 +106207,19 @@ function (_React$Component) {
 
     var self = _assertThisInitialized(_this);
 
-    _uiEvent["default"].addListener('data-update-service', function () {
-      self.setState(function () {
-        var service_id = self.state.service.id;
-        return {
-          service: _eventMapManager["default"].getData('service', service_id)
-        };
-      });
+    _uiEvent["default"].addListener('data-update-service', function (uiEvent) {
+      /**
+       * @important check the id first, otherwise all elemnts of the list will be updated
+       *  */
+      if (uiEvent.message.id === self.state.service.id) {
+        self.setState(function () {
+          var data = _eventMapManager["default"].getData('service', uiEvent.message.id);
+
+          return {
+            service: data
+          };
+        });
+      }
     });
 
     return _this;
@@ -106055,7 +106237,9 @@ function (_React$Component) {
   }, {
     key: "getServiceForm",
     value: function getServiceForm() {
-      _uiEvent["default"].dispatch('show-service-form', this.state.service);
+      _uiEvent["default"].dispatch('show-service-form', {
+        id: this.state.service.id
+      });
     }
   }, {
     key: "render",
@@ -106092,7 +106276,7 @@ function (_React$Component) {
 
 exports["default"] = ElementService;
 
-},{"./list-event":414,"./module/event-map-manager":418,"./module/ui-event":420,"react":285}],410:[function(require,module,exports){
+},{"../service/event-map-manager":404,"../service/ui-event":406,"./list-event":417,"react":285}],413:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106102,9 +106286,9 @@ exports["default"] = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-var _uiEvent = _interopRequireDefault(require("./module/ui-event"));
+var _uiEvent = _interopRequireDefault(require("../service/ui-event"));
 
-var _eventMapManager = _interopRequireDefault(require("./module/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106259,7 +106443,7 @@ function (_React$Component) {
 
 exports["default"] = FormEvent;
 
-},{"./module/event-map-manager":418,"./module/ui-event":420,"react":285}],411:[function(require,module,exports){
+},{"../service/event-map-manager":404,"../service/ui-event":406,"react":285}],414:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106269,9 +106453,9 @@ exports["default"] = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-var _uiEvent = _interopRequireDefault(require("./module/ui-event"));
+var _uiEvent = _interopRequireDefault(require("../service/ui-event"));
 
-var _eventMapManager = _interopRequireDefault(require("./module/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106314,9 +106498,9 @@ function (_React$Component) {
     var self = _assertThisInitialized(_this); //===============================================
 
 
-    _uiEvent["default"].addListener('show-service-form', function (eventSet) {
+    _uiEvent["default"].addListener('show-service-form', function (uiEvent) {
       self.setState(function () {
-        return eventSet.eventMessage;
+        return _eventMapManager["default"].getData('service', uiEvent.message.id);
       }, function () {
         $(self.modal).modal('show');
       });
@@ -106441,7 +106625,7 @@ function (_React$Component) {
 
 exports["default"] = FormService;
 
-},{"./module/event-map-manager":418,"./module/ui-event":420,"react":285}],412:[function(require,module,exports){
+},{"../service/event-map-manager":404,"../service/ui-event":406,"react":285}],415:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106546,7 +106730,7 @@ function (_React$Component) {
           id: key,
           className: "element-activity-content collapse"
         }, _react["default"].createElement(_elementActivityError["default"], {
-          errorContent: activity.content
+          activity: activity
         }))));
       }, this);
       return list;
@@ -106567,7 +106751,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivityError;
 
-},{"./element-activity-error":405,"react":285,"request-promise-native":303}],413:[function(require,module,exports){
+},{"./element-activity-error":408,"react":285,"request-promise-native":303}],416:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106691,7 +106875,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivity;
 
-},{"./element-activity-event":406,"react":285,"request-promise-native":303}],414:[function(require,module,exports){
+},{"./element-activity-event":409,"react":285,"request-promise-native":303}],417:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106703,7 +106887,7 @@ var _react = _interopRequireDefault(require("react"));
 
 var _elementEvent = _interopRequireDefault(require("./element-event"));
 
-var _eventMapManager = _interopRequireDefault(require("./module/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106782,7 +106966,7 @@ function (_React$Component) {
 
 exports["default"] = ListEvent;
 
-},{"./element-event":407,"./module/event-map-manager":418,"react":285}],415:[function(require,module,exports){
+},{"../service/event-map-manager":404,"./element-event":410,"react":285}],418:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106794,7 +106978,7 @@ var _react = _interopRequireDefault(require("react"));
 
 var _elementListener = _interopRequireDefault(require("./element-listener"));
 
-var _eventMapManager = _interopRequireDefault(require("./module/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106868,7 +107052,7 @@ function (_React$Component) {
 
 exports["default"] = ListListener;
 
-},{"./element-listener":408,"./module/event-map-manager":418,"react":285}],416:[function(require,module,exports){
+},{"../service/event-map-manager":404,"./element-listener":411,"react":285}],419:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106880,7 +107064,7 @@ var _react = _interopRequireDefault(require("react"));
 
 var _elementService = _interopRequireDefault(require("./element-service"));
 
-var _eventMapManager = _interopRequireDefault(require("./module/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106955,7 +107139,7 @@ function (_React$Component) {
 
 exports["default"] = ListService;
 
-},{"./element-service":409,"./module/event-map-manager":418,"react":285}],417:[function(require,module,exports){
+},{"../service/event-map-manager":404,"./element-service":412,"react":285}],420:[function(require,module,exports){
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -106970,9 +107154,9 @@ var _formService = _interopRequireDefault(require("./form-service"));
 
 var _formEvent = _interopRequireDefault(require("./form-event"));
 
-var _eventMapManager = _interopRequireDefault(require("./module/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
 
-var _eventMap2 = _interopRequireDefault(require("./module/event-map"));
+var _eventMap2 = _interopRequireDefault(require("../service/event-map"));
 
 var _containerActivity = _interopRequireDefault(require("./container-activity"));
 
@@ -107030,179 +107214,4 @@ _request["default"].get(dataUrl, function (error, response, body) {
   }
 });
 
-},{"./container-activity":404,"./form-event":410,"./form-service":411,"./list-service.js":416,"./module/event-map":419,"./module/event-map-manager":418,"react":285,"react-dom":282,"request":304}],418:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _uiEvent = _interopRequireDefault(require("./ui-event"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-/**
- * @module EventMapMananger
- * @copyright Copyright (c) 2019-present cheratt karim
- * @license MIT Licence
- */
-var _eventMap = null;
-var EventMapMananger = {
-  setEventMap: function setEventMap(EventMap) {
-    if (_eventMap) {
-      return;
-    }
-
-    _eventMap = EventMap;
-  },
-  ////////////////////////////////////////////////////////////
-  setData: function setData(entity) {
-    _eventMap.setEntity(entity);
-
-    var eventName = 'data-update-' + entity.type;
-
-    _uiEvent["default"].dispatch(eventName, {});
-  },
-  ////////////////////////////////////////////////////////////
-  getData: function getData(type, id) {
-    return _eventMap.getById(type, id);
-  },
-  ///////////////////////////////////////////////////////////
-  getDataList: function getDataList(type, criteria) {
-    var list = _eventMap.getList(type, criteria);
-
-    return list;
-  }
-};
-var _default = EventMapMananger;
-exports["default"] = _default;
-
-},{"./ui-event":420}],419:[function(require,module,exports){
-"use strict";
-
-/**
- * @module EventMap
- * @copyright Copyright (c) 2019-present cheratt karim
- * @license MIT Licence
- */
-
-/**
- * Used to manage (set/delete) entities
- * It converts entities JSON Object to a Map Object to manage entities
- * @params {Object} entitiesMap
- */
-module.exports = function EventMap(entities) {
-  var prefix = {
-    service: 's-',
-    event: 'e-',
-    listener: 'l-'
-  };
-  var _eventMap = {
-    service: new Map(),
-    event: new Map(),
-    listener: new Map()
-  };
-  ['service', 'event', 'listener'].map(function (type) {
-    entities[type].map(function (item) {
-      _eventMap[type].set(item.id, item);
-    });
-  });
-
-  this.generateID = function (entityType) {
-    return prefix[entityType] + new Date().getTime();
-  };
-
-  this.setEntity = function (entityData) {
-    var entity = Object.assign({}, entityData);
-    entity.id = this.generateID(entityData.type);
-    var _map = _eventMap[entity.type];
-
-    _map.set(entity.id, entity);
-
-    return entity;
-  };
-
-  this.removeById = function (type, id) {
-    var _map = _eventMap[type];
-
-    var result = _map["delete"](id);
-
-    if (type === 'service') {
-      _eventMap.event.forEach(function (event) {
-        if (event.service_id === id) {
-          event.service_id = '';
-        }
-      });
-    }
-
-    if (type === 'event') {
-      _eventMap.listener.forEach(function (listener) {
-        if (listener.event_id === id) {
-          listener.event_id = '';
-        }
-      });
-    }
-
-    return result;
-  };
-
-  this.getById = function (type, id) {
-    var _map = _eventMap[type];
-    return _map.get(id);
-  };
-  /**
-   * 
-   * @returns Map<id , entity>
-   */
-
-
-  this.getList = function (type, criteria) {
-    var _map = _eventMap[type];
-    var field = !!criteria && Object.keys(criteria);
-
-    if (field.length > 0) {
-      var result = new Map();
-
-      _map.forEach(function (element) {
-        var ok = true;
-        field.forEach(function (_field) {
-          ok = ok && element[_field] === criteria[_field];
-        });
-
-        if (ok) {
-          result.set(element.id, element);
-        }
-      });
-
-      return result;
-    } // return all values
-
-
-    return _map;
-  };
-};
-
-},{}],420:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _eventset = _interopRequireDefault(require("eventset"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-var UIEvent = _eventset["default"].Topic('ui-event');
-
-UIEvent.addEvent('show-event');
-UIEvent.addEvent('show-service-form');
-UIEvent.addEvent('show-event-form');
-UIEvent.addEvent('data-update-service');
-UIEvent.addEvent('data-update-event');
-var _default = UIEvent;
-exports["default"] = _default;
-
-},{"eventset":152}]},{},[417]);
+},{"../service/event-map":405,"../service/event-map-manager":404,"./container-activity":407,"./form-event":413,"./form-service":414,"./list-service.js":419,"react":285,"react-dom":282,"request":304}]},{},[420]);

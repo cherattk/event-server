@@ -1,6 +1,6 @@
 import React from 'react';
-import UIEvent from './module/ui-event';
-import EventMapManager from './module/event-map-manager';
+import UIEvent from '../service/ui-event';
+import EventMapManager from '../service/event-map-manager';
 
 export default class FormEvent extends React.Component {
 

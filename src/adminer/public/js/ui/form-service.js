@@ -1,6 +1,6 @@
 import React from 'react';
-import UIEvent from './module/ui-event';
-import EventMapManager from './module/event-map-manager';
+import UIEvent from '../service/ui-event';
+import EventMapManager from '../service/event-map-manager';
 
 export default class FormService extends React.Component {
 
@@ -13,9 +13,9 @@ export default class FormService extends React.Component {
     var self = this;
     
     //===============================================
-    UIEvent.addListener('show-service-form', function (eventSet) {
+    UIEvent.addListener('show-service-form', function (uiEvent) {
       self.setState(function () {
-        return eventSet.eventMessage;
+        return EventMapManager.getData('service' , uiEvent.message.id);
       }, function () {
         $(self.modal).modal('show');
       });

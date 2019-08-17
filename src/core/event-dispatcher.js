@@ -72,16 +72,16 @@ function EventDispatcher(mapFilePath, HttpClient, Logging) {
 
       const requestOption = { json: true };
 
-      var listener = this.getListener(query.event_id);
-      for (let idx = 0, max = listener.length; idx < max; idx++) {
+      var _Listener = this.getListener(query.event_id);
+      for (let idx = 0, max = _Listener.length; idx < max; idx++) {
 
-        requestOption.url = listener[idx].endpoint;
+        requestOption.url = _Listener[idx].endpoint;
         requestOption.form = JSON.stringify(query.message);
 
         HttpClient.post(requestOption).catch((dispatchError) => {
           Logging.errorDispatching({
             event : _Event,
-            listener : listener[idx],
+            listener : _Listener[idx],
             error: dispatchError,
           });
         });

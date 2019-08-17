@@ -5,8 +5,8 @@ import httpRequest from 'request';
 import ListService from './list-service.js';
 import FormService from './form-service';
 import FormEvent from './form-event';
-import EventMapManager from './module/event-map-manager';
-import EventMap from './module/event-map';
+import EventMapManager from '../service/event-map-manager';
+import EventMap from '../service/event-map';
 import ContainerActivity from './container-activity';
 
 function EventAdmin() {

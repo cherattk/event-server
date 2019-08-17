@@ -32,7 +32,9 @@ module.exports = function EventMap(entities) {
 
   this.setEntity = function (entityData) {
     var entity = Object.assign({}, entityData);
-    entity.id = this.generateID(entityData.type);
+    if(!entityData.id){
+      entity.id = this.generateID(entityData.type);
+    }
     var _map = _eventMap[entity.type];
     _map.set(entity.id, entity);
     return entity;

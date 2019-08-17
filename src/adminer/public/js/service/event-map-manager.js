@@ -11,17 +11,16 @@ var _eventMap = null;
 const EventMapMananger = {
 
   setEventMap: function (EventMap) {
-    if (_eventMap) {
-      return;
+    if (!_eventMap) {
+      _eventMap = EventMap;
     }
-    _eventMap = EventMap;
   },
 
   ////////////////////////////////////////////////////////////
   setData : function(entity){
     _eventMap.setEntity(entity);
     let eventName = 'data-update-' + entity.type;
-    UIEvent.dispatch(eventName , {});
+    UIEvent.dispatch(eventName , {id : entity.id});
   },
 
   ////////////////////////////////////////////////////////////

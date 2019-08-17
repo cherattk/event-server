@@ -1,7 +1,7 @@
 import React from 'react';
 import ListEvent from './list-event';
-import UIEvent from './module/ui-event';
-import EventMapManager from './module/event-map-manager';
+import UIEvent from '../service/ui-event';
+import EventMapManager from '../service/event-map-manager';
 
 export default class ElementService extends React.Component {
 
@@ -13,11 +13,16 @@ export default class ElementService extends React.Component {
     }
 
     const self = this;
-    UIEvent.addListener('data-update-service', function () {
-      self.setState(function(){
-        let service_id = self.state.service.id;
-        return { service : EventMapManager.getData('service' , service_id) }
-      });
+    UIEvent.addListener('data-update-service', function (uiEvent) {      
+      /**
+       * @important check the id first, otherwise all elemnts of the list will be updated
+       *  */
+      if(uiEvent.message.id === self.state.service.id){
+        self.setState(function(){
+          let data = EventMapManager.getData('service' , uiEvent.message.id);
+          return { service : data }
+        });
+      }
     });
   }
 
@@ -28,7 +33,7 @@ export default class ElementService extends React.Component {
   }
 
   getServiceForm(){
-    UIEvent.dispatch('show-service-form' ,  this.state.service);
+    UIEvent.dispatch('show-service-form' ,  { id : this.state.service.id});
   }
 
   render() {

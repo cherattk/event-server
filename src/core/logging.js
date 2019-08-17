@@ -9,26 +9,22 @@
  * Async Logging
  */
 
- const logFormat = {
+const logFormat = {
 
-   getErrorFormat : function(content){
-     return {
-       tag  : 'error',
-       id : new Date().getTime(),
-       time : new Date().toISOString(),
-       error_type : '',
-       content : Object.assign({}, content)
-      };
-    },
-    
-    getEventFormat : function(content){
-      return {
-        tag  : 'event',
-        id : new Date().getTime(),
-        time : new Date().toISOString(),
-        content : Object.assign({}, content)
-      };
-    }
+  getErrorFormat: function (content) {
+    let errorFormat = this.getEventFormat(content);
+    errorFormat.tag = 'error';
+    errorFormat.error_type = '';
+  },
+
+  getEventFormat: function (content) {
+    return {
+      tag: 'event',
+      id: new Date().getTime(),
+      time: new Date().toISOString(),
+      content: Object.assign({}, content)
+    };
+  }
 };
 
 const Logging = function (driver) {
@@ -38,28 +34,25 @@ const Logging = function (driver) {
   return {
 
     event: (event) => {
-      let _log = Object.assign({}, event);
-          _log.id = new Date().getTime();
-          _log.time = new Date().toISOString();
-          _log.tag = 'event';
+      let _log = logFormat.getEventFormat(event);
       return _Driver.insert(_log);
     },
 
     errorInvalidEvent: (error) => {
       let _log = logFormat.getErrorFormat(error);
-          _log.error_type = 'invalid-event';
+      _log.error_type = 'invalid-event';
       return _Driver.insert(_log);
     },
 
     errorBadQuery: (error) => {
       let _log = logFormat.getErrorFormat(error);
-          _log.error_type = 'bad-query';
+      _log.error_type = 'bad-query';
       return _Driver.insert(_log);
     },
-    
+
     errorDispatching: (error) => {
       let _log = logFormat.getErrorFormat(error);
-          _log.error_type = 'error-dispatching';
+      _log.error_type = 'error-dispatching';
       return _Driver.insert(_log);
     },
 
