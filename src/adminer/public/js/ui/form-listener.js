@@ -1,28 +1,25 @@
 import React from 'react';
 import EventMapManager from '../service/event-map-manager';
-import { UIEvent } from '../service/event';
+import {UIEvent} from '../service/event';
 
-export default class FormEvent extends React.Component {
+export default class FormListener extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.initialState = {
-      event: {
-        id: '',
-        type : 'event',
-        event_name: '',
-        service_id: '',
-        description: ''
-      }
-    };
+    this._emptyState = { id : '' , endpoint: '', description: '' };
+    this.state = this._emptyState;
 
-    this.state = this.initialState;
     var self = this;
     //===============================================
-    UIEvent.addListener('show-event-form', function (uiEvent) {
+    UIEvent.addListener('show-listener-form', function (uiEvent) {
       self.setState(function () {
-        return { event: EventMapManager.getData('event', uiEvent.message.id) };
+        if (typeof uiEvent.message !== 'undefined' &&
+            typeof uiEvent.message.id !== 'undefined') {
+          return EventMapManager.getData('listener', uiEvent.message.id);
+        }
+        else return self._emptyState;
+
       }, function () {
         $(self.modal).modal('show');
       });
@@ -32,44 +29,40 @@ export default class FormEvent extends React.Component {
   close() {
     let self = this;
     this.setState(function () {
-      return self.initialState;
+      self._emptyState;
     }, function () {
       $(self.modal).modal('hide');
     });
   }
 
   submitForm() {
-    let event = Object.assign({}, this.state.event);
-    if (event.id) {
-      // element already exists
-      EventMapManager.updateData(event);
-    } else {
-      // add a new one
-      EventMapManager.addData(event);
-    }
+    let data = Object.assign({}, this.state);
+    data.type = 'listener';
+    EventMapManager.setData(data);
     this.close();
   }
 
   formValue(event) {
-    this.state.event[event.target.name] = event.target.value;
+    this.state[event.target.name] = event.target.value;
     this.setState(this.state);
   }
 
   render() {
     return (
-      <div className="modal fade app-modal-form" id="formEvent"
+      <div className="modal fade app-modal-form" id="formListener"
         tabIndex="-1" role="dialog"
-        aria-labelledby="formEventLabel"
+        aria-labelledby="formListenerLabel"
         aria-hidden="true"
         ref={node => (this.modal = node)}>
 
         <div className="modal-dialog modal-lg" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="formEventLabel">
-                Event Information
-            </h5>
-              <button type="button" className="close" onClick={this.close.bind(this)} aria-label="Close">
+              <h5 className="modal-title" id="formListenerLabel">
+                Listener Information
+              </h5>
+              <button type="button" className="close"
+                onClick={this.close.bind(this)} aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -78,18 +71,20 @@ export default class FormEvent extends React.Component {
               <form>
 
                 <div className="form-group">
-                  <label htmlFor="event-name" className="col-form-label">Name:</label>
-                  <input id="event-name" type="text" className="form-control"
-                    name="event_name"
-                    value={this.state.event.event_name}
+                  <label htmlFor="listener-name" className="col-form-label">
+                    Endpoint:
+                  </label>
+                  <input id="listener-name" type="text" className="form-control"
+                    name="endpoint"
+                    value={this.state.name}
                     onChange={this.formValue.bind(this)} />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="event-description" className="col-form-label">Description:</label>
-                  <textarea id="event-description" className="form-control"
+                  <label htmlFor="listener-description" className="col-form-label">Description:</label>
+                  <textarea id="listener-description" className="form-control"
                     name="description"
-                    value={this.state.event.description}
+                    value={this.state.description}
                     onChange={this.formValue.bind(this)}></textarea>
                 </div>
 

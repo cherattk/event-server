@@ -1,7 +1,7 @@
 import React from 'react';
 import ListEvent from './list-event';
-import UIEvent from '../service/ui-event';
 import EventMapManager from '../service/event-map-manager';
+import {UIEvent , DataEvent} from '../service/event';
 
 export default class ElementService extends React.Component {
 
@@ -13,14 +13,14 @@ export default class ElementService extends React.Component {
     }
 
     const self = this;
-    UIEvent.addListener('data-update-service', function (uiEvent) {      
+    DataEvent.addListener('update-list-service', function (uiEvent) {
       /**
        * @important check the id first, otherwise all elemnts of the list will be updated
        *  */
-      if(uiEvent.message.id === self.state.service.id){
-        self.setState(function(){
-          let data = EventMapManager.getData('service' , uiEvent.message.id);
-          return { service : data }
+      if (uiEvent.message.id === self.state.service.id) {
+        self.setState(function () {
+          let data = EventMapManager.getData('service', uiEvent.message.id);
+          return { service: data }
         });
       }
     });
@@ -32,8 +32,8 @@ export default class ElementService extends React.Component {
     })
   }
 
-  getServiceForm(){
-    UIEvent.dispatch('show-service-form' ,  { id : this.state.service.id});
+  getServiceForm() {
+    UIEvent.dispatch('show-service-form', { id: this.state.service.id });
   }
 
   render() {
@@ -43,31 +43,35 @@ export default class ElementService extends React.Component {
       <li key={service.id} id={service.id} className="el-service">
 
         <div className="el-content">
-          <label>id</label> : {service.id}
-          <br />
-          <label>name</label> : {service.name}
-          <br />
-          <label>host</label> : {service.host}
-          <br />
-          <label>description</label> : {service.description}
-          <br />
+          <p>
+            <label>id</label> : {service.id}
+          </p>
+          <p>
+            <label>name</label> : {service.name}
+          </p>
+          <p>
+            <label>host</label> : {service.host}
+          </p>
+          <p>
+            <label>description</label> : {service.description}
+          </p>
 
           <div className="el-control">
             <button className="btn btn-primary btn-sm" type="button"
-                    onClick={this.getServiceForm.bind(this)}>
+              onClick={this.getServiceForm.bind(this)}>
               Edit Service
             </button>
           </div>
         </div>
 
         <h5 className="toggle-content dropdown-toggle"
-            data-toggle="collapse" data-target={target_list_event}
-            role="button" aria-expanded="false" aria-controls="list-event">
+          data-toggle="collapse" data-target={target_list_event}
+          role="button" aria-expanded="false" aria-controls="list-event">
           {/* onClick={this.toggleEventList.bind(this)}> */}
           List of events
         </h5>
 
-        <ListEvent service_id={service.id}/>
+        <ListEvent service_id={service.id} />
       </li>
     );
   }

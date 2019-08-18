@@ -32,7 +32,7 @@ module.exports = function EventMap(entities) {
 
   this.setEntity = function (entityData) {
     var entity = Object.assign({}, entityData);
-    if(!entityData.id){
+    if(typeof entityData.id === 'undefined' || !entityData.id){
       entity.id = this.generateID(entityData.type);
     }
     var _map = _eventMap[entity.type];
@@ -40,6 +40,15 @@ module.exports = function EventMap(entities) {
     return entity;
   }
 
+  /**
+   * Remove one entry of type 'type' from the Map And 
+   * set it's 'reference_id' into the children entities to empty value
+   * 
+   * @param {string} type The type of the entity
+   * @param {string} id The id of the entity
+   * 
+   * @returns {boolean} the returned value is the value of Map.delete()
+   */
   this.removeById = function (type, id) {
     var _map = _eventMap[type];
     var result = _map.delete(id);

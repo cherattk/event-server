@@ -1,6 +1,7 @@
 import React from 'react';
 import ElementEvent from './element-event';
 import EventMapManager from '../service/event-map-manager';
+import {DataEvent} from '../service/event';
 
 export default class ListEvent extends React.Component {
 
@@ -12,8 +13,20 @@ export default class ListEvent extends React.Component {
   }
 
   componentDidMount() {
+    var self =this;
     this.setState(function () {
-      return { list_event: EventMapManager.getDataList('event') }
+      let criteria = {service_id : self.props.service_id};
+      return { list_event: EventMapManager.getDataList('event' , criteria) }
+    });
+
+    DataEvent.addListener('update-list-event' , function(dataEvent){
+      if(dataEvent.message.service_id === self.props.service_id){
+          self.setState(function () {
+            let criteria = { service_id : dataEvent.message.service_id};
+            return { 
+              list_event: EventMapManager.getDataList('event' , criteria) }
+          });
+      }
     });
   }
 

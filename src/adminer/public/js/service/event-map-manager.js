@@ -4,7 +4,7 @@
  * @license MIT Licence
  */
 
-import UIEvent from './ui-event';
+import {DataEvent} from './event';
 
 var _eventMap = null;
 
@@ -17,10 +17,39 @@ const EventMapMananger = {
   },
 
   ////////////////////////////////////////////////////////////
-  setData : function(entity){
+  addData : function(entity){
+    var eventName = 'update-list-' + entity.type;
     _eventMap.setEntity(entity);
-    let eventName = 'data-update-' + entity.type;
-    UIEvent.dispatch(eventName , {id : entity.id});
+
+    var message = {};
+    if(entity.type === 'event'){
+      message.service_id = entity.service_id;
+    }
+    else if(entity.type === 'listener'){
+      message.event_id = entity.event_id;
+    }
+    DataEvent.dispatch(eventName , message);
+  },
+
+  updateData : function(entity){
+    var eventName = 'update-element-' + entity.type;
+    _eventMap.setEntity(entity);
+    DataEvent.dispatch(eventName , {id : entity.id});
+  },
+
+  ///////////////////////////////////////////////////////////
+  deleteData : function (entity) {
+    const list = _eventMap.removeById(entity.type , entity.id);
+    let eventName = 'update-list-' + entity.type;
+    let message = {};
+    if(entity.type === 'event'){
+      message.service_id = entity.service_id;
+    }
+    else if(entity.type === 'listener'){
+      message.event_id = entity.event_id;
+    }
+    DataEvent.dispatch(eventName , message);
+    return list;
   },
 
   ////////////////////////////////////////////////////////////
@@ -32,7 +61,7 @@ const EventMapMananger = {
   getDataList: function (type , criteria) {
     const list = _eventMap.getList(type , criteria);
     return list;
-  }
+  },
 
 }
 

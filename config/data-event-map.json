@@ -2,73 +2,85 @@
   "service": [
     {
       "id": "s-1",
+      "type" : "service",
       "name": "service-1",
       "host": "www.service-1.com",
-      "description": "lorem ipsum"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas bibendum elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos"
     },
     {
       "id": "s-2",
+      "type" : "service",
       "name": "service-2",
       "host": "www.service-2.com",
-      "description": "lorem ipsum"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas bibendum elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos"
     },
     {
       "id": "s-3",
+      "type" : "service",
       "name": "service-3",
       "host": "www.service-3.com",
-      "description": "lorem ipsum"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas bibendum elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos"
     }
   ],
   "event": [
     {
-      "event_id": "e-1",
-      "service_id": "s-1",
+      "id": "e-1",
+      "type" : "event",
+      "service_id" : "s-1",
       "event_name": "user-login",
-      "description": "lorem ipsum"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas bibendum elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos"
     },
     {
-      "event_id": "e-2",
-      "service_id": "s-1",
+      "id": "e-2",
+      "type" : "event",
+      "service_id" : "s-1",
       "event_name": "user-logout",
-      "description": "lorem ipsum"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas bibendum elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos"
     },
     {
-      "event_id": "e-3",
-      "service_id": "s-2",
+      "id": "e-3",
+      "type" : "event",
+      "service_id" : "s-2",
       "event_name": "add-to-basket",
-      "description": "lorem ipsum"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas bibendum elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos"
     },
     {
-      "event_id": "e-4",
-      "service_id": "s-2",
+      "id": "e-4",
+      "type" : "event",
+      "service_id" : "s-2",
       "event_name": "remove-from-basket",
-      "description": "lorem ipsum"
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas bibendum elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeosLorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas egestas bibendum elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos"
     }
   ],
   "listener": [
     {
       "id": "l-1",
-      "event_id": "e-1",
+      "type" : "listener",
+      "event_id" : "e-1",
       "endpoint": "www.listener-1.com/path"
     },
     {
       "id": "l-2",
-      "event_id": "e-1",
+      "type" : "listener",
+      "event_id" : "e-1",
       "endpoint": "www.listener-2.com/path"
     },
     {
       "id": "l-3",
-      "event_id": "e-1",
+      "type" : "listener",
+      "event_id" : "e-1",
       "endpoint": "www.listener-3.com/path"
     },
     {
       "id": "l-4",
-      "event_id": "e-1",
+      "type" : "listener",
+      "event_id" : "e-2",
       "endpoint": "www.listener-4.com/path"
     },
     {
       "id": "l-5",
-      "event_id": "e-1",
+      "type" : "listener",
+      "event_id" : "e-1",
       "endpoint": "www.listener-5.com/path"
     }
   ]

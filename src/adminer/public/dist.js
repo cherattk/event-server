@@ -105663,9 +105663,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _uiEvent = _interopRequireDefault(require("./ui-event"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _event = require("./event");
 
 /**
  * @module EventMapMananger
@@ -105680,14 +105678,46 @@ var EventMapMananger = {
     }
   },
   ////////////////////////////////////////////////////////////
-  setData: function setData(entity) {
+  addData: function addData(entity) {
+    var eventName = 'update-list-' + entity.type;
+
     _eventMap.setEntity(entity);
 
-    var eventName = 'data-update-' + entity.type;
+    var message = {};
 
-    _uiEvent["default"].dispatch(eventName, {
+    if (entity.type === 'event') {
+      message.service_id = entity.service_id;
+    } else if (entity.type === 'listener') {
+      message.event_id = entity.event_id;
+    }
+
+    _event.DataEvent.dispatch(eventName, message);
+  },
+  updateData: function updateData(entity) {
+    var eventName = 'update-element-' + entity.type;
+
+    _eventMap.setEntity(entity);
+
+    _event.DataEvent.dispatch(eventName, {
       id: entity.id
     });
+  },
+  ///////////////////////////////////////////////////////////
+  deleteData: function deleteData(entity) {
+    var list = _eventMap.removeById(entity.type, entity.id);
+
+    var eventName = 'update-list-' + entity.type;
+    var message = {};
+
+    if (entity.type === 'event') {
+      message.service_id = entity.service_id;
+    } else if (entity.type === 'listener') {
+      message.event_id = entity.event_id;
+    }
+
+    _event.DataEvent.dispatch(eventName, message);
+
+    return list;
   },
   ////////////////////////////////////////////////////////////
   getData: function getData(type, id) {
@@ -105703,7 +105733,7 @@ var EventMapMananger = {
 var _default = EventMapMananger;
 exports["default"] = _default;
 
-},{"./ui-event":406}],405:[function(require,module,exports){
+},{"./event":406}],405:[function(require,module,exports){
 "use strict";
 
 /**
@@ -105741,7 +105771,7 @@ module.exports = function EventMap(entities) {
   this.setEntity = function (entityData) {
     var entity = Object.assign({}, entityData);
 
-    if (!entityData.id) {
+    if (typeof entityData.id === 'undefined' || !entityData.id) {
       entity.id = this.generateID(entityData.type);
     }
 
@@ -105751,6 +105781,16 @@ module.exports = function EventMap(entities) {
 
     return entity;
   };
+  /**
+   * Remove one entry of type 'type' from the Map And 
+   * set it's 'reference_id' into the children entities to empty value
+   * 
+   * @param {string} type The type of the entity
+   * @param {string} id The id of the entity
+   * 
+   * @returns {boolean} the returned value is the value of Map.delete()
+   */
+
 
   this.removeById = function (type, id) {
     var _map = _eventMap[type];
@@ -105818,21 +105858,28 @@ module.exports = function EventMap(entities) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.DataEvent = exports.UIEvent = void 0;
 
 var _eventset = _interopRequireDefault(require("eventset"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
+// ui
 var UIEvent = _eventset["default"].Topic('ui-event');
 
+exports.UIEvent = UIEvent;
 UIEvent.addEvent('show-event');
 UIEvent.addEvent('show-service-form');
 UIEvent.addEvent('show-event-form');
-UIEvent.addEvent('data-update-service');
-UIEvent.addEvent('data-update-event');
-var _default = UIEvent;
-exports["default"] = _default;
+UIEvent.addEvent('show-listener-form'); // DataEvent
+
+var DataEvent = _eventset["default"].Topic('data-event');
+
+exports.DataEvent = DataEvent;
+['service', 'event', 'listener'].forEach(function (type) {
+  DataEvent.addEvent('update-list-' + type);
+  DataEvent.addEvent('update-element-' + type);
+});
 
 },{"eventset":152}],407:[function(require,module,exports){
 "use strict";
@@ -105917,7 +105964,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerActivity;
 
-},{"./list-activity-error":415,"./list-activity-event":416,"react":285}],408:[function(require,module,exports){
+},{"./list-activity-error":416,"./list-activity-event":417,"react":285}],408:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106006,9 +106053,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _listListener = _interopRequireDefault(require("./list-listener"));
 
-var _uiEvent = _interopRequireDefault(require("../service/ui-event"));
-
 var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+
+var _event = require("../service/event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106048,7 +106095,7 @@ function (_React$Component) {
     var self = _assertThisInitialized(_this); ////////////////////////////////////////////////////////
 
 
-    _uiEvent["default"].addListener('data-update-event', function () {
+    _event.DataEvent.addListener('update-element-event', function () {
       self.setState(function () {
         var event_id = self.state.event.id;
         return {
@@ -106061,9 +106108,20 @@ function (_React$Component) {
   }
 
   _createClass(ElementEvent, [{
-    key: "getEventForm",
-    value: function getEventForm() {
-      _uiEvent["default"].dispatch('show-event-form', this.state.event);
+    key: "getForm",
+    value: function getForm() {
+      _event.UIEvent.dispatch('show-event-form', {
+        id: this.state.event.id
+      });
+    }
+  }, {
+    key: "deleteEvent",
+    value: function deleteEvent() {
+      var event_id = this.state.event.id; // todo : use some modal component
+
+      alert('you are going to delete the event : ' + event_id);
+
+      _eventMapManager["default"].deleteData(this.state.event);
     }
   }, {
     key: "render",
@@ -106074,13 +106132,19 @@ function (_React$Component) {
         className: "el-event"
       }, _react["default"].createElement("div", null, _react["default"].createElement("h4", null, " Event "), _react["default"].createElement("div", {
         className: "el-content"
-      }, _react["default"].createElement("label", null, "id"), " : ", event.id, _react["default"].createElement("br", null), _react["default"].createElement("label", null, "name"), " : ", event.name, _react["default"].createElement("br", null), _react["default"].createElement("label", null, "description"), " : ", event.description, _react["default"].createElement("br", null), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "id :"), event.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "name :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
         className: "el-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-secondary btn-sm",
         type: "button",
-        onClick: this.getEventForm.bind(this)
-      }, "Edit Event")))), _react["default"].createElement("div", null, _react["default"].createElement("h4", null, "Listeners"), _react["default"].createElement("div", {
+        onClick: this.getForm.bind(this)
+      }, "Edit Event")), _react["default"].createElement("div", {
+        className: "el-control"
+      }, _react["default"].createElement("button", {
+        className: "btn btn-secondary btn-sm",
+        type: "button",
+        onClick: this.deleteEvent.bind(this)
+      }, "Delete Event")))), _react["default"].createElement("div", null, _react["default"].createElement("h4", null, "Listeners"), _react["default"].createElement("div", {
         className: "el-content"
       }, _react["default"].createElement(_listListener["default"], null))));
     }
@@ -106091,7 +106155,7 @@ function (_React$Component) {
 
 exports["default"] = ElementEvent;
 
-},{"../service/event-map-manager":404,"../service/ui-event":406,"./list-listener":418,"react":285}],411:[function(require,module,exports){
+},{"../service/event":406,"../service/event-map-manager":404,"./list-listener":419,"react":285}],411:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106165,9 +106229,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _listEvent = _interopRequireDefault(require("./list-event"));
 
-var _uiEvent = _interopRequireDefault(require("../service/ui-event"));
-
 var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+
+var _event = require("../service/event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106207,7 +106271,7 @@ function (_React$Component) {
 
     var self = _assertThisInitialized(_this);
 
-    _uiEvent["default"].addListener('data-update-service', function (uiEvent) {
+    _event.DataEvent.addListener('update-list-service', function (uiEvent) {
       /**
        * @important check the id first, otherwise all elemnts of the list will be updated
        *  */
@@ -106237,7 +106301,7 @@ function (_React$Component) {
   }, {
     key: "getServiceForm",
     value: function getServiceForm() {
-      _uiEvent["default"].dispatch('show-service-form', {
+      _event.UIEvent.dispatch('show-service-form', {
         id: this.state.service.id
       });
     }
@@ -106252,7 +106316,7 @@ function (_React$Component) {
         className: "el-service"
       }, _react["default"].createElement("div", {
         className: "el-content"
-      }, _react["default"].createElement("label", null, "id"), " : ", service.id, _react["default"].createElement("br", null), _react["default"].createElement("label", null, "name"), " : ", service.name, _react["default"].createElement("br", null), _react["default"].createElement("label", null, "host"), " : ", service.host, _react["default"].createElement("br", null), _react["default"].createElement("label", null, "description"), " : ", service.description, _react["default"].createElement("br", null), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "id"), " : ", service.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "name"), " : ", service.name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host"), " : ", service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description"), " : ", service.description), _react["default"].createElement("div", {
         className: "el-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -106276,7 +106340,7 @@ function (_React$Component) {
 
 exports["default"] = ElementService;
 
-},{"../service/event-map-manager":404,"../service/ui-event":406,"./list-event":417,"react":285}],413:[function(require,module,exports){
+},{"../service/event":406,"../service/event-map-manager":404,"./list-event":418,"react":285}],413:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106286,9 +106350,9 @@ exports["default"] = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-var _uiEvent = _interopRequireDefault(require("../service/ui-event"));
-
 var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+
+var _event = require("../service/event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106321,18 +106385,25 @@ function (_React$Component) {
     _classCallCheck(this, FormEvent);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(FormEvent).call(this, props));
-    var initialState = {
-      name: '',
-      description: ''
+    _this.initialState = {
+      event: {
+        id: '',
+        type: 'event',
+        event_name: '',
+        service_id: '',
+        description: ''
+      }
     };
-    _this.state = initialState;
+    _this.state = _this.initialState;
 
     var self = _assertThisInitialized(_this); //===============================================
 
 
-    _uiEvent["default"].addListener('show-event-form', function (eventSet) {
+    _event.UIEvent.addListener('show-event-form', function (uiEvent) {
       self.setState(function () {
-        return eventSet.eventMessage;
+        return {
+          event: _eventMapManager["default"].getData('event', uiEvent.message.id)
+        };
       }, function () {
         $(self.modal).modal('show');
       });
@@ -106346,7 +106417,7 @@ function (_React$Component) {
     value: function close() {
       var self = this;
       this.setState(function () {
-        return {};
+        return self.initialState;
       }, function () {
         $(self.modal).modal('hide');
       });
@@ -106354,17 +106425,22 @@ function (_React$Component) {
   }, {
     key: "submitForm",
     value: function submitForm() {
-      var data = Object.assign({}, this.state);
-      data.type = 'event';
+      var event = Object.assign({}, this.state.event);
 
-      _eventMapManager["default"].setData(data);
+      if (event.id) {
+        // element already exists
+        _eventMapManager["default"].updateData(event);
+      } else {
+        // add a new one
+        _eventMapManager["default"].addData(event);
+      }
 
       this.close();
     }
   }, {
     key: "formValue",
     value: function formValue(event) {
-      this.state[event.target.name] = event.target.value;
+      this.state.event[event.target.name] = event.target.value;
       this.setState(this.state);
     }
   }, {
@@ -106410,8 +106486,8 @@ function (_React$Component) {
         id: "event-name",
         type: "text",
         className: "form-control",
-        name: "name",
-        value: this.state.name,
+        name: "event_name",
+        value: this.state.event.event_name,
         onChange: this.formValue.bind(this)
       })), _react["default"].createElement("div", {
         className: "form-group"
@@ -106422,7 +106498,7 @@ function (_React$Component) {
         id: "event-description",
         className: "form-control",
         name: "description",
-        value: this.state.description,
+        value: this.state.event.description,
         onChange: this.formValue.bind(this)
       })))), _react["default"].createElement("div", {
         className: "modal-footer"
@@ -106443,7 +106519,7 @@ function (_React$Component) {
 
 exports["default"] = FormEvent;
 
-},{"../service/event-map-manager":404,"../service/ui-event":406,"react":285}],414:[function(require,module,exports){
+},{"../service/event":406,"../service/event-map-manager":404,"react":285}],414:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106453,9 +106529,179 @@ exports["default"] = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-var _uiEvent = _interopRequireDefault(require("../service/ui-event"));
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+
+var _event = require("../service/event");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var FormListener =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(FormListener, _React$Component);
+
+  function FormListener(props) {
+    var _this;
+
+    _classCallCheck(this, FormListener);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(FormListener).call(this, props));
+    _this._emptyState = {
+      id: '',
+      endpoint: '',
+      description: ''
+    };
+    _this.state = _this._emptyState;
+
+    var self = _assertThisInitialized(_this); //===============================================
+
+
+    _event.UIEvent.addListener('show-listener-form', function (uiEvent) {
+      self.setState(function () {
+        if (typeof uiEvent.message !== 'undefined' && typeof uiEvent.message.id !== 'undefined') {
+          return _eventMapManager["default"].getData('listener', uiEvent.message.id);
+        } else return self._emptyState;
+      }, function () {
+        $(self.modal).modal('show');
+      });
+    });
+
+    return _this;
+  }
+
+  _createClass(FormListener, [{
+    key: "close",
+    value: function close() {
+      var self = this;
+      this.setState(function () {
+        self._emptyState;
+      }, function () {
+        $(self.modal).modal('hide');
+      });
+    }
+  }, {
+    key: "submitForm",
+    value: function submitForm() {
+      var data = Object.assign({}, this.state);
+      data.type = 'listener';
+
+      _eventMapManager["default"].setData(data);
+
+      this.close();
+    }
+  }, {
+    key: "formValue",
+    value: function formValue(event) {
+      this.state[event.target.name] = event.target.value;
+      this.setState(this.state);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      return _react["default"].createElement("div", {
+        className: "modal fade app-modal-form",
+        id: "formListener",
+        tabIndex: "-1",
+        role: "dialog",
+        "aria-labelledby": "formListenerLabel",
+        "aria-hidden": "true",
+        ref: function ref(node) {
+          return _this2.modal = node;
+        }
+      }, _react["default"].createElement("div", {
+        className: "modal-dialog modal-lg",
+        role: "document"
+      }, _react["default"].createElement("div", {
+        className: "modal-content"
+      }, _react["default"].createElement("div", {
+        className: "modal-header"
+      }, _react["default"].createElement("h5", {
+        className: "modal-title",
+        id: "formListenerLabel"
+      }, "Listener Information"), _react["default"].createElement("button", {
+        type: "button",
+        className: "close",
+        onClick: this.close.bind(this),
+        "aria-label": "Close"
+      }, _react["default"].createElement("span", {
+        "aria-hidden": "true"
+      }, "\xD7"))), _react["default"].createElement("div", {
+        className: "modal-body"
+      }, _react["default"].createElement("form", null, _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "listener-name",
+        className: "col-form-label"
+      }, "Endpoint:"), _react["default"].createElement("input", {
+        id: "listener-name",
+        type: "text",
+        className: "form-control",
+        name: "endpoint",
+        value: this.state.name,
+        onChange: this.formValue.bind(this)
+      })), _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "listener-description",
+        className: "col-form-label"
+      }, "Description:"), _react["default"].createElement("textarea", {
+        id: "listener-description",
+        className: "form-control",
+        name: "description",
+        value: this.state.description,
+        onChange: this.formValue.bind(this)
+      })))), _react["default"].createElement("div", {
+        className: "modal-footer"
+      }, _react["default"].createElement("button", {
+        type: "submit",
+        className: "btn btn-primary",
+        onClick: this.submitForm.bind(this)
+      }, "Save changes"), _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-secondary",
+        onClick: this.close.bind(this)
+      }, "Close")))));
+    }
+  }]);
+
+  return FormListener;
+}(_react["default"].Component);
+
+exports["default"] = FormListener;
+
+},{"../service/event":406,"../service/event-map-manager":404,"react":285}],415:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _react = _interopRequireDefault(require("react"));
 
 var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+
+var _event = require("../service/event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106489,6 +106735,7 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(FormService).call(this, props));
     var initialState = {
+      id: '',
       name: '',
       host: '',
       description: ''
@@ -106498,7 +106745,7 @@ function (_React$Component) {
     var self = _assertThisInitialized(_this); //===============================================
 
 
-    _uiEvent["default"].addListener('show-service-form', function (uiEvent) {
+    _event.UIEvent.addListener('show-service-form', function (uiEvent) {
       self.setState(function () {
         return _eventMapManager["default"].getData('service', uiEvent.message.id);
       }, function () {
@@ -106625,7 +106872,7 @@ function (_React$Component) {
 
 exports["default"] = FormService;
 
-},{"../service/event-map-manager":404,"../service/ui-event":406,"react":285}],415:[function(require,module,exports){
+},{"../service/event":406,"../service/event-map-manager":404,"react":285}],416:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106751,7 +106998,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivityError;
 
-},{"./element-activity-error":408,"react":285,"request-promise-native":303}],416:[function(require,module,exports){
+},{"./element-activity-error":408,"react":285,"request-promise-native":303}],417:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106875,7 +107122,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivity;
 
-},{"./element-activity-event":409,"react":285,"request-promise-native":303}],417:[function(require,module,exports){
+},{"./element-activity-event":409,"react":285,"request-promise-native":303}],418:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106888,6 +107135,8 @@ var _react = _interopRequireDefault(require("react"));
 var _elementEvent = _interopRequireDefault(require("./element-event"));
 
 var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+
+var _event = require("../service/event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -106929,10 +107178,27 @@ function (_React$Component) {
   _createClass(ListEvent, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var self = this;
       this.setState(function () {
-        return {
-          list_event: _eventMapManager["default"].getDataList('event')
+        var criteria = {
+          service_id: self.props.service_id
         };
+        return {
+          list_event: _eventMapManager["default"].getDataList('event', criteria)
+        };
+      });
+
+      _event.DataEvent.addListener('update-list-event', function (dataEvent) {
+        if (dataEvent.message.service_id === self.props.service_id) {
+          self.setState(function () {
+            var criteria = {
+              service_id: dataEvent.message.service_id
+            };
+            return {
+              list_event: _eventMapManager["default"].getDataList('event', criteria)
+            };
+          });
+        }
       });
     }
   }, {
@@ -106966,7 +107232,7 @@ function (_React$Component) {
 
 exports["default"] = ListEvent;
 
-},{"../service/event-map-manager":404,"./element-event":410,"react":285}],418:[function(require,module,exports){
+},{"../service/event":406,"../service/event-map-manager":404,"./element-event":410,"react":285}],419:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106979,6 +107245,8 @@ var _react = _interopRequireDefault(require("react"));
 var _elementListener = _interopRequireDefault(require("./element-listener"));
 
 var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+
+var _event = require("../service/event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -107039,11 +107307,20 @@ function (_React$Component) {
       return list;
     }
   }, {
+    key: "getForm",
+    value: function getForm() {
+      _event.UIEvent.dispatch('show-listener-form');
+    }
+  }, {
     key: "render",
     value: function render() {
-      return _react["default"].createElement("ul", {
+      return _react["default"].createElement(_react["default"].Fragment, null, _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-primary btn-sm btn-block add-listener",
+        onClick: this.getForm.bind(this)
+      }, "Add Listener"), _react["default"].createElement("ul", {
         className: "list-listener"
-      }, this.renderList());
+      }, this.renderList()));
     }
   }]);
 
@@ -107052,7 +107329,7 @@ function (_React$Component) {
 
 exports["default"] = ListListener;
 
-},{"../service/event-map-manager":404,"./element-listener":411,"react":285}],419:[function(require,module,exports){
+},{"../service/event":406,"../service/event-map-manager":404,"./element-listener":411,"react":285}],420:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107139,7 +107416,7 @@ function (_React$Component) {
 
 exports["default"] = ListService;
 
-},{"../service/event-map-manager":404,"./element-service":412,"react":285}],420:[function(require,module,exports){
+},{"../service/event-map-manager":404,"./element-service":412,"react":285}],421:[function(require,module,exports){
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -107148,17 +107425,19 @@ var _reactDom = _interopRequireDefault(require("react-dom"));
 
 var _request = _interopRequireDefault(require("request"));
 
+var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+
+var _eventMap2 = _interopRequireDefault(require("../service/event-map"));
+
 var _listService = _interopRequireDefault(require("./list-service.js"));
 
 var _formService = _interopRequireDefault(require("./form-service"));
 
 var _formEvent = _interopRequireDefault(require("./form-event"));
 
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
-
-var _eventMap2 = _interopRequireDefault(require("../service/event-map"));
-
 var _containerActivity = _interopRequireDefault(require("./container-activity"));
+
+var _formListener = _interopRequireDefault(require("./form-listener.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -107199,7 +107478,7 @@ function EventAdmin() {
     id: "nav-setting",
     role: "tabpanel",
     "aria-labelledby": "nav-setting-tab"
-  }, _react["default"].createElement("h1", null, "Service Setting"), _react["default"].createElement(_listService["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null));
+  }, _react["default"].createElement("h1", null, "Service Setting"), _react["default"].createElement(_listService["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
 }
 
 var dataUrl = 'http://www.localhost:4000/event-map';
@@ -107214,4 +107493,4 @@ _request["default"].get(dataUrl, function (error, response, body) {
   }
 });
 
-},{"../service/event-map":405,"../service/event-map-manager":404,"./container-activity":407,"./form-event":413,"./form-service":414,"./list-service.js":419,"react":285,"react-dom":282,"request":304}]},{},[420]);
+},{"../service/event-map":405,"../service/event-map-manager":404,"./container-activity":407,"./form-event":413,"./form-listener.js":414,"./form-service":415,"./list-service.js":420,"react":285,"react-dom":282,"request":304}]},{},[421]);

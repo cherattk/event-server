@@ -2,12 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import httpRequest from 'request';
 
+import EventMapManager from '../service/event-map-manager';
+import EventMap from '../service/event-map';
 import ListService from './list-service.js';
 import FormService from './form-service';
 import FormEvent from './form-event';
-import EventMapManager from '../service/event-map-manager';
-import EventMap from '../service/event-map';
 import ContainerActivity from './container-activity';
+import FormListener from './form-listener.js';
 
 function EventAdmin() {
   return (
@@ -25,22 +26,23 @@ function EventAdmin() {
       </nav>
 
       <div className="tab-content container">
-        
+
         <div className="tab-pane fade show active" id="nav-activity"
           role="tabpanel" aria-labelledby="nav-activity-tab">
           {/* <h1>Activities List</h1> */}
-          <ContainerActivity/>
+          <ContainerActivity />
         </div>
 
         <div className="tab-pane fade" id="nav-setting"
           role="tabpanel" aria-labelledby="nav-setting-tab">
           <h1>Service Setting</h1>
-          <ListService />        
+          <ListService />
         </div>
       </div>
 
       <FormService />
       <FormEvent />
+      <FormListener />
     </div >
   );
 }

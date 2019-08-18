@@ -1,7 +1,7 @@
 import React from 'react';
 import ListListener from './list-listener';
-import UIEvent from '../service/ui-event';
 import DataManager from '../service/event-map-manager';
+import {UIEvent , DataEvent} from '../service/event';
 
 export default class ElementEvent extends React.Component {
 
@@ -12,17 +12,25 @@ export default class ElementEvent extends React.Component {
     }
 
     const self = this;
+
     ////////////////////////////////////////////////////////
-    UIEvent.addListener('data-update-event', function () {
-      self.setState(function(){
+    DataEvent.addListener('update-element-event', function () {
+      self.setState(function () {
         let event_id = self.state.event.id;
-        return { event : DataManager.getData('event' , event_id) }
+        return { event: DataManager.getData('event', event_id) }
       });
     });
   }
 
-  getEventForm(){
-    UIEvent.dispatch('show-event-form' ,  this.state.event);
+  getForm() {
+    UIEvent.dispatch('show-event-form', { id : this.state.event.id});
+  }
+
+  deleteEvent(){
+    let event_id = this.state.event.id;
+    // todo : use some modal component
+    alert('you are going to delete the event : ' + event_id);
+    DataManager.deleteData(this.state.event);
   }
 
   render() {
@@ -32,17 +40,25 @@ export default class ElementEvent extends React.Component {
         <div>
           <h4> Event </h4>
           <div className="el-content">
-            <label>id</label> : {event.id}
-            <br />
-            <label>name</label> : {event.name}
-            <br />
-            <label>description</label> : {event.description}
-            <br />
-
+            <p>
+              <label>id :</label>{event.id}
+            </p>
+            <p>
+              <label>name :</label>{event.event_name}
+            </p>
+            <p>
+              <label>description :</label>{event.description}
+            </p>
             <div className="el-control">
               <button className="btn btn-secondary btn-sm" type="button"
-                     onClick={this.getEventForm.bind(this)}>
+                onClick={this.getForm.bind(this)}>
                 Edit Event
+              </button>
+            </div>
+            <div className="el-control">
+              <button className="btn btn-secondary btn-sm" type="button"
+                onClick={this.deleteEvent.bind(this)}>
+                Delete Event
               </button>
             </div>
           </div>

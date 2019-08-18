@@ -18,7 +18,7 @@
   border-bottom: 1px solid #dee2e6;
 }
 
-.app-module-nav>.nav-tabs {
+.app-module-nav > .nav-tabs {
   margin-bottom: -1px;
 }
 
@@ -83,15 +83,19 @@
   width: 100%;
   overflow: hidden;
   padding: 10px;
-  border: 1px solid #cde1f9;
+  border: 1px solid #ddd;
   border-top: 0;
 }
 
+.el-content p{
+  margin:0 0 10px 0;
+}
 .el-content label {
   font-weight: bold;
+  margin: 0 10px 0 0;
 }
 
-.el-event>div {
+.el-event > div {
   vertical-align: top;
   display: table-cell;
 }
@@ -115,14 +119,31 @@
 .el-event>div:nth-of-type(2) {
   width: 55%;
 }
+.add-listener{
+  position:relative;
+  margin-bottom:10px;
+}
+.add-listener:before{
+  content:"+";
+  font-size:30px;
+  position:absolute;
+  top:-10px;
+  left:10px;
+}
 
 .list-listener li {
   padding: 10px;
-  background-color: #fff;
   margin-bottom: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid #fff;
+  background-color:#f0f1f3;
 }
-
+.list-listener li.add-listener:before{
+  content:"+";
+  font-size:30px;
+  position:absolute;
+  top:-3px;
+  left:10px;
+}
 .app-modal-form textarea {
   min-height: 200px;
 }

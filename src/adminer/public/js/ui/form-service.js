@@ -1,13 +1,13 @@
 import React from 'react';
-import UIEvent from '../service/ui-event';
 import EventMapManager from '../service/event-map-manager';
+import {UIEvent} from '../service/event';
 
 export default class FormService extends React.Component {
 
   constructor(props) {
     super(props);
 
-    var initialState = { name: '', host: '', description: '' };
+    var initialState = { id : '' , name: '', host: '', description: '' };
     this.state = initialState;
 
     var self = this;
