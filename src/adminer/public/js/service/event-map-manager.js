@@ -8,7 +8,7 @@ import {DataEvent} from './event';
 
 var _eventMap = null;
 
-const EventMapMananger = {
+const EventMapManager = {
 
   setEventMap: function (EventMap) {
     if (!_eventMap) {
@@ -32,9 +32,10 @@ const EventMapMananger = {
   },
 
   updateData : function(entity){
-    var eventName = 'update-element-' + entity.type;
-    _eventMap.setEntity(entity);
-    DataEvent.dispatch(eventName , {id : entity.id});
+    var _entity = Object.assign({} , entity);
+    var eventName = 'update-element-' + _entity.type;
+    _eventMap.setEntity(_entity);
+    DataEvent.dispatch(eventName , {id : _entity.id});
   },
 
   ///////////////////////////////////////////////////////////
@@ -65,4 +66,4 @@ const EventMapMananger = {
 
 }
 
-export default EventMapMananger;
+export default EventMapManager;

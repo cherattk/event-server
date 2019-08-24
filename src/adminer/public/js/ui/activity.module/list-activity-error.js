@@ -45,7 +45,7 @@ export default class ListActivityError extends React.Component {
   renderList() {
     let list = [];
     this.state.list_activity.forEach(function (activity, idx) {
-      let key = 'activity-error-' + idx;
+      let key = (new Date()).getTime() + '-' + idx + '-activity-error';
       list.push(
         <li key={key}>
 

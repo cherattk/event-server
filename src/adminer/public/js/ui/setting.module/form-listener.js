@@ -1,24 +1,40 @@
 import React from 'react';
-import EventMapManager from '../service/event-map-manager';
-import {UIEvent} from '../service/event';
+import EventMapManager from '../../service/event-map-manager';
+import { UIEvent } from '../../service/event';
 
 export default class FormListener extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this._emptyState = { id : '' , endpoint: '', description: '' };
-    this.state = this._emptyState;
+    this.initialState = {
+      id: '', 
+      type: 'listener', 
+      event_id: '', 
+      endpoint: '', 
+      description: ''
+    };
+    this.state = { listener : this.initialState};
+  }
 
+  componentDidMount(){
     var self = this;
     //===============================================
     UIEvent.addListener('show-listener-form', function (uiEvent) {
+
+      var data = Object.assign({} , self.initialState);
+
+      if(typeof uiEvent.message.listener_id !== 'undefined'){
+        // get listener data to edit
+        data = EventMapManager.getData('listener', uiEvent.message.listener_id);
+      }
+      else if(uiEvent.message.event_id){
+        // show form to add a new 
+        // listener to event identified by [event_id]
+        data.event_id = uiEvent.message.event_id;
+      }
       self.setState(function () {
-        if (typeof uiEvent.message !== 'undefined' &&
-            typeof uiEvent.message.id !== 'undefined') {
-          return EventMapManager.getData('listener', uiEvent.message.id);
-        }
-        else return self._emptyState;
+        return {listener : data}
 
       }, function () {
         $(self.modal).modal('show');
@@ -29,21 +45,30 @@ export default class FormListener extends React.Component {
   close() {
     let self = this;
     this.setState(function () {
-      self._emptyState;
+      return {listener : self.initialState};
     }, function () {
       $(self.modal).modal('hide');
     });
   }
 
-  submitForm() {
-    let data = Object.assign({}, this.state);
-    data.type = 'listener';
-    EventMapManager.setData(data);
+  submitForm(e) {
+    e.preventDefault();
+  }
+
+  saveForm(){    
+    var listener = this.state.listener;
+    if (listener.id) {
+      // element already exists
+      EventMapManager.updateData(listener);
+    } else {
+      // add a new one
+      EventMapManager.addData(listener);
+    }
     this.close();
   }
 
   formValue(event) {
-    this.state[event.target.name] = event.target.value;
+    this.state.listener[event.target.name] = event.target.value;
     this.setState(this.state);
   }
 
@@ -66,9 +91,9 @@ export default class FormListener extends React.Component {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div className="modal-body">
 
-              <form>
+            <form onSubmit={this.submitForm.bind(this)}>
+            <div className="modal-body">
 
                 <div className="form-group">
                   <label htmlFor="listener-name" className="col-form-label">
@@ -76,27 +101,18 @@ export default class FormListener extends React.Component {
                   </label>
                   <input id="listener-name" type="text" className="form-control"
                     name="endpoint"
-                    value={this.state.name}
+                    value={this.state.listener.endpoint}
                     onChange={this.formValue.bind(this)} />
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="listener-description" className="col-form-label">Description:</label>
-                  <textarea id="listener-description" className="form-control"
-                    name="description"
-                    value={this.state.description}
-                    onChange={this.formValue.bind(this)}></textarea>
-                </div>
-
-              </form>
-
             </div>
             <div className="modal-footer">
-              <button type="submit" className="btn btn-primary"
-                onClick={this.submitForm.bind(this)}>Save changes</button>
+              <button type="button" className="btn btn-primary"
+                    onClick={this.saveForm.bind(this)}>Save changes</button>
               <button type="button" className="btn btn-secondary"
                 onClick={this.close.bind(this)}>Close</button>
             </div>
+            </form>
+
           </div>
         </div>
       </div>

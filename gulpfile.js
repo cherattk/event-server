@@ -4,7 +4,7 @@ const browserify = require("browserify");
 const fs = require('fs');
 
 function build_js(){
- return browserify("./src/adminer/public/js/ui/main.js")
+ return browserify("./src/adminer/public/js/main.js")
  .transform("babelify", { 
    presets: ["@babel/preset-env", "@babel/preset-react"],
    plugins : ["babel-plugin-transform-class-properties"]

@@ -77,28 +77,30 @@ module.exports = function EventMap(entities) {
 
   /**
    * 
-   * @returns Map<id , entity>
+   * @returns Array<entity>
    */
   this.getList = function (type, criteria) {
 
     var _map = _eventMap[type];
     const field = !!criteria && Object.keys(criteria);
 
+    var result = [];
     if (field.length > 0) {
-      var result = new Map();
       _map.forEach(element => {
         let ok = true;
         field.forEach(function(_field){
           ok = ok && (element[_field] === criteria[_field]);
         });
         if (ok) {
-          result.set(element.id, element);
+          result.push(element);
         }
       });
-      return result;
     }
-    // return all values
-    return _map;
+    else{
+      // return all entries
+      result = Array.from(_map.values());
+    }
+    return result;
   }
 }
 

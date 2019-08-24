@@ -105658,6 +105658,85 @@ function extend() {
 },{}],404:[function(require,module,exports){
 "use strict";
 
+var _react = _interopRequireDefault(require("react"));
+
+var _reactDom = _interopRequireDefault(require("react-dom"));
+
+var _request = _interopRequireDefault(require("request"));
+
+var _eventMapManager = _interopRequireDefault(require("./service/event-map-manager"));
+
+var _eventMap2 = _interopRequireDefault(require("./service/event-map"));
+
+var _listService = _interopRequireDefault(require("./ui/setting.module/list-service"));
+
+var _formService = _interopRequireDefault(require("./ui/setting.module/form-service"));
+
+var _formEvent = _interopRequireDefault(require("./ui/setting.module/form-event"));
+
+var _formListener = _interopRequireDefault(require("./ui/setting.module/form-listener.js"));
+
+var _containerActivity = _interopRequireDefault(require("./ui/activity.module/container-activity"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+// Setting module
+// Activity
+function EventAdmin() {
+  return _react["default"].createElement("div", {
+    className: "app-content"
+  }, _react["default"].createElement("nav", {
+    className: "app-module-nav"
+  }, _react["default"].createElement("div", {
+    className: "nav nav-tabs container",
+    id: "nav-tab",
+    role: "tablist"
+  }, _react["default"].createElement("a", {
+    className: "nav-item nav-link active",
+    id: "nav-activity-tab",
+    "data-toggle": "tab",
+    href: "#nav-activity",
+    role: "tab",
+    "aria-controls": "nav-activity",
+    "aria-selected": "true"
+  }, "Activities"), _react["default"].createElement("a", {
+    className: "nav-item nav-link",
+    id: "nav-setting-tab",
+    "data-toggle": "tab",
+    href: "#nav-setting",
+    role: "tab",
+    "aria-controls": "nav-setting",
+    "aria-selected": "false"
+  }, "setting"))), _react["default"].createElement("div", {
+    className: "tab-content container"
+  }, _react["default"].createElement("div", {
+    className: "tab-pane fade show active",
+    id: "nav-activity",
+    role: "tabpanel",
+    "aria-labelledby": "nav-activity-tab"
+  }, _react["default"].createElement(_containerActivity["default"], null)), _react["default"].createElement("div", {
+    className: "tab-pane fade",
+    id: "nav-setting",
+    role: "tabpanel",
+    "aria-labelledby": "nav-setting-tab"
+  }, _react["default"].createElement("h1", null, "Service Setting"), _react["default"].createElement(_listService["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
+}
+
+var dataUrl = 'http://localhost:4000/event-map';
+
+_request["default"].get(dataUrl, function (error, response, body) {
+  if (response.statusCode === 200) {
+    var _eventMap = new _eventMap2["default"](JSON.parse(body));
+
+    _eventMapManager["default"].setEventMap(_eventMap);
+
+    _reactDom["default"].render(_react["default"].createElement(EventAdmin, null), document.getElementById('app'));
+  }
+});
+
+},{"./service/event-map":406,"./service/event-map-manager":405,"./ui/activity.module/container-activity":408,"./ui/setting.module/form-event":416,"./ui/setting.module/form-listener.js":417,"./ui/setting.module/form-service":418,"./ui/setting.module/list-service":421,"react":285,"react-dom":282,"request":304}],405:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -105671,7 +105750,7 @@ var _event = require("./event");
  * @license MIT Licence
  */
 var _eventMap = null;
-var EventMapMananger = {
+var EventMapManager = {
   setEventMap: function setEventMap(EventMap) {
     if (!_eventMap) {
       _eventMap = EventMap;
@@ -105694,12 +105773,14 @@ var EventMapMananger = {
     _event.DataEvent.dispatch(eventName, message);
   },
   updateData: function updateData(entity) {
-    var eventName = 'update-element-' + entity.type;
+    var _entity = Object.assign({}, entity);
 
-    _eventMap.setEntity(entity);
+    var eventName = 'update-element-' + _entity.type;
+
+    _eventMap.setEntity(_entity);
 
     _event.DataEvent.dispatch(eventName, {
-      id: entity.id
+      id: _entity.id
     });
   },
   ///////////////////////////////////////////////////////////
@@ -105730,10 +105811,10 @@ var EventMapMananger = {
     return list;
   }
 };
-var _default = EventMapMananger;
+var _default = EventMapManager;
 exports["default"] = _default;
 
-},{"./event":406}],405:[function(require,module,exports){
+},{"./event":407}],406:[function(require,module,exports){
 "use strict";
 
 /**
@@ -105822,17 +105903,16 @@ module.exports = function EventMap(entities) {
   };
   /**
    * 
-   * @returns Map<id , entity>
+   * @returns Array<entity>
    */
 
 
   this.getList = function (type, criteria) {
     var _map = _eventMap[type];
     var field = !!criteria && Object.keys(criteria);
+    var result = [];
 
     if (field.length > 0) {
-      var result = new Map();
-
       _map.forEach(function (element) {
         var ok = true;
         field.forEach(function (_field) {
@@ -105840,19 +105920,19 @@ module.exports = function EventMap(entities) {
         });
 
         if (ok) {
-          result.set(element.id, element);
+          result.push(element);
         }
       });
+    } else {
+      // return all entries
+      result = Array.from(_map.values());
+    }
 
-      return result;
-    } // return all values
-
-
-    return _map;
+    return result;
   };
 };
 
-},{}],406:[function(require,module,exports){
+},{}],407:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105865,10 +105945,10 @@ var _eventset = _interopRequireDefault(require("eventset"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 // ui
-var UIEvent = _eventset["default"].Topic('ui-event');
+var UIEvent = _eventset["default"].Topic('ui-event'); // UIEvent.addEvent('show-event');
+
 
 exports.UIEvent = UIEvent;
-UIEvent.addEvent('show-event');
 UIEvent.addEvent('show-service-form');
 UIEvent.addEvent('show-event-form');
 UIEvent.addEvent('show-listener-form'); // DataEvent
@@ -105881,7 +105961,7 @@ exports.DataEvent = DataEvent;
   DataEvent.addEvent('update-element-' + type);
 });
 
-},{"eventset":152}],407:[function(require,module,exports){
+},{"eventset":152}],408:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105964,7 +106044,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerActivity;
 
-},{"./list-activity-error":416,"./list-activity-event":417,"react":285}],408:[function(require,module,exports){
+},{"./list-activity-error":411,"./list-activity-event":412,"react":285}],409:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105981,7 +106061,7 @@ function ElementActivityError(props) {
   return _react["default"].createElement("div", null, _react["default"].createElement("label", null, "Error type : "), activity.error_type, " ", _react["default"].createElement("br", null), _react["default"].createElement("pre", null, JSON.stringify(props.activity.content)));
 }
 
-},{"react":285}],409:[function(require,module,exports){
+},{"react":285}],410:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106032,7 +106112,7 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       var activity = this.state.activity;
-      return _react["default"].createElement("div", null, _react["default"].createElement("label", null, "event id : "), " ", activity.event_id, " ", _react["default"].createElement("br", null), _react["default"].createElement("label", null, "name : "), activity.name, " ", _react["default"].createElement("br", null), _react["default"].createElement("label", null, "service id : "), " ", activity.service_id, " ", _react["default"].createElement("br", null), _react["default"].createElement("label", null, "description : "), _react["default"].createElement("p", null, activity.description, " "), _react["default"].createElement("label", null, "payload : "), _react["default"].createElement("pre", null, JSON.stringify(activity.message)));
+      return _react["default"].createElement(_react["default"].Fragment, null, _react["default"].createElement("label", null, "message : "), _react["default"].createElement("pre", null, JSON.stringify(activity.message)));
     }
   }]);
 
@@ -106041,838 +106121,7 @@ function (_React$Component) {
 
 exports["default"] = ElementActivityEvent;
 
-},{"react":285}],410:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _listListener = _interopRequireDefault(require("./list-listener"));
-
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
-
-var _event = require("../service/event");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var ElementEvent =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ElementEvent, _React$Component);
-
-  function ElementEvent(props) {
-    var _this;
-
-    _classCallCheck(this, ElementEvent);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ElementEvent).call(this, props));
-    _this.state = {
-      event: props.data
-    };
-
-    var self = _assertThisInitialized(_this); ////////////////////////////////////////////////////////
-
-
-    _event.DataEvent.addListener('update-element-event', function () {
-      self.setState(function () {
-        var event_id = self.state.event.id;
-        return {
-          event: _eventMapManager["default"].getData('event', event_id)
-        };
-      });
-    });
-
-    return _this;
-  }
-
-  _createClass(ElementEvent, [{
-    key: "getForm",
-    value: function getForm() {
-      _event.UIEvent.dispatch('show-event-form', {
-        id: this.state.event.id
-      });
-    }
-  }, {
-    key: "deleteEvent",
-    value: function deleteEvent() {
-      var event_id = this.state.event.id; // todo : use some modal component
-
-      alert('you are going to delete the event : ' + event_id);
-
-      _eventMapManager["default"].deleteData(this.state.event);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var event = this.state.event;
-      return _react["default"].createElement("li", {
-        key: event.id,
-        className: "el-event"
-      }, _react["default"].createElement("div", null, _react["default"].createElement("h4", null, " Event "), _react["default"].createElement("div", {
-        className: "el-content"
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "id :"), event.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "name :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
-        className: "el-control"
-      }, _react["default"].createElement("button", {
-        className: "btn btn-secondary btn-sm",
-        type: "button",
-        onClick: this.getForm.bind(this)
-      }, "Edit Event")), _react["default"].createElement("div", {
-        className: "el-control"
-      }, _react["default"].createElement("button", {
-        className: "btn btn-secondary btn-sm",
-        type: "button",
-        onClick: this.deleteEvent.bind(this)
-      }, "Delete Event")))), _react["default"].createElement("div", null, _react["default"].createElement("h4", null, "Listeners"), _react["default"].createElement("div", {
-        className: "el-content"
-      }, _react["default"].createElement(_listListener["default"], null))));
-    }
-  }]);
-
-  return ElementEvent;
-}(_react["default"].Component);
-
-exports["default"] = ElementEvent;
-
-},{"../service/event":406,"../service/event-map-manager":404,"./list-listener":419,"react":285}],411:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var ElementListener =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ElementListener, _React$Component);
-
-  function ElementListener(props) {
-    var _this;
-
-    _classCallCheck(this, ElementListener);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ElementListener).call(this, props));
-    _this.state = {
-      listener: props.data
-    };
-    return _this;
-  }
-
-  _createClass(ElementListener, [{
-    key: "render",
-    value: function render() {
-      var listener = this.state.listener;
-      return _react["default"].createElement("li", {
-        id: listener.id
-      }, listener.endpoint);
-    }
-  }]);
-
-  return ElementListener;
-}(_react["default"].Component);
-
-exports["default"] = ElementListener;
-
-},{"react":285}],412:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _listEvent = _interopRequireDefault(require("./list-event"));
-
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
-
-var _event = require("../service/event");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var ElementService =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ElementService, _React$Component);
-
-  function ElementService(props) {
-    var _this;
-
-    _classCallCheck(this, ElementService);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ElementService).call(this, props));
-    _this.state = {
-      service: props.data,
-      showEventList: false
-    };
-
-    var self = _assertThisInitialized(_this);
-
-    _event.DataEvent.addListener('update-list-service', function (uiEvent) {
-      /**
-       * @important check the id first, otherwise all elemnts of the list will be updated
-       *  */
-      if (uiEvent.message.id === self.state.service.id) {
-        self.setState(function () {
-          var data = _eventMapManager["default"].getData('service', uiEvent.message.id);
-
-          return {
-            service: data
-          };
-        });
-      }
-    });
-
-    return _this;
-  }
-
-  _createClass(ElementService, [{
-    key: "toggleEventList",
-    value: function toggleEventList() {
-      this.setState(function (state) {
-        return {
-          showEventList: !state.showEventList
-        };
-      });
-    }
-  }, {
-    key: "getServiceForm",
-    value: function getServiceForm() {
-      _event.UIEvent.dispatch('show-service-form', {
-        id: this.state.service.id
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var service = this.state.service;
-      var target_list_event = '#' + service.id + '-' + 'list-event';
-      return _react["default"].createElement("li", {
-        key: service.id,
-        id: service.id,
-        className: "el-service"
-      }, _react["default"].createElement("div", {
-        className: "el-content"
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "id"), " : ", service.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "name"), " : ", service.name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host"), " : ", service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description"), " : ", service.description), _react["default"].createElement("div", {
-        className: "el-control"
-      }, _react["default"].createElement("button", {
-        className: "btn btn-primary btn-sm",
-        type: "button",
-        onClick: this.getServiceForm.bind(this)
-      }, "Edit Service"))), _react["default"].createElement("h5", {
-        className: "toggle-content dropdown-toggle",
-        "data-toggle": "collapse",
-        "data-target": target_list_event,
-        role: "button",
-        "aria-expanded": "false",
-        "aria-controls": "list-event"
-      }, "List of events"), _react["default"].createElement(_listEvent["default"], {
-        service_id: service.id
-      }));
-    }
-  }]);
-
-  return ElementService;
-}(_react["default"].Component);
-
-exports["default"] = ElementService;
-
-},{"../service/event":406,"../service/event-map-manager":404,"./list-event":418,"react":285}],413:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
-
-var _event = require("../service/event");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var FormEvent =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(FormEvent, _React$Component);
-
-  function FormEvent(props) {
-    var _this;
-
-    _classCallCheck(this, FormEvent);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(FormEvent).call(this, props));
-    _this.initialState = {
-      event: {
-        id: '',
-        type: 'event',
-        event_name: '',
-        service_id: '',
-        description: ''
-      }
-    };
-    _this.state = _this.initialState;
-
-    var self = _assertThisInitialized(_this); //===============================================
-
-
-    _event.UIEvent.addListener('show-event-form', function (uiEvent) {
-      self.setState(function () {
-        return {
-          event: _eventMapManager["default"].getData('event', uiEvent.message.id)
-        };
-      }, function () {
-        $(self.modal).modal('show');
-      });
-    });
-
-    return _this;
-  }
-
-  _createClass(FormEvent, [{
-    key: "close",
-    value: function close() {
-      var self = this;
-      this.setState(function () {
-        return self.initialState;
-      }, function () {
-        $(self.modal).modal('hide');
-      });
-    }
-  }, {
-    key: "submitForm",
-    value: function submitForm() {
-      var event = Object.assign({}, this.state.event);
-
-      if (event.id) {
-        // element already exists
-        _eventMapManager["default"].updateData(event);
-      } else {
-        // add a new one
-        _eventMapManager["default"].addData(event);
-      }
-
-      this.close();
-    }
-  }, {
-    key: "formValue",
-    value: function formValue(event) {
-      this.state.event[event.target.name] = event.target.value;
-      this.setState(this.state);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      return _react["default"].createElement("div", {
-        className: "modal fade app-modal-form",
-        id: "formEvent",
-        tabIndex: "-1",
-        role: "dialog",
-        "aria-labelledby": "formEventLabel",
-        "aria-hidden": "true",
-        ref: function ref(node) {
-          return _this2.modal = node;
-        }
-      }, _react["default"].createElement("div", {
-        className: "modal-dialog modal-lg",
-        role: "document"
-      }, _react["default"].createElement("div", {
-        className: "modal-content"
-      }, _react["default"].createElement("div", {
-        className: "modal-header"
-      }, _react["default"].createElement("h5", {
-        className: "modal-title",
-        id: "formEventLabel"
-      }, "Event Information"), _react["default"].createElement("button", {
-        type: "button",
-        className: "close",
-        onClick: this.close.bind(this),
-        "aria-label": "Close"
-      }, _react["default"].createElement("span", {
-        "aria-hidden": "true"
-      }, "\xD7"))), _react["default"].createElement("div", {
-        className: "modal-body"
-      }, _react["default"].createElement("form", null, _react["default"].createElement("div", {
-        className: "form-group"
-      }, _react["default"].createElement("label", {
-        htmlFor: "event-name",
-        className: "col-form-label"
-      }, "Name:"), _react["default"].createElement("input", {
-        id: "event-name",
-        type: "text",
-        className: "form-control",
-        name: "event_name",
-        value: this.state.event.event_name,
-        onChange: this.formValue.bind(this)
-      })), _react["default"].createElement("div", {
-        className: "form-group"
-      }, _react["default"].createElement("label", {
-        htmlFor: "event-description",
-        className: "col-form-label"
-      }, "Description:"), _react["default"].createElement("textarea", {
-        id: "event-description",
-        className: "form-control",
-        name: "description",
-        value: this.state.event.description,
-        onChange: this.formValue.bind(this)
-      })))), _react["default"].createElement("div", {
-        className: "modal-footer"
-      }, _react["default"].createElement("button", {
-        type: "submit",
-        className: "btn btn-primary",
-        onClick: this.submitForm.bind(this)
-      }, "Save changes"), _react["default"].createElement("button", {
-        type: "button",
-        className: "btn btn-secondary",
-        onClick: this.close.bind(this)
-      }, "Close")))));
-    }
-  }]);
-
-  return FormEvent;
-}(_react["default"].Component);
-
-exports["default"] = FormEvent;
-
-},{"../service/event":406,"../service/event-map-manager":404,"react":285}],414:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
-
-var _event = require("../service/event");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var FormListener =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(FormListener, _React$Component);
-
-  function FormListener(props) {
-    var _this;
-
-    _classCallCheck(this, FormListener);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(FormListener).call(this, props));
-    _this._emptyState = {
-      id: '',
-      endpoint: '',
-      description: ''
-    };
-    _this.state = _this._emptyState;
-
-    var self = _assertThisInitialized(_this); //===============================================
-
-
-    _event.UIEvent.addListener('show-listener-form', function (uiEvent) {
-      self.setState(function () {
-        if (typeof uiEvent.message !== 'undefined' && typeof uiEvent.message.id !== 'undefined') {
-          return _eventMapManager["default"].getData('listener', uiEvent.message.id);
-        } else return self._emptyState;
-      }, function () {
-        $(self.modal).modal('show');
-      });
-    });
-
-    return _this;
-  }
-
-  _createClass(FormListener, [{
-    key: "close",
-    value: function close() {
-      var self = this;
-      this.setState(function () {
-        self._emptyState;
-      }, function () {
-        $(self.modal).modal('hide');
-      });
-    }
-  }, {
-    key: "submitForm",
-    value: function submitForm() {
-      var data = Object.assign({}, this.state);
-      data.type = 'listener';
-
-      _eventMapManager["default"].setData(data);
-
-      this.close();
-    }
-  }, {
-    key: "formValue",
-    value: function formValue(event) {
-      this.state[event.target.name] = event.target.value;
-      this.setState(this.state);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      return _react["default"].createElement("div", {
-        className: "modal fade app-modal-form",
-        id: "formListener",
-        tabIndex: "-1",
-        role: "dialog",
-        "aria-labelledby": "formListenerLabel",
-        "aria-hidden": "true",
-        ref: function ref(node) {
-          return _this2.modal = node;
-        }
-      }, _react["default"].createElement("div", {
-        className: "modal-dialog modal-lg",
-        role: "document"
-      }, _react["default"].createElement("div", {
-        className: "modal-content"
-      }, _react["default"].createElement("div", {
-        className: "modal-header"
-      }, _react["default"].createElement("h5", {
-        className: "modal-title",
-        id: "formListenerLabel"
-      }, "Listener Information"), _react["default"].createElement("button", {
-        type: "button",
-        className: "close",
-        onClick: this.close.bind(this),
-        "aria-label": "Close"
-      }, _react["default"].createElement("span", {
-        "aria-hidden": "true"
-      }, "\xD7"))), _react["default"].createElement("div", {
-        className: "modal-body"
-      }, _react["default"].createElement("form", null, _react["default"].createElement("div", {
-        className: "form-group"
-      }, _react["default"].createElement("label", {
-        htmlFor: "listener-name",
-        className: "col-form-label"
-      }, "Endpoint:"), _react["default"].createElement("input", {
-        id: "listener-name",
-        type: "text",
-        className: "form-control",
-        name: "endpoint",
-        value: this.state.name,
-        onChange: this.formValue.bind(this)
-      })), _react["default"].createElement("div", {
-        className: "form-group"
-      }, _react["default"].createElement("label", {
-        htmlFor: "listener-description",
-        className: "col-form-label"
-      }, "Description:"), _react["default"].createElement("textarea", {
-        id: "listener-description",
-        className: "form-control",
-        name: "description",
-        value: this.state.description,
-        onChange: this.formValue.bind(this)
-      })))), _react["default"].createElement("div", {
-        className: "modal-footer"
-      }, _react["default"].createElement("button", {
-        type: "submit",
-        className: "btn btn-primary",
-        onClick: this.submitForm.bind(this)
-      }, "Save changes"), _react["default"].createElement("button", {
-        type: "button",
-        className: "btn btn-secondary",
-        onClick: this.close.bind(this)
-      }, "Close")))));
-    }
-  }]);
-
-  return FormListener;
-}(_react["default"].Component);
-
-exports["default"] = FormListener;
-
-},{"../service/event":406,"../service/event-map-manager":404,"react":285}],415:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _react = _interopRequireDefault(require("react"));
-
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
-
-var _event = require("../service/event");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var FormService =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(FormService, _React$Component);
-
-  function FormService(props) {
-    var _this;
-
-    _classCallCheck(this, FormService);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(FormService).call(this, props));
-    var initialState = {
-      id: '',
-      name: '',
-      host: '',
-      description: ''
-    };
-    _this.state = initialState;
-
-    var self = _assertThisInitialized(_this); //===============================================
-
-
-    _event.UIEvent.addListener('show-service-form', function (uiEvent) {
-      self.setState(function () {
-        return _eventMapManager["default"].getData('service', uiEvent.message.id);
-      }, function () {
-        $(self.modal).modal('show');
-      });
-    });
-
-    return _this;
-  }
-
-  _createClass(FormService, [{
-    key: "close",
-    value: function close() {
-      var self = this;
-      this.setState(function () {
-        return {};
-      }, function () {
-        $(self.modal).modal('hide');
-      });
-    }
-  }, {
-    key: "submitForm",
-    value: function submitForm() {
-      var data = Object.assign({}, this.state);
-      data.type = 'service';
-
-      _eventMapManager["default"].setData(data);
-
-      this.close();
-    }
-  }, {
-    key: "formValue",
-    value: function formValue(event) {
-      this.state[event.target.name] = event.target.value;
-      this.setState(this.state);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      return _react["default"].createElement("div", {
-        className: "modal fade app-modal-form",
-        id: "formService",
-        tabIndex: "-1",
-        role: "dialog",
-        "aria-labelledby": "formServiceLabel",
-        "aria-hidden": "true",
-        ref: function ref(node) {
-          return _this2.modal = node;
-        }
-      }, _react["default"].createElement("div", {
-        className: "modal-dialog modal-lg",
-        role: "document"
-      }, _react["default"].createElement("div", {
-        className: "modal-content"
-      }, _react["default"].createElement("div", {
-        className: "modal-header"
-      }, _react["default"].createElement("h5", {
-        className: "modal-title",
-        id: "formServiceLabel"
-      }, "Service Information"), _react["default"].createElement("button", {
-        type: "button",
-        className: "close",
-        onClick: this.close.bind(this),
-        "aria-label": "Close"
-      }, _react["default"].createElement("span", {
-        "aria-hidden": "true"
-      }, "\xD7"))), _react["default"].createElement("div", {
-        className: "modal-body"
-      }, _react["default"].createElement("form", {
-        onSubmit: this.submitForm.bind(this)
-      }, _react["default"].createElement("div", {
-        className: "form-group"
-      }, _react["default"].createElement("label", {
-        htmlFor: "service-name",
-        className: "col-form-label"
-      }, "Name:"), _react["default"].createElement("input", {
-        id: "service-name",
-        type: "text",
-        className: "form-control",
-        name: "name",
-        value: this.state.name,
-        onChange: this.formValue.bind(this)
-      })), _react["default"].createElement("div", {
-        className: "form-group"
-      }, _react["default"].createElement("label", {
-        htmlFor: "service-host",
-        className: "col-form-label"
-      }, "Host:"), _react["default"].createElement("input", {
-        id: "service-host",
-        type: "text",
-        className: "form-control",
-        name: "host",
-        value: this.state.host,
-        onChange: this.formValue.bind(this)
-      })), _react["default"].createElement("div", {
-        className: "form-group"
-      }, _react["default"].createElement("label", {
-        htmlFor: "service-description",
-        className: "col-form-label"
-      }, "Description:"), _react["default"].createElement("textarea", {
-        id: "service-description",
-        className: "form-control",
-        name: "description",
-        value: this.state.description,
-        onChange: this.formValue.bind(this)
-      })))), _react["default"].createElement("div", {
-        className: "modal-footer"
-      }, _react["default"].createElement("button", {
-        type: "button",
-        className: "btn btn-primary",
-        onClick: this.submitForm.bind(this)
-      }, "Save changes"), _react["default"].createElement("button", {
-        type: "button",
-        className: "btn btn-secondary",
-        onClick: this.close.bind(this)
-      }, "Close")))));
-    }
-  }]);
-
-  return FormService;
-}(_react["default"].Component);
-
-exports["default"] = FormService;
-
-},{"../service/event":406,"../service/event-map-manager":404,"react":285}],416:[function(require,module,exports){
+},{"react":285}],411:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106967,7 +106216,7 @@ function (_React$Component) {
     value: function renderList() {
       var list = [];
       this.state.list_activity.forEach(function (activity, idx) {
-        var key = 'activity-error-' + idx;
+        var key = new Date().getTime() + '-' + idx + '-activity-error';
         list.push(_react["default"].createElement("li", {
           key: key
         }, _react["default"].createElement("div", {
@@ -106998,7 +106247,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivityError;
 
-},{"./element-activity-error":408,"react":285,"request-promise-native":303}],417:[function(require,module,exports){
+},{"./element-activity-error":409,"react":285,"request-promise-native":303}],412:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107044,7 +106293,43 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ListActivity).call(this, props));
     _this.state = {
-      list_activity: []
+      list_activity_event: [{
+        id: 'l-123',
+        type: 'event',
+        event_name: 'my-event',
+        service_name: 'my-service',
+        service_host: 'www.my-service.com',
+        time: '2019-08-22T16:38:37.751Z',
+        message: {
+          item_id: '1254',
+          item_qte: '1254',
+          toral: '12'
+        }
+      }, {
+        id: 'l-123',
+        type: 'event',
+        event_name: 'my-event',
+        service_name: 'my-service',
+        service_host: 'www.my-service.com',
+        time: '2019-08-22T16:38:37.751Z',
+        message: {
+          item_id: '1254',
+          item_qte: '1254',
+          toral: '12'
+        }
+      }, {
+        id: 'l-123',
+        type: 'event',
+        event_name: 'my-event',
+        service_name: 'my-service',
+        service_host: 'www.my-service.com',
+        time: '2019-08-22T16:38:37.751Z',
+        message: {
+          item_id: '1254',
+          item_qte: '1254',
+          toral: '12'
+        }
+      }]
     };
     return _this;
   }
@@ -107056,25 +106341,21 @@ function (_React$Component) {
     }
   }, {
     key: "getList",
-    value: function getList() {
-      var endpoint = 'http://localhost:4000/activity?tag=event';
-      var opts = {
-        url: endpoint,
-        json: true
-      };
-      var self = this;
-
-      _requestPromiseNative["default"].get(opts).then(function (response) {
-        if (response.data.length) {
-          self.setState(function () {
-            return {
-              list_activity: response.data
-            };
-          });
-        }
-      })["catch"](function (error) {
-        console.error(error);
-      });
+    value: function getList() {// let endpoint = 'http://localhost:4000/activity?tag=event';
+      // let opts = {
+      //   url: endpoint,
+      //   json: true
+      // };
+      // var self = this;
+      // RequestPromise.get(opts).then(function (response) {
+      //   if (response.data.length) {
+      //     self.setState(function () {
+      //       return { list_activity: response.data };
+      //     });
+      //   }
+      // }).catch(function (error) {
+      //   console.error(error);
+      // });
     }
   }, {
     key: "emptyState",
@@ -107090,14 +106371,14 @@ function (_React$Component) {
     key: "renderList",
     value: function renderList() {
       var list = [];
-      this.state.list_activity.forEach(function (activity, idx) {
-        var key = 'activity-event-' + idx;
+      this.state.list_activity_event.forEach(function (activity, idx) {
+        var key = new Date().getTime() + '-' + idx + 'activity-event';
         list.push(_react["default"].createElement("li", {
           key: key
         }, _react["default"].createElement("div", {
           className: "element-activity",
           onClick: this.toggleElement.bind(this, key)
-        }, _react["default"].createElement("span", null, activity.service_id), _react["default"].createElement("span", null, activity.event_name), _react["default"].createElement("span", null, activity.time)), _react["default"].createElement("div", {
+        }, _react["default"].createElement("span", null, activity.service_name), _react["default"].createElement("span", null, activity.service_host), _react["default"].createElement("span", null, activity.event_name), _react["default"].createElement("span", null, activity.time)), _react["default"].createElement("div", {
           id: key,
           className: "element-activity-content collapse"
         }, _react["default"].createElement(_elementActivityEvent["default"], {
@@ -107113,7 +106394,7 @@ function (_React$Component) {
         className: "list-activity"
       }, _react["default"].createElement("li", {
         className: "activity-head theme-bg"
-      }, _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "time")), this.state.list_activity.length ? this.renderList() : this.emptyState());
+      }, _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "host"), _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "time")), this.state.list_activity_event.length ? this.renderList() : this.emptyState());
     }
   }]);
 
@@ -107122,7 +106403,1032 @@ function (_React$Component) {
 
 exports["default"] = ListActivity;
 
-},{"./element-activity-event":409,"react":285,"request-promise-native":303}],418:[function(require,module,exports){
+},{"./element-activity-event":410,"react":285,"request-promise-native":303}],413:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _listListener = _interopRequireDefault(require("./list-listener"));
+
+var _eventMapManager = _interopRequireDefault(require("../../service/event-map-manager"));
+
+var _event = require("../../service/event");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var ElementEvent =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(ElementEvent, _React$Component);
+
+  function ElementEvent(props) {
+    var _this;
+
+    _classCallCheck(this, ElementEvent);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ElementEvent).call(this, props));
+    _this.state = {
+      event: {
+        id: '',
+        type: 'event',
+        event_name: '',
+        service_id: '',
+        description: ''
+      }
+    };
+    _this.listenerArray = [];
+    return _this;
+  }
+
+  _createClass(ElementEvent, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var event_id = this.props.event_id;
+      var self = this; ////////////////////////////////////////////////////////
+
+      var _listener_for_update = _event.DataEvent.addListener('update-element-event', function () {
+        self.setState(function () {
+          return {
+            event: _eventMapManager["default"].getData('event', event_id)
+          };
+        });
+      });
+
+      this.setState(function () {
+        return {
+          event: _eventMapManager["default"].getData('event', event_id)
+        };
+      });
+      this.listenerArray.push(_listener_for_update);
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.listenerArray.forEach(function (element_id) {
+        _event.DataEvent.removeListener(element_id);
+      });
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      if (this.props.event_id !== prevProps.event_id) {
+        var event_id = this.props.event_id;
+        this.setState(function () {
+          return {
+            event: _eventMapManager["default"].getData('event', event_id)
+          };
+        });
+      }
+    }
+  }, {
+    key: "getForm",
+    value: function getForm() {
+      _event.UIEvent.dispatch('show-event-form', {
+        event_id: this.props.event_id
+      });
+    }
+  }, {
+    key: "deleteEvent",
+    value: function deleteEvent() {
+      var event_name = this.state.event.event_name; // todo : use some modal component
+
+      var msg = "You are going to delete the event : + ".concat(event_name, " \n Are you sure ?");
+      var ok = confirm(msg);
+
+      if (ok) {
+        _eventMapManager["default"].deleteData(this.state.event);
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var event = this.state.event;
+      return _react["default"].createElement("li", {
+        key: event.id,
+        className: "el-event"
+      }, _react["default"].createElement("div", null, _react["default"].createElement("h4", null, " Event "), _react["default"].createElement("div", {
+        className: "el-content"
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "id :"), event.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "name :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
+        className: "el-control"
+      }, _react["default"].createElement("button", {
+        className: "btn btn-primary btn-sm",
+        type: "button",
+        onClick: this.getForm.bind(this)
+      }, "Edit Event"), _react["default"].createElement("button", {
+        className: "btn btn-danger btn-sm",
+        type: "button",
+        onClick: this.deleteEvent.bind(this)
+      }, "Delete Event")))), _react["default"].createElement("div", null, _react["default"].createElement("h4", null, "Listeners"), _react["default"].createElement("div", {
+        className: "el-content"
+      }, _react["default"].createElement(_listListener["default"], {
+        event_id: this.state.event.id
+      }))));
+    }
+  }]);
+
+  return ElementEvent;
+}(_react["default"].Component);
+
+exports["default"] = ElementEvent;
+
+},{"../../service/event":407,"../../service/event-map-manager":405,"./list-listener":420,"react":285}],414:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _eventMapManager = _interopRequireDefault(require("../../service/event-map-manager"));
+
+var _event = require("../../service/event");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var ElementListener =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(ElementListener, _React$Component);
+
+  function ElementListener(props) {
+    var _this;
+
+    _classCallCheck(this, ElementListener);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ElementListener).call(this, props));
+    _this.initialState = {
+      id: '',
+      type: 'listener',
+      event_id: '',
+      endpoint: '',
+      description: ''
+    };
+    _this.state = {
+      listener: _this.initialState
+    };
+    return _this;
+  }
+
+  _createClass(ElementListener, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var listener_id = this.props.listener_id;
+      var self = this; ////////////////////////////////////////////////////////
+
+      var _listener_for_update = _event.DataEvent.addListener('update-element-listener', function () {
+        self.setState(function () {
+          return {
+            listener: _eventMapManager["default"].getData('listener', listener_id)
+          };
+        });
+      });
+
+      this.setState(function () {
+        return {
+          listener: _eventMapManager["default"].getData('listener', listener_id)
+        };
+      }); // this.listenerArray.push(_listener_for_update);
+    }
+  }, {
+    key: "editElement",
+    value: function editElement() {
+      _event.UIEvent.dispatch('show-listener-form', {
+        listener_id: this.props.listener_id
+      });
+    }
+  }, {
+    key: "deleteElement",
+    value: function deleteElement() {
+      var endpoint = this.state.listener.endpoint; // todo : use some modal component
+
+      var msg = "You are going to delete the listener : + ".concat(endpoint, " \n Are you sure ?");
+      var ok = confirm(msg);
+
+      if (ok) {
+        _eventMapManager["default"].deleteData(this.state.listener);
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var listener = this.state.listener;
+      return _react["default"].createElement("li", {
+        id: listener.id,
+        className: "el-listener"
+      }, _react["default"].createElement("div", null, _react["default"].createElement("p", null, listener.endpoint), _react["default"].createElement("div", {
+        className: "el-listener-control"
+      }, _react["default"].createElement("button", {
+        type: "button",
+        onClick: this.editElement.bind(this)
+      }, "edit"), _react["default"].createElement("button", {
+        type: "button",
+        className: "close",
+        onClick: this.deleteElement.bind(this)
+      }, _react["default"].createElement("span", {
+        "aria-hidden": "true"
+      }, "\xD7")))));
+    }
+  }]);
+
+  return ElementListener;
+}(_react["default"].Component);
+
+exports["default"] = ElementListener;
+
+},{"../../service/event":407,"../../service/event-map-manager":405,"react":285}],415:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _listEvent = _interopRequireDefault(require("./list-event"));
+
+var _eventMapManager = _interopRequireDefault(require("../../service/event-map-manager"));
+
+var _event = require("../../service/event");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var ElementService =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(ElementService, _React$Component);
+
+  function ElementService(props) {
+    var _this;
+
+    _classCallCheck(this, ElementService);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ElementService).call(this, props));
+
+    var self = _assertThisInitialized(_this);
+
+    _this.initialState = {
+      id: "",
+      type: "service",
+      name: "",
+      host: "",
+      description: ""
+    };
+    _this.state = {
+      service: [],
+      showEventList: false
+    };
+    return _this;
+  }
+
+  _createClass(ElementService, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var self = this;
+
+      _event.DataEvent.addListener('update-element-service', function (uiEvent) {
+        /**
+         * @important check the id first, 
+         * otherwise all elemnts of the list will be updated
+         *  */
+        if (uiEvent.message.id === self.props.service_id) {
+          self.setState(function () {
+            return {
+              service: _eventMapManager["default"].getData('service', self.props.service_id)
+            };
+          });
+        }
+      });
+
+      this.setState(function () {
+        return {
+          service: _eventMapManager["default"].getData('service', self.props.service_id)
+        };
+      });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {// todo : remove eventset.listener
+    }
+  }, {
+    key: "toggleEventList",
+    value: function toggleEventList() {
+      this.setState(function (state) {
+        return {
+          showEventList: !state.showEventList
+        };
+      });
+    }
+  }, {
+    key: "getServiceForm",
+    value: function getServiceForm() {
+      /**
+       * @important use state.service.id here, not props.service_id
+       */
+      _event.UIEvent.dispatch('show-service-form', {
+        id: this.state.service.id
+      });
+    }
+  }, {
+    key: "deleteService",
+    value: function deleteService() {
+      var event_name = this.state.service.service_name; // todo : use some modal component
+
+      var msg = "You are going to delete the service : + ".concat(event_name, " \n Are you sure ?");
+      var ok = confirm(msg);
+
+      if (ok) {
+        _eventMapManager["default"].deleteData(this.state.service);
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var service = this.state.service; // let target_list_event = '#' + service.id + '-' + 'list-event';
+
+      return _react["default"].createElement("li", {
+        key: service.id,
+        id: service.id,
+        className: "el-service"
+      }, _react["default"].createElement("div", {
+        className: "el-content"
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "id"), " : ", service.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "name"), " : ", service.name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host"), " : ", service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description"), " : ", service.description), _react["default"].createElement("div", {
+        className: "el-control"
+      }, _react["default"].createElement("button", {
+        className: "btn btn-primary btn-sm",
+        type: "button",
+        onClick: this.getServiceForm.bind(this)
+      }, "Edit Service"), _react["default"].createElement("button", {
+        className: "btn btn-danger btn-sm",
+        type: "button",
+        onClick: this.deleteService.bind(this)
+      }, "Delete Service"))), _react["default"].createElement(_listEvent["default"], {
+        service_id: service.id
+      }));
+    }
+  }]);
+
+  return ElementService;
+}(_react["default"].Component);
+
+exports["default"] = ElementService;
+
+},{"../../service/event":407,"../../service/event-map-manager":405,"./list-event":419,"react":285}],416:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _eventMapManager = _interopRequireDefault(require("../../service/event-map-manager"));
+
+var _event = require("../../service/event");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var FormEvent =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(FormEvent, _React$Component);
+
+  function FormEvent(props) {
+    var _this;
+
+    _classCallCheck(this, FormEvent);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(FormEvent).call(this, props));
+    _this.initialState = {
+      id: '',
+      type: 'event',
+      event_name: '',
+      service_id: '',
+      description: ''
+    };
+    _this.state = {
+      event: _this.initialState
+    };
+    return _this;
+  }
+
+  _createClass(FormEvent, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var self = this; //===============================================
+
+      _event.UIEvent.addListener('show-event-form', function (uiEvent) {
+        var data = Object.assign({}, self.initialState);
+
+        if (typeof uiEvent.message.event_id !== 'undefined') {
+          // get event data to edition
+          data = _eventMapManager["default"].getData('event', uiEvent.message.event_id);
+        } else if (typeof uiEvent.message.service_id !== 'undefined') {
+          // show form to add a new 
+          // event to service idetified by [service_id]
+          data.service_id = uiEvent.message.service_id;
+        }
+
+        self.setState(function () {
+          return {
+            event: data
+          };
+        }, function () {
+          $(self.modal).modal('show');
+        });
+      });
+    }
+  }, {
+    key: "close",
+    value: function close() {
+      var self = this;
+      this.setState(function () {
+        return self.initialState;
+      }, function () {
+        $(self.modal).modal('hide');
+      });
+    }
+  }, {
+    key: "saveForm",
+    value: function saveForm() {
+      var event = this.state.event;
+
+      if (event.id) {
+        // element already exists
+        _eventMapManager["default"].updateData(event);
+      } else {
+        // add a new one
+        _eventMapManager["default"].addData(event);
+      }
+
+      this.close();
+    }
+  }, {
+    key: "submitForm",
+    value: function submitForm(e) {
+      e.preventDefault();
+    }
+  }, {
+    key: "formValue",
+    value: function formValue(event) {
+      this.state.event[event.target.name] = event.target.value;
+      this.setState(this.state);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      return _react["default"].createElement("div", {
+        className: "modal fade app-modal-form",
+        id: "formEvent",
+        tabIndex: "-1",
+        role: "dialog",
+        "aria-labelledby": "formEventLabel",
+        "aria-hidden": "true",
+        ref: function ref(node) {
+          return _this2.modal = node;
+        }
+      }, _react["default"].createElement("div", {
+        className: "modal-dialog modal-lg",
+        role: "document"
+      }, _react["default"].createElement("div", {
+        className: "modal-content"
+      }, _react["default"].createElement("div", {
+        className: "modal-header"
+      }, _react["default"].createElement("h5", {
+        className: "modal-title",
+        id: "formEventLabel"
+      }, "Event Information"), _react["default"].createElement("button", {
+        type: "button",
+        className: "close",
+        onClick: this.close.bind(this),
+        "aria-label": "Close"
+      }, _react["default"].createElement("span", {
+        "aria-hidden": "true"
+      }, "\xD7"))), _react["default"].createElement("form", {
+        onSubmit: this.submitForm.bind(this)
+      }, _react["default"].createElement("div", {
+        className: "modal-body"
+      }, _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "event-name",
+        className: "col-form-label"
+      }, "Name:"), _react["default"].createElement("input", {
+        id: "event-name",
+        type: "text",
+        className: "form-control",
+        name: "event_name",
+        value: this.state.event.event_name,
+        onChange: this.formValue.bind(this)
+      })), _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "event-description",
+        className: "col-form-label"
+      }, "Description:"), _react["default"].createElement("textarea", {
+        id: "event-description",
+        className: "form-control",
+        name: "description",
+        value: this.state.event.description,
+        onChange: this.formValue.bind(this)
+      }))), _react["default"].createElement("div", {
+        className: "modal-footer"
+      }, _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-primary",
+        onClick: this.saveForm.bind(this)
+      }, "Save changes"), _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-secondary",
+        onClick: this.close.bind(this)
+      }, "Close"))))));
+    }
+  }]);
+
+  return FormEvent;
+}(_react["default"].Component);
+
+exports["default"] = FormEvent;
+
+},{"../../service/event":407,"../../service/event-map-manager":405,"react":285}],417:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _eventMapManager = _interopRequireDefault(require("../../service/event-map-manager"));
+
+var _event = require("../../service/event");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var FormListener =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(FormListener, _React$Component);
+
+  function FormListener(props) {
+    var _this;
+
+    _classCallCheck(this, FormListener);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(FormListener).call(this, props));
+    _this.initialState = {
+      id: '',
+      type: 'listener',
+      event_id: '',
+      endpoint: '',
+      description: ''
+    };
+    _this.state = {
+      listener: _this.initialState
+    };
+    return _this;
+  }
+
+  _createClass(FormListener, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var self = this; //===============================================
+
+      _event.UIEvent.addListener('show-listener-form', function (uiEvent) {
+        var data = Object.assign({}, self.initialState);
+
+        if (typeof uiEvent.message.listener_id !== 'undefined') {
+          // get listener data to edit
+          data = _eventMapManager["default"].getData('listener', uiEvent.message.listener_id);
+        } else if (uiEvent.message.event_id) {
+          // show form to add a new 
+          // listener to event identified by [event_id]
+          data.event_id = uiEvent.message.event_id;
+        }
+
+        self.setState(function () {
+          return {
+            listener: data
+          };
+        }, function () {
+          $(self.modal).modal('show');
+        });
+      });
+    }
+  }, {
+    key: "close",
+    value: function close() {
+      var self = this;
+      this.setState(function () {
+        return {
+          listener: self.initialState
+        };
+      }, function () {
+        $(self.modal).modal('hide');
+      });
+    }
+  }, {
+    key: "submitForm",
+    value: function submitForm(e) {
+      e.preventDefault();
+    }
+  }, {
+    key: "saveForm",
+    value: function saveForm() {
+      var listener = this.state.listener;
+
+      if (listener.id) {
+        // element already exists
+        _eventMapManager["default"].updateData(listener);
+      } else {
+        // add a new one
+        _eventMapManager["default"].addData(listener);
+      }
+
+      this.close();
+    }
+  }, {
+    key: "formValue",
+    value: function formValue(event) {
+      this.state.listener[event.target.name] = event.target.value;
+      this.setState(this.state);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      return _react["default"].createElement("div", {
+        className: "modal fade app-modal-form",
+        id: "formListener",
+        tabIndex: "-1",
+        role: "dialog",
+        "aria-labelledby": "formListenerLabel",
+        "aria-hidden": "true",
+        ref: function ref(node) {
+          return _this2.modal = node;
+        }
+      }, _react["default"].createElement("div", {
+        className: "modal-dialog modal-lg",
+        role: "document"
+      }, _react["default"].createElement("div", {
+        className: "modal-content"
+      }, _react["default"].createElement("div", {
+        className: "modal-header"
+      }, _react["default"].createElement("h5", {
+        className: "modal-title",
+        id: "formListenerLabel"
+      }, "Listener Information"), _react["default"].createElement("button", {
+        type: "button",
+        className: "close",
+        onClick: this.close.bind(this),
+        "aria-label": "Close"
+      }, _react["default"].createElement("span", {
+        "aria-hidden": "true"
+      }, "\xD7"))), _react["default"].createElement("form", {
+        onSubmit: this.submitForm.bind(this)
+      }, _react["default"].createElement("div", {
+        className: "modal-body"
+      }, _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "listener-name",
+        className: "col-form-label"
+      }, "Endpoint:"), _react["default"].createElement("input", {
+        id: "listener-name",
+        type: "text",
+        className: "form-control",
+        name: "endpoint",
+        value: this.state.listener.endpoint,
+        onChange: this.formValue.bind(this)
+      }))), _react["default"].createElement("div", {
+        className: "modal-footer"
+      }, _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-primary",
+        onClick: this.saveForm.bind(this)
+      }, "Save changes"), _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-secondary",
+        onClick: this.close.bind(this)
+      }, "Close"))))));
+    }
+  }]);
+
+  return FormListener;
+}(_react["default"].Component);
+
+exports["default"] = FormListener;
+
+},{"../../service/event":407,"../../service/event-map-manager":405,"react":285}],418:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _eventMapManager = _interopRequireDefault(require("../../service/event-map-manager"));
+
+var _event = require("../../service/event");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var FormService =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(FormService, _React$Component);
+
+  function FormService(props) {
+    var _this;
+
+    _classCallCheck(this, FormService);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(FormService).call(this, props));
+    _this.initialState = {
+      type: 'service',
+      id: '',
+      name: '',
+      host: '',
+      description: ''
+    };
+    _this.state = {
+      service: _this.initialState
+    };
+    return _this;
+  }
+
+  _createClass(FormService, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var self = this; //===============================================
+
+      _event.UIEvent.addListener('show-service-form', function (uiEvent) {
+        var data = Object.assign({}, self.initialState);
+
+        if (uiEvent.message.id) {
+          data = _eventMapManager["default"].getData('service', uiEvent.message.id);
+        }
+
+        self.setState(function () {
+          return {
+            service: data
+          };
+        }, function () {
+          $(self.modal).modal('show');
+        });
+      });
+    }
+  }, {
+    key: "close",
+    value: function close() {
+      var self = this;
+      this.setState(function () {
+        return {
+          service: self.initialState
+        };
+      }, function () {
+        $(self.modal).modal('hide');
+      });
+    }
+  }, {
+    key: "submitForm",
+    value: function submitForm(e) {
+      e.preventDefault();
+    }
+  }, {
+    key: "saveForm",
+    value: function saveForm() {
+      var service = Object.assign({}, this.state.service);
+
+      if (service.id) {
+        // element already exists
+        _eventMapManager["default"].updateData(service);
+      } else {
+        // add a new one
+        _eventMapManager["default"].addData(service);
+      }
+
+      this.close();
+    }
+  }, {
+    key: "formValue",
+    value: function formValue(event) {
+      this.state.service[event.target.name] = event.target.value;
+      this.setState(this.state);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      return _react["default"].createElement("div", {
+        className: "modal fade app-modal-form",
+        id: "formService",
+        tabIndex: "-1",
+        role: "dialog",
+        "aria-labelledby": "formServiceLabel",
+        "aria-hidden": "true",
+        ref: function ref(node) {
+          return _this2.modal = node;
+        }
+      }, _react["default"].createElement("div", {
+        className: "modal-dialog modal-lg",
+        role: "document"
+      }, _react["default"].createElement("div", {
+        className: "modal-content"
+      }, _react["default"].createElement("div", {
+        className: "modal-header"
+      }, _react["default"].createElement("h5", {
+        className: "modal-title",
+        id: "formServiceLabel"
+      }, "Service Information"), _react["default"].createElement("button", {
+        type: "button",
+        className: "close",
+        onClick: this.close.bind(this),
+        "aria-label": "Close"
+      }, _react["default"].createElement("span", {
+        "aria-hidden": "true"
+      }, "\xD7"))), _react["default"].createElement("form", {
+        onSubmit: this.submitForm.bind(this)
+      }, _react["default"].createElement("div", {
+        className: "modal-body"
+      }, _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "service-name",
+        className: "col-form-label"
+      }, "Name:"), _react["default"].createElement("input", {
+        id: "service-name",
+        type: "text",
+        className: "form-control",
+        name: "name",
+        value: this.state.service.name,
+        onChange: this.formValue.bind(this)
+      })), _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "service-host",
+        className: "col-form-label"
+      }, "Host:"), _react["default"].createElement("input", {
+        id: "service-host",
+        type: "text",
+        className: "form-control",
+        name: "host",
+        value: this.state.service.host,
+        onChange: this.formValue.bind(this)
+      })), _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "service-description",
+        className: "col-form-label"
+      }, "Description:"), _react["default"].createElement("textarea", {
+        id: "service-description",
+        className: "form-control",
+        name: "description",
+        value: this.state.service.description,
+        onChange: this.formValue.bind(this)
+      }))), _react["default"].createElement("div", {
+        className: "modal-footer"
+      }, _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-primary",
+        onClick: this.saveForm.bind(this)
+      }, "Save changes"), _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-secondary",
+        onClick: this.close.bind(this)
+      }, "Close"))))));
+    }
+  }]);
+
+  return FormService;
+}(_react["default"].Component);
+
+exports["default"] = FormService;
+
+},{"../../service/event":407,"../../service/event-map-manager":405,"react":285}],419:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107134,9 +107440,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _elementEvent = _interopRequireDefault(require("./element-event"));
 
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../../service/event-map-manager"));
 
-var _event = require("../service/event");
+var _event = require("../../service/event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -107179,51 +107485,82 @@ function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       var self = this;
-      this.setState(function () {
-        var criteria = {
-          service_id: self.props.service_id
-        };
-        return {
-          list_event: _eventMapManager["default"].getDataList('event', criteria)
-        };
-      });
 
       _event.DataEvent.addListener('update-list-event', function (dataEvent) {
         if (dataEvent.message.service_id === self.props.service_id) {
           self.setState(function () {
-            var criteria = {
-              service_id: dataEvent.message.service_id
-            };
             return {
-              list_event: _eventMapManager["default"].getDataList('event', criteria)
+              list_event: _eventMapManager["default"].getDataList('event', {
+                service_id: self.props.service_id
+              })
             };
           });
         }
+      });
+
+      this.setState(function () {
+        return {
+          list_event: _eventMapManager["default"].getDataList('event', {
+            service_id: self.props.service_id
+          })
+        };
+      });
+    }
+  }, {
+    key: "getEventForm",
+    value: function getEventForm() {
+      _event.UIEvent.dispatch('show-event-form', {
+        service_id: this.props.service_id
       });
     }
   }, {
     key: "renderList",
     value: function renderList() {
-      var list = [];
+      var list = []; // return event list
+
       this.state.list_event.forEach(function (event, idx) {
+        var _key = new Date().getTime() + '-' + idx + '-event-list';
+
         list.push(_react["default"].createElement(_elementEvent["default"], {
-          key: idx + 'event-list',
-          data: event
+          key: _key,
+          event_id: event.id
         }));
-      }, this);
+      });
       return list;
+    }
+  }, {
+    key: "renderEmptyState",
+    value: function renderEmptyState() {
+      return _react["default"].createElement("li", {
+        className: "empty-list"
+      }, "Empty Event List");
     }
   }, {
     key: "render",
     value: function render() {
-      var list_event = this.renderList(); // let showClass = "list-event " + ( this.props.show ? 'show' : 'hide');
-      // the divId is used by bootstrap to toggle
-
+      var emptyList = this.state.list_event.length === 0;
       var divId = this.props.service_id + '-' + 'list-event';
       return _react["default"].createElement("div", {
+        className: "list-event"
+      }, _react["default"].createElement("h5", {
+        className: "toggle-content dropdown-toggle",
+        "data-toggle": "collapse",
+        "data-target": '#' + divId,
+        role: "button",
+        "aria-expanded": "false",
+        "aria-controls": "list-event"
+      }, "Events"), _react["default"].createElement("div", {
         id: divId,
-        className: "collapse list-event"
-      }, _react["default"].createElement("ul", null, list_event));
+        className: "collapse"
+      }, _react["default"].createElement("div", {
+        className: "list-control"
+      }, _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-info btn-sm btn-add",
+        onClick: this.getEventForm.bind(this)
+      }, "Add Event")), _react["default"].createElement("ul", {
+        className: "list-event-content"
+      }, emptyList ? this.renderEmptyState() : this.renderList())));
     }
   }]);
 
@@ -107232,7 +107569,7 @@ function (_React$Component) {
 
 exports["default"] = ListEvent;
 
-},{"../service/event":406,"../service/event-map-manager":404,"./element-event":410,"react":285}],419:[function(require,module,exports){
+},{"../../service/event":407,"../../service/event-map-manager":405,"./element-event":413,"react":285}],420:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107244,9 +107581,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _elementListener = _interopRequireDefault(require("./element-listener"));
 
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../../service/event-map-manager"));
 
-var _event = require("../service/event");
+var _event = require("../../service/event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -107288,10 +107625,32 @@ function (_React$Component) {
   _createClass(ListListener, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var self = this;
       this.setState(function () {
         return {
-          list_listener: _eventMapManager["default"].getDataList('listener')
+          list_listener: _eventMapManager["default"].getDataList('listener', {
+            event_id: self.props.event_id
+          })
         };
+      });
+
+      _event.DataEvent.addListener('update-list-listener', function (dataEvent) {
+        if (dataEvent.message.event_id === self.props.event_id) {
+          self.setState(function () {
+            return {
+              list_listener: _eventMapManager["default"].getDataList('listener', {
+                event_id: self.props.event_id
+              })
+            };
+          });
+        }
+      });
+    }
+  }, {
+    key: "getForm",
+    value: function getForm() {
+      _event.UIEvent.dispatch('show-listener-form', {
+        event_id: this.props.event_id
       });
     }
   }, {
@@ -107299,28 +107658,32 @@ function (_React$Component) {
     value: function renderList() {
       var list = [];
       this.state.list_listener.forEach(function (listener, idx) {
+        var _key = new Date().getTime() + '-' + idx + '-listener-list';
+
         list.push(_react["default"].createElement(_elementListener["default"], {
-          key: idx + 'listener-list',
-          data: listener
+          key: _key,
+          listener_id: listener.id
         }));
       }, this);
       return list;
     }
   }, {
-    key: "getForm",
-    value: function getForm() {
-      _event.UIEvent.dispatch('show-listener-form');
+    key: "emptyState",
+    value: function emptyState() {
+      return _react["default"].createElement("li", {
+        className: "empty-list"
+      }, "Empty Listener List");
     }
   }, {
     key: "render",
     value: function render() {
       return _react["default"].createElement(_react["default"].Fragment, null, _react["default"].createElement("button", {
         type: "button",
-        className: "btn btn-primary btn-sm btn-block add-listener",
+        className: "btn btn-info btn-sm btn-add",
         onClick: this.getForm.bind(this)
       }, "Add Listener"), _react["default"].createElement("ul", {
         className: "list-listener"
-      }, this.renderList()));
+      }, this.state.list_listener.length > 0 ? this.renderList() : this.emptyState()));
     }
   }]);
 
@@ -107329,7 +107692,7 @@ function (_React$Component) {
 
 exports["default"] = ListListener;
 
-},{"../service/event":406,"../service/event-map-manager":404,"./element-listener":411,"react":285}],420:[function(require,module,exports){
+},{"../../service/event":407,"../../service/event-map-manager":405,"./element-listener":414,"react":285}],421:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107341,7 +107704,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _elementService = _interopRequireDefault(require("./element-service"));
 
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
+var _eventMapManager = _interopRequireDefault(require("../../service/event-map-manager"));
+
+var _event = require("../../service/event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -107383,31 +107748,67 @@ function (_React$Component) {
   _createClass(ListService, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var self = this;
+
+      _event.DataEvent.addListener('update-list-service', function () {
+        // triggered when adding/removing service from the list
+        self.setState(function () {
+          return self.getServiceList();
+        });
+      }); // initial state
+
+
+      var self = this;
       this.setState(function () {
-        return {
-          list_service: _eventMapManager["default"].getDataList('service', null)
-        };
+        return self.getServiceList();
       });
+    }
+  }, {
+    key: "renderEmptyState",
+    value: function renderEmptyState() {
+      return _react["default"].createElement("li", {
+        className: "empty-list"
+      }, "Empty Service List");
+    }
+  }, {
+    key: "getServiceList",
+    value: function getServiceList() {
+      var result = {
+        list_service: _eventMapManager["default"].getDataList('service', null).reverse()
+      };
+      return result;
     }
   }, {
     key: "renderList",
     value: function renderList() {
       var list = [];
       this.state.list_service.forEach(function (service, idx) {
+        var _key = new Date().getTime() + '-' + idx + '-service-list-';
+
         list.push(_react["default"].createElement(_elementService["default"], {
-          key: idx + 'service-list',
-          data: service
+          key: _key,
+          service_id: service.id
         }));
       }, this);
       return list;
     }
   }, {
+    key: "getForm",
+    value: function getForm() {
+      _event.UIEvent.dispatch('show-service-form', {
+        id: null
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
-      var list = this.renderList();
-      return _react["default"].createElement("div", {
+      return _react["default"].createElement(_react["default"].Fragment, null, _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-info btn-sm btn-add",
+        onClick: this.getForm.bind(this)
+      }, "New Service"), _react["default"].createElement("div", {
         className: "list-service"
-      }, _react["default"].createElement("ul", null, list));
+      }, _react["default"].createElement("ul", null, this.state.list_service.length > 0 ? this.renderList() : this.renderEmptyState())));
     }
   }]);
 
@@ -107416,81 +107817,4 @@ function (_React$Component) {
 
 exports["default"] = ListService;
 
-},{"../service/event-map-manager":404,"./element-service":412,"react":285}],421:[function(require,module,exports){
-"use strict";
-
-var _react = _interopRequireDefault(require("react"));
-
-var _reactDom = _interopRequireDefault(require("react-dom"));
-
-var _request = _interopRequireDefault(require("request"));
-
-var _eventMapManager = _interopRequireDefault(require("../service/event-map-manager"));
-
-var _eventMap2 = _interopRequireDefault(require("../service/event-map"));
-
-var _listService = _interopRequireDefault(require("./list-service.js"));
-
-var _formService = _interopRequireDefault(require("./form-service"));
-
-var _formEvent = _interopRequireDefault(require("./form-event"));
-
-var _containerActivity = _interopRequireDefault(require("./container-activity"));
-
-var _formListener = _interopRequireDefault(require("./form-listener.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function EventAdmin() {
-  return _react["default"].createElement("div", {
-    className: "app-content"
-  }, _react["default"].createElement("nav", {
-    className: "app-module-nav"
-  }, _react["default"].createElement("div", {
-    className: "nav nav-tabs container",
-    id: "nav-tab",
-    role: "tablist"
-  }, _react["default"].createElement("a", {
-    className: "nav-item nav-link active",
-    id: "nav-activity-tab",
-    "data-toggle": "tab",
-    href: "#nav-activity",
-    role: "tab",
-    "aria-controls": "nav-activity",
-    "aria-selected": "true"
-  }, "Activities"), _react["default"].createElement("a", {
-    className: "nav-item nav-link",
-    id: "nav-setting-tab",
-    "data-toggle": "tab",
-    href: "#nav-setting",
-    role: "tab",
-    "aria-controls": "nav-setting",
-    "aria-selected": "false"
-  }, "setting"))), _react["default"].createElement("div", {
-    className: "tab-content container"
-  }, _react["default"].createElement("div", {
-    className: "tab-pane fade show active",
-    id: "nav-activity",
-    role: "tabpanel",
-    "aria-labelledby": "nav-activity-tab"
-  }, _react["default"].createElement(_containerActivity["default"], null)), _react["default"].createElement("div", {
-    className: "tab-pane fade",
-    id: "nav-setting",
-    role: "tabpanel",
-    "aria-labelledby": "nav-setting-tab"
-  }, _react["default"].createElement("h1", null, "Service Setting"), _react["default"].createElement(_listService["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
-}
-
-var dataUrl = 'http://www.localhost:4000/event-map';
-
-_request["default"].get(dataUrl, function (error, response, body) {
-  if (response.statusCode === 200) {
-    var _eventMap = new _eventMap2["default"](JSON.parse(body));
-
-    _eventMapManager["default"].setEventMap(_eventMap);
-
-    _reactDom["default"].render(_react["default"].createElement(EventAdmin, null), document.getElementById('app'));
-  }
-});
-
-},{"../service/event-map":405,"../service/event-map-manager":404,"./container-activity":407,"./form-event":413,"./form-listener.js":414,"./form-service":415,"./list-service.js":420,"react":285,"react-dom":282,"request":304}]},{},[421]);
+},{"../../service/event":407,"../../service/event-map-manager":405,"./element-service":415,"react":285}]},{},[404]);

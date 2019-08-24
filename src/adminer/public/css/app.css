@@ -1,7 +1,3 @@
-
-
-/******************************************************/
-
 .app-container {
   padding: 100px 0;
 }
@@ -16,6 +12,7 @@
 
 .app-module-nav {
   border-bottom: 1px solid #dee2e6;
+  text-transform:capitalize;
 }
 
 .app-module-nav > .nav-tabs {
@@ -36,63 +33,74 @@
 
 .tab-content h1 {
   margin: 0 0 20px 0;
-  padding: 10px 30px;
-  background-color: aliceblue;
-  font-size: 26px;
+  padding:20px;
+  background-color: #3290f5;
+  font-size:22px;
+  color:#fff;
 }
 
 /******************************************************/
-
 .el-control {
   padding: 10px 0;
 }
 
 .el-control button {
   min-width: 100px;
+  margin-right:10px;
 }
 
 .toggle-content {
   display: block;
   padding: 10px 20px;
-  background-color: #b3d7ff;
-  color: #004085;
-  margin: 10px 0 0 0;
+  background-color: #0456ad;
+  color: #fff;
   font-size: 16px;
+  margin:0;
 }
 
 .toggle-content:hover {
   cursor: pointer;
 }
+.list-service{
+  margin-top:10px;
+}
 
 .el-service {
   margin: 0 0 30px 0;
-  padding: 30px;
+  padding:30px;
   border: 1px solid #c7c7c7;
   box-shadow: 0 1px 1px #e7ebef;
-  background-color: #f8f8f9;
 }
 
 .list-event {
-  background-color: #fff;
-  border-top: 0;
+  background-color:#e7f4ff;
+  margin-top:20px;
 }
-
+.list-event > div{
+  padding:20px;
+}
+.empty-list{
+  margin:0 0 10px 0;
+  padding:20px;
+  background-color:#fff;
+}
 .el-event {
   display: table;
   position: relative;
   width: 100%;
   overflow: hidden;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-top: 0;
+  margin-bottom:15px;
 }
-
+.list-listener {
+  margin-top:10px;
+}
 .el-content p{
   margin:0 0 10px 0;
 }
 .el-content label {
   font-weight: bold;
   margin: 0 10px 0 0;
+  text-transform:capitalize;
 }
 
 .el-event > div {
@@ -101,15 +109,16 @@
 }
 
 .el-event .el-content {
-  padding: 10px;
+  padding:15px 10px;
 }
 
 .el-event h4 {
   font-size: 16px;
-  background-color: aliceblue;
-  border-bottom: 1px solid transparent;
   padding: 10px;
-  color: #0953a2;
+  color: #07386d;
+  background-color: #b3d7ff;
+  border-left: 1px solid #fff;
+  margin:0;
 }
 
 .el-event>div:nth-of-type(1) {
@@ -119,34 +128,27 @@
 .el-event>div:nth-of-type(2) {
   width: 55%;
 }
-.add-listener{
-  position:relative;
-  margin-bottom:10px;
-}
-.add-listener:before{
-  content:"+";
-  font-size:30px;
-  position:absolute;
-  top:-10px;
-  left:10px;
-}
 
-.list-listener li {
+.el-listener {
   padding: 10px;
   margin-bottom: 5px;
-  border: 1px solid #fff;
-  background-color:#f0f1f3;
+  border: 1px solid #d1e6fd;
+  background-color:#fff;
 }
-.list-listener li.add-listener:before{
-  content:"+";
-  font-size:30px;
-  position:absolute;
-  top:-3px;
-  left:10px;
+.el-listener p{
+  margin-right:70px;
 }
-.app-modal-form textarea {
-  min-height: 200px;
+.el-listener-control{
+  float:right;
+  margin-top:-35px;
 }
+/* todo */
+.el-listener-control button{
+  background-color:#eee;
+  border:0;
+  margin-left:10px;
+}
+
 
 /*******************************************************/
 
@@ -158,12 +160,12 @@
 .activity-head {
   color: #fff;
 }
-
 .activity-head span, .element-activity span {
   width: 20%;
   display: table-cell;
-  border: 1px solid #fff;
   padding: 10px 20px;
+  border-bottom: 1px solid #fff;
+  border-left: 1px solid #fff;
 }
 
 .element-activity {
@@ -177,17 +179,15 @@
 
 .element-activity-content {
   background-color: #e2f1ff;
-  padding:30px;
-  margin-bottom: 30px;
-  border:1px solid #fff;
+  margin:0 1px 30px 1px;
 }
 
-.element-activity-content > div {
-  padding:20px;
-  background-color: #fff;
-  border: 1px solid #d6e9fd;
+.element-activity-content{
+  padding:10px 20px;
+  box-shadow:0 1px 2px #e5e5e5 inset , 0 1px 2px #eee;
+  border:1px solid #d2d4d6;
+  background-color:#f7f8f9;
 }
-
 .element-activity-content label {
   font-weight: bold;
   margin: 10px 10px 0 0;

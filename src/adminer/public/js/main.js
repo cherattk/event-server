@@ -2,13 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import httpRequest from 'request';
 
-import EventMapManager from '../service/event-map-manager';
-import EventMap from '../service/event-map';
-import ListService from './list-service.js';
-import FormService from './form-service';
-import FormEvent from './form-event';
-import ContainerActivity from './container-activity';
-import FormListener from './form-listener.js';
+import EventMapManager from './service/event-map-manager';
+import EventMap from './service/event-map';
+
+// Setting module
+import ListService from './ui/setting.module/list-service';
+import FormService from './ui/setting.module/form-service';
+import FormEvent from './ui/setting.module/form-event';
+import FormListener from './ui/setting.module/form-listener.js';
+
+// Activity
+import ContainerActivity from './ui/activity.module/container-activity';
 
 function EventAdmin() {
   return (
@@ -47,7 +51,7 @@ function EventAdmin() {
   );
 }
 
-const dataUrl = 'http://www.localhost:4000/event-map';
+const dataUrl = 'http://localhost:4000/event-map';
 
 httpRequest.get(dataUrl, function (error, response, body) {
   if (response.statusCode === 200) {

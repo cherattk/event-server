@@ -16,6 +16,22 @@ ul {
   background-color: #3290f5;
   color:#fff;
 }
+
+.btn-add{
+  position:relative;
+  margin-bottom:10px;
+  padding-left:35px;
+  padding-right:15px;
+  border-radius:20px;
+}
+.btn-add:before{
+  content:"+";
+  font-size:26px;
+  position:absolute;
+  top:-8px;
+  left:13px;
+}
+
 .app-modal-form .modal-content {
   padding-left: 20px;
   padding-right: 20px; }

@@ -1,6 +1,6 @@
 import React from 'react';
-import EventMapManager from '../service/event-map-manager';
-import { UIEvent } from '../service/event';
+import EventMapManager from '../../service/event-map-manager';
+import { UIEvent } from '../../service/event';
 
 export default class FormEvent extends React.Component {
 
@@ -8,21 +8,35 @@ export default class FormEvent extends React.Component {
     super(props);
 
     this.initialState = {
-      event: {
-        id: '',
-        type : 'event',
-        event_name: '',
-        service_id: '',
-        description: ''
-      }
+      id: '',
+      type: 'event',
+      event_name: '',
+      service_id: '',
+      description: ''
     };
 
-    this.state = this.initialState;
+    this.state = {
+      event: this.initialState
+    };
+  }
+
+
+  componentDidMount(){
     var self = this;
     //===============================================
     UIEvent.addListener('show-event-form', function (uiEvent) {
+      var data = Object.assign({} , self.initialState);
+      if(typeof uiEvent.message.event_id !== 'undefined') {
+        // get event data to edition
+        data = EventMapManager.getData('event', uiEvent.message.event_id)
+      }
+      else if(typeof uiEvent.message.service_id !== 'undefined'){
+        // show form to add a new 
+        // event to service idetified by [service_id]
+        data.service_id = uiEvent.message.service_id;
+      }
       self.setState(function () {
-        return { event: EventMapManager.getData('event', uiEvent.message.id) };
+        return { event: data };
       }, function () {
         $(self.modal).modal('show');
       });
@@ -38,8 +52,8 @@ export default class FormEvent extends React.Component {
     });
   }
 
-  submitForm() {
-    let event = Object.assign({}, this.state.event);
+  saveForm(){  
+    let event = this.state.event;
     if (event.id) {
       // element already exists
       EventMapManager.updateData(event);
@@ -48,6 +62,10 @@ export default class FormEvent extends React.Component {
       EventMapManager.addData(event);
     }
     this.close();
+  }
+
+  submitForm(e) {
+    e.preventDefault();
   }
 
   formValue(event) {
@@ -73,10 +91,9 @@ export default class FormEvent extends React.Component {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
+
+            <form onSubmit={this.submitForm.bind(this)}>
             <div className="modal-body">
-
-              <form>
-
                 <div className="form-group">
                   <label htmlFor="event-name" className="col-form-label">Name:</label>
                   <input id="event-name" type="text" className="form-control"
@@ -93,15 +110,14 @@ export default class FormEvent extends React.Component {
                     onChange={this.formValue.bind(this)}></textarea>
                 </div>
 
-              </form>
-
             </div>
             <div className="modal-footer">
-              <button type="submit" className="btn btn-primary"
-                onClick={this.submitForm.bind(this)}>Save changes</button>
+            <button type="button" className="btn btn-primary"
+                    onClick={this.saveForm.bind(this)}>Save changes</button>
               <button type="button" className="btn btn-secondary"
                 onClick={this.close.bind(this)}>Close</button>
             </div>
+            </form>
           </div>
         </div>
       </div>
