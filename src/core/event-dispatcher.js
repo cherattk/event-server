@@ -46,7 +46,7 @@ function EventDispatcher(mapFilePath, HttpClient, Logging) {
    * check if query has a valid field : {event_id , message}
    * @param
    */
-  this.validQuery = function (query) {
+  this.validRequest = function (query) {
     const valid = (typeof query.event_id !== "undefined" && query.event_id)
       &&
       (typeof query.message !== "undefined" && !!query.message);
@@ -56,31 +56,31 @@ function EventDispatcher(mapFilePath, HttpClient, Logging) {
 
   this.dispatchEvent = function (Request, Response) {
 
-    var query = Object.assign({}, Request.body);
+    var requestBody = Object.assign({}, Request.body);
     
-    if (this.validQuery(query)) {
+    if (this.validRequest(requestBody)) {
 
-      var _validEvent = _eventMap.get(query.event_id);
-      var _Event = Object.assign({} , _validEvent , query.message);
+      var _validEvent = _eventMap.get(requestBody.event_id);
+      var _liveEvent = Object.assign({} , _validEvent , requestBody.message);
 
       if(_validEvent){
-        Logging.event(_Event);
+        Logging.infoEvent(_liveEvent);
       }
       else {
-        Logging.errorInvalidEvent(query);
+        Logging.errorInvalidEvent(requestBody);
       }
 
       const requestOption = { json: true };
 
-      var _Listener = this.getListener(query.event_id);
+      var _Listener = this.getListener(requestBody.event_id);
       for (let idx = 0, max = _Listener.length; idx < max; idx++) {
 
         requestOption.url = _Listener[idx].endpoint;
-        requestOption.form = JSON.stringify(query.message);
+        requestOption.form = JSON.stringify(requestBody.message);
 
         HttpClient.post(requestOption).catch((dispatchError) => {
-          Logging.errorDispatching({
-            event : _Event,
+          Logging.errorDispatch({
+            event : _liveEvent,
             listener : _Listener[idx],
             error: dispatchError,
           });
@@ -90,8 +90,8 @@ function EventDispatcher(mapFilePath, HttpClient, Logging) {
       Response.status(200).end();
     }
     else {
-      Logging.errorBadQuery(query);
-      // bad query
+      Logging.erroBadRequest(requestBody);
+      // bad requestBody
       Response.status(400).end();
     }
   };

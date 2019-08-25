@@ -48,11 +48,15 @@ export default class ListListener extends React.Component {
       list.push(<ElementListener key={_key} listener_id={listener.id} />);
     }, this);
 
-    return list;
+    return (
+      <ul className="list-listener">
+        {list}  
+      </ul>
+    );
   }
 
   emptyState() {
-    return <li className="empty-list">Empty Listener List</li>
+    return <div className="empty-list">Empty Listener List</div>
   }
 
   render() {
@@ -62,11 +66,9 @@ export default class ListListener extends React.Component {
           onClick={this.getForm.bind(this)}>
           Add Listener
       </button>
-        <ul className="list-listener">
-          {this.state.list_listener.length > 0 ?
-            this.renderList() : this.emptyState()
-          }
-        </ul>
+          
+        {this.state.list_listener.length > 0 ? this.renderList() : this.emptyState() }
+        
       </React.Fragment>
     );
   }

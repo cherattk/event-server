@@ -26,7 +26,6 @@ export default class ContainerActivity extends React.Component {
           </div>
           <div className="tab-pane fade" id="list-activity-error"
             role="tabpanel">
-            <h2>Error list</h2>
             <ListActivityError/>
           </div>
         </div>

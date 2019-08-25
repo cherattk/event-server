@@ -11,55 +11,60 @@
 
 const logFormat = {
 
-  getErrorFormat: function (content) {
-    let errorFormat = this.getEventFormat(content);
-    errorFormat.tag = 'error';
-    errorFormat.error_type = '';
-  },
-
-  getEventFormat: function (content) {
+  getErrorFormat: function () {
     return {
-      tag: 'event',
+      type: 'error',
       id: new Date().getTime(),
       time: new Date().toISOString(),
-      content: Object.assign({}, content)
+      error_type = ''
+    }
+  },
+
+  getEventFormat: function (liveEvent) {
+    return {
+      type: 'event',
+      id: new Date().getTime(),
+      time: new Date().toISOString(),
+      content: Object.assign({}, liveEvent)
     };
   }
 };
 
-const Logging = function (driver) {
+module.exports = function Logging(driver) {
 
   const _Driver = driver;
 
-  return {
-
-    event: (event) => {
-      let _log = logFormat.getEventFormat(event);
-      return _Driver.insert(_log);
-    },
-
-    errorInvalidEvent: (error) => {
-      let _log = logFormat.getErrorFormat(error);
-      _log.error_type = 'invalid-event';
-      return _Driver.insert(_log);
-    },
-
-    errorBadQuery: (error) => {
-      let _log = logFormat.getErrorFormat(error);
-      _log.error_type = 'bad-query';
-      return _Driver.insert(_log);
-    },
-
-    errorDispatching: (error) => {
-      let _log = logFormat.getErrorFormat(error);
-      _log.error_type = 'error-dispatching';
-      return _Driver.insert(_log);
-    },
-
-    fetch: (criteria) => {
-      return _Driver.find(criteria);
-    }
+  /**
+   * live event is a valid event with the a message
+   */
+  this.infoEvent = function (_liveEvent) {
+    let _log = logFormat.getEventFormat(_liveEvent);
+    return _Driver.insert(_log);
   }
-};
 
-module.exports = Logging;
+  this.errorInvalidEvent = function (requestBody) {
+    let _log = logFormat.getErrorFormat(requestBody);
+        _log.error_type = 'invalid-event';
+        _log.body = requestBody;
+    return _Driver.insert(_log);
+  }
+
+  this.erroBadRequest = function (requestBody) {
+    let _log = logFormat.getErrorFormat(requestBody);
+        _log.error_type = 'bad-request';
+        _log.body = requestBody;
+    return _Driver.insert(_log);
+  }
+
+  this.errorDispatch = function (requestBody) {
+    let _log = logFormat.getErrorFormat(requestBody);
+        _log.error_type = 'dispatch-error';
+        _log.body = requestBody;
+    return _Driver.insert(_log);
+  }
+
+  this.fetch = function (criteria) {
+    return _Driver.find(criteria);
+  }
+
+}

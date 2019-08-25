@@ -20,11 +20,10 @@
 }
 
 .app-brand {
-  border: 2px solid #fff;
+  border:1px solid #fff;
   text-transform: uppercase;
   color: #fff;
-  border-radius: 20px;
-  padding: 0 10px;
+  padding:0 10px;
 }
 
 .tab-content {
@@ -52,7 +51,7 @@
 .toggle-content {
   display: block;
   padding: 10px 20px;
-  background-color: #0456ad;
+  background-color: #258af7;
   color: #fff;
   font-size: 16px;
   margin:0;
@@ -60,6 +59,7 @@
 
 .toggle-content:hover {
   cursor: pointer;
+  background-color: #167ff1;
 }
 .list-service{
   margin-top:10px;
@@ -130,17 +130,18 @@
 }
 
 .el-listener {
-  padding: 10px;
+  padding:10px;
   margin-bottom: 5px;
   border: 1px solid #d1e6fd;
   background-color:#fff;
+  border-radius:5px;
 }
 .el-listener p{
-  margin-right:70px;
+  margin:0 70px 0 0;
 }
 .el-listener-control{
   float:right;
-  margin-top:-35px;
+  margin-top:-25px;
 }
 /* todo */
 .el-listener-control button{
@@ -201,6 +202,14 @@
   border: 1px solid #ddd;
 }
 
-.element-activity-content p {
-  margin: 0;
+.empty-panel{
+  padding:20px;
+  background-color:aliceblue;
+  text-align:center;
+  text-transform:capitalize;
+  color:#333;
+}
+.empty-panel .error-yet{
+  text-decoration:line-through;
+  margin-left:10px;
 }

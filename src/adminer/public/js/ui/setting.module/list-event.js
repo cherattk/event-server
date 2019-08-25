@@ -46,15 +46,18 @@ export default class ListEvent extends React.Component {
       let _key = (new Date()).getTime() + '-' + idx + '-event-list';
       list.push(<ElementEvent key={_key} event_id={event.id} />);
     });
-    return list;
+    return (
+      <ul className="list-event-content">
+        {list}
+      </ul>
+    );
   }
 
   renderEmptyState() {
-    return <li className="empty-list">Empty Event List</li>
+    return <div className="empty-list">Empty Event List</div>
   }
 
   render() {
-    var emptyList = this.state.list_event.length === 0;
     var divId = this.props.service_id + '-' + 'list-event';
     return (
       <div className="list-event">
@@ -74,9 +77,8 @@ export default class ListEvent extends React.Component {
           </button>
           </div>
 
-          <ul className="list-event-content">
-            {emptyList ? this.renderEmptyState() : this.renderList()}
-          </ul>
+          {this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState() }
+          
         </div>
       </div>
     );

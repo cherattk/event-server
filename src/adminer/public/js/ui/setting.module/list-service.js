@@ -29,7 +29,11 @@ export default class ListService extends React.Component {
   }
 
   renderEmptyState(){
-    return (<li className="empty-list">Empty Service List</li>);
+    return (
+      <div className="empty-panel">
+        <h3>There is no Registered Service</h3>
+      </div>
+    );
   }
 
   getServiceList(){
@@ -43,7 +47,12 @@ export default class ListService extends React.Component {
       let _key = (new Date()).getTime() + '-' +idx + '-service-list-';
       list.push(<ElementService key={_key} service_id={service.id}/>);
     }, this);
-    return list;
+
+    return (
+      <ul className="list-service">
+        {list}
+      </ul>  
+    );
   }
 
   getForm() {
@@ -57,11 +66,9 @@ export default class ListService extends React.Component {
           onClick={this.getForm.bind(this)}>
         New Service
       </button>
-      <div className="list-service">
-        <ul>
-          {this.state.list_service.length > 0 ? this.renderList() : this.renderEmptyState()}
-        </ul>        
-      </div>      
+        
+      {this.state.list_service.length > 0 ? this.renderList() : this.renderEmptyState()}       
+          
       </React.Fragment>
     );
   }

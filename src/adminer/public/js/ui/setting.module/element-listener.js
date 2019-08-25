@@ -1,6 +1,6 @@
 import React from 'react';
 import EventMapManager from '../../service/event-map-manager';
-import { UIEvent , DataEvent} from '../../service/event';
+import { UIEvent, DataEvent } from '../../service/event';
 
 export default class ElementListener extends React.Component {
 
@@ -8,15 +8,15 @@ export default class ElementListener extends React.Component {
     super(props);
 
     this.initialState = {
-      id : '',
-      type : 'listener',
-      event_id : '',
-      endpoint : '',
-      description : ''
+      id: '',
+      type: 'listener',
+      event_id: '',
+      endpoint: '',
+      description: ''
     };
 
     this.state = {
-      listener : this.initialState
+      listener: this.initialState
     }
   }
 
@@ -36,11 +36,11 @@ export default class ElementListener extends React.Component {
     // this.listenerArray.push(_listener_for_update);
   }
 
-  editElement(){
+  editElement() {
     UIEvent.dispatch('show-listener-form', { listener_id: this.props.listener_id });
   }
 
-  deleteElement(){
+  deleteElement() {
     let endpoint = this.state.listener.endpoint;
     // todo : use some modal component
     var msg = `You are going to delete the listener : + ${endpoint} \n Are you sure ?`;
@@ -54,17 +54,15 @@ export default class ElementListener extends React.Component {
     let listener = this.state.listener;
     return (
       <li id={listener.id} className="el-listener">
-        <div>
-          <p>{listener.endpoint}</p>
-          <div className="el-listener-control">
+        <p>{listener.endpoint}</p>
+        <div className="el-listener-control">
           <button type="button" onClick={this.editElement.bind(this)}>
             edit
           </button>
-          <button type="button" className="close" 
-                  onClick={this.deleteElement.bind(this)}>
+          <button type="button" className="close"
+            onClick={this.deleteElement.bind(this)}>
             <span aria-hidden="true">&times;</span>
-          </button>          
-          </div>
+          </button>
         </div>
       </li>
     );
