@@ -17,7 +17,6 @@ export default class ListActivity extends React.Component {
   }
 
   getList() {
-    return [];
     return [
       {
         id: 'l-123',

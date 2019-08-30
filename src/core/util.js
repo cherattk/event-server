@@ -1,6 +1,6 @@
 /**
  * @module Util
- * @copyright Copyright (c) 2018-2019 cheratt karim
+ * @copyright Copyright (c) 2019-present cheratt karim
  * @license MIT Licence
  */
 

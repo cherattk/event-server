@@ -56,12 +56,13 @@ export default class ElementListener extends React.Component {
       <li id={listener.id} className="el-listener">
         <p>{listener.endpoint}</p>
         <div className="el-listener-control">
-          <button type="button" onClick={this.editElement.bind(this)}>
-            edit
+          <button type="button" className="btn btn-primary"
+                onClick={this.editElement.bind(this)}>
+            E
           </button>
-          <button type="button" className="close"
-            onClick={this.deleteElement.bind(this)}>
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn btn-danger"
+                onClick={this.deleteElement.bind(this)}>
+            D
           </button>
         </div>
       </li>

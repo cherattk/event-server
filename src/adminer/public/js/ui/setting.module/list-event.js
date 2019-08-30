@@ -41,10 +41,11 @@ export default class ListEvent extends React.Component {
 
   renderList() {
     var list = [];
+    var self = this;
     // return event list
     this.state.list_event.forEach(function (event, idx) {
       let _key = (new Date()).getTime() + '-' + idx + '-event-list';
-      list.push(<ElementEvent key={_key} event_id={event.id} />);
+      list.push(<ElementEvent key={_key} event_id={event.id} service_name={self.props.service_name}/>);
     });
     return (
       <ul className="list-event-content">

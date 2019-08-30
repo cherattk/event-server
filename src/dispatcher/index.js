@@ -20,8 +20,8 @@ Server.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 const appConfig = require('../../config/app.config');
 const RequestPromise = require('request-promise-native');
 
-const EventDispatcher = require('../src/core/event-dispatcher').EventDispatcher;
-const Dispatcher= new EventDispatcher(
+const EventDispatcher = require('../core/event-dispatcher').EventDispatcher;
+const Dispatcher= EventDispatcher(
   appConfig.EventMapFile,
   RequestPromise,
   appConfig.Logging

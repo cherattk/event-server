@@ -37,10 +37,10 @@ export default class ElementEvent extends React.Component {
     this.listenerArray.push(_listener_for_update);
   }
 
-  componentWillUnmount(){
-      this.listenerArray.forEach(element_id => {
-        DataEvent.removeListener(element_id);
-      });
+  componentWillUnmount() {
+    this.listenerArray.forEach(element_id => {
+      DataEvent.removeListener(element_id);
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -71,7 +71,10 @@ export default class ElementEvent extends React.Component {
     return (
       <li key={event.id} className="el-event">
         <div>
-          <h4> Event </h4>
+          <h4>
+            <span>Service : {this.props.service_name}</span>
+            <span>Event : {event.event_name}</span>
+          </h4>
           <div className="el-content">
             <p>
               <label>id :</label>{event.id}
@@ -97,7 +100,7 @@ export default class ElementEvent extends React.Component {
         <div>
           <h4>Listeners</h4>
           <div className="el-content">
-            <ListListener event_id={this.state.event.id}/>
+            <ListListener event_id={this.state.event.id} />
           </div>
         </div>
 

@@ -30,7 +30,7 @@ function loadListenerMap(filePath) {
   return EventListenerMap;
 }
 
-function EventDispatcher(mapFilePath, HttpClient, Logging) {
+function __EventDispatcher(mapFilePath, HttpClient, Logging) {
 
   const _eventMap = loadListenerMap(mapFilePath);
 
@@ -57,40 +57,48 @@ function EventDispatcher(mapFilePath, HttpClient, Logging) {
   this.dispatchEvent = function (Request, Response) {
 
     var requestBody = Object.assign({}, Request.body);
-    
+
     if (this.validRequest(requestBody)) {
-
-      var _validEvent = _eventMap.get(requestBody.event_id);
-      var _liveEvent = Object.assign({} , _validEvent , requestBody.message);
-
-      if(_validEvent){
+      
+      if (_eventMap.has(requestBody.event_id)) {
+        var _validEvent = _eventMap.get(requestBody.event_id);
+        var _liveEvent = {
+          event_name: _validEvent.event_name,
+          event_id: requestBody.event_id,
+          event_message: requestBody.message,
+        };
         Logging.infoEvent(_liveEvent);
+
+        var _Listener = this.getListener(requestBody.event_id);
+        for (let idx = 0, max = _Listener.length; idx < max; idx++) {
+
+          HttpClient.post({
+            url: _Listener[idx].endpoint,
+            form: JSON.stringify(requestBody.message)
+          })
+            .catch((dispatchError) => {
+              Logging.errorDispatch({
+                event: _liveEvent,
+                listener: _Listener[idx],
+                error: dispatchError,
+              });
+            });
+
+        } // end loop
+
+        Response.status(200).end();
       }
       else {
-        Logging.errorInvalidEvent(requestBody);
-      }
-
-      const requestOption = { json: true };
-
-      var _Listener = this.getListener(requestBody.event_id);
-      for (let idx = 0, max = _Listener.length; idx < max; idx++) {
-
-        requestOption.url = _Listener[idx].endpoint;
-        requestOption.form = JSON.stringify(requestBody.message);
-
-        HttpClient.post(requestOption).catch((dispatchError) => {
-          Logging.errorDispatch({
-            event : _liveEvent,
-            listener : _Listener[idx],
-            error: dispatchError,
-          });
+        Logging.errorInvalidEvent({
+          request_body : requestBody
         });
+        Response.status(400).end();
       }
-
-      Response.status(200).end();
     }
     else {
-      Logging.erroBadRequest(requestBody);
+      Logging.erroBadRequest({
+        request_body : requestBody
+      });
       // bad requestBody
       Response.status(400).end();
     }
@@ -99,4 +107,9 @@ function EventDispatcher(mapFilePath, HttpClient, Logging) {
 };
 
 
-module.exports = { loadListenerMap, EventDispatcher };
+module.exports = {
+  loadListenerMap,
+  EventDispatcher: function (mapFile, HttpClient, Logging) {
+    return new __EventDispatcher(mapFile, HttpClient, Logging);
+  }
+};

@@ -101,7 +101,7 @@ export default class ElementService extends React.Component {
           </div>
         </div>
 
-        <ListEvent service_id={service.id} />
+        <ListEvent service_id={service.id} service_name={service.name}/>
       </li>
     );
   }
