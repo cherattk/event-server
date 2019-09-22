@@ -16,23 +16,19 @@ export default class ListEvent extends React.Component {
   componentDidMount() {
     var self = this;
     DataEvent.addListener('update-list-event', function (dataEvent) {
-      if (dataEvent.message.service_id === self.props.service_id) {
-        self.setState(function () {
-          return {
-            list_event:
-              EventMapManager.getDataList('event', { service_id: self.props.service_id })
-          }
-        });
-      }
+      return self.getEventList();
     });
 
     this.setState(function () {
-      return {
-        list_event:
-          EventMapManager.getDataList('event', { service_id: self.props.service_id })
-      }
+      return self.getEventList();
     });
 
+  }
+
+  getEventList() {
+    // var data = EventMapManager.getDataList('event', { service_id: _service_id });
+    var data = EventMapManager.getDataList('event');
+    return { list_event: data }
   }
 
   getEventForm() {
@@ -41,11 +37,10 @@ export default class ListEvent extends React.Component {
 
   renderList() {
     var list = [];
-    var self = this;
     // return event list
     this.state.list_event.forEach(function (event, idx) {
       let _key = (new Date()).getTime() + '-' + idx + '-event-list';
-      list.push(<ElementEvent key={_key} event_id={event.id} service_name={self.props.service_name}/>);
+      list.push(<ElementEvent key={_key} event_id={event.id} />);
     });
     return (
       <ul className="list-event-content">
@@ -59,28 +54,17 @@ export default class ListEvent extends React.Component {
   }
 
   render() {
-    var divId = this.props.service_id + '-' + 'list-event';
     return (
       <div className="list-event">
-        <h5 className="toggle-content dropdown-toggle"
-          data-toggle="collapse" data-target={'#' + divId}
-          role="button" aria-expanded="false" aria-controls="list-event">
-          {/* onClick={this.toggleEventList.bind(this)}> */}
-          Events
-        </h5>
-
-        <div id={divId} className="collapse">
-          <div className="list-control">
-            {/* add filter control later */}
-            <button type="button" className="btn btn-info btn-sm btn-add"
-              onClick={this.getEventForm.bind(this)}>
-              Add Event
+        <div className="list-control">
+          {/* add filter control later */}
+          <button type="button" className="btn btn-info btn-sm btn-add"
+            onClick={this.getEventForm.bind(this)}>
+            Add Event
           </button>
-          </div>
-
-          {this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState() }
-          
         </div>
+
+        {this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState()}
       </div>
     );
   }

@@ -1,5 +1,7 @@
 import React from 'react';
-// import RequestPromise from 'request-promise-native';
+import HttpClient from 'request';
+
+import config from '../../ui.config';
 
 export default class ListActivity extends React.Component {
 
@@ -8,56 +10,29 @@ export default class ListActivity extends React.Component {
     this.state = {
       list_activity_event: []
     }
+
   }
 
   componentDidMount() {
-    this.setState(function(){
-      return {list_activity_event : this.getList()}
-    });
+    this.fetchList();
   }
 
-  getList() {
-    return [
-      {
-        id: 'l-123',
-        type: 'event',
-        event_name: 'my-event',
-        service_name: 'my-service',
-        service_host: 'www.my-service.com',
-        time: '2019-08-22T16:38:37.751Z',
-        content: {
-          item_id: '1254',
-          item_qte: '1254',
-          toral: '12',
-        }
-      },
-      {
-        id: 'l-123',
-        type: 'event',
-        event_name: 'my-event',
-        service_name: 'my-service',
-        service_host: 'www.my-service.com',
-        time: '2019-08-22T16:38:37.751Z',
-        content: {
-          item_id: '1254',
-          item_qte: '1254',
-          toral: '12',
-        }
-      },
-      {
-        id: 'l-123',
-        type: 'event',
-        event_name: 'my-event',
-        service_name: 'my-service',
-        service_host: 'www.my-service.com',
-        time: '2019-08-22T16:38:37.751Z',
-        content: {
-          item_id: '1254',
-          item_qte: '1254',
-          toral: '12',
-        }
+  componentWillUnMount(){
+    // clearInterval(this.fetchDataInterval);
+  }
+
+  fetchList() {
+    var self = this;
+    var endpoint = config.activity_url + '?tag=event';
+    
+    HttpClient.get(endpoint , {json : true} , function(error, response, body){
+      if(error){
+        return console.log(error);
       }
-    ]
+      self.setState(function(){
+        return { list_activity_event: body.data }
+      });
+    });
   }
 
   emptyState() {
@@ -81,15 +56,15 @@ export default class ListActivity extends React.Component {
 
           <div className="element-activity"
             onClick={this.toggleElement.bind(this, key)}>
-            <span>{activity.service_name}</span>
-            <span>{activity.event_name}</span>
+            <span>{activity.event_content.service_name}</span>
+            <span>{activity.event_content.event_name}</span>
             <span>{activity.time}</span>
           </div>
 
           <div id={key} className="element-activity-content collapse">
           <label>message : </label>
           <pre>
-            {JSON.stringify(activity.content)}
+            {JSON.stringify(activity.event_content)}
           </pre>
           </div>
 

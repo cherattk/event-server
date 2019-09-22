@@ -14,7 +14,7 @@ function Adminer(mapFilePath, Logging) {
   // @see couchDB docs at https://docs.couchdb.org/en/2.3.1/api/database/find.html
   const _findCriteria = {
     selector: {
-      tag: { "$eq": "" }
+      type: { "$eq": "" }
     },
     limit: 30
   };
@@ -49,20 +49,20 @@ function Adminer(mapFilePath, Logging) {
    */
   this.getActivity = function (Request, Response) {
 
-    let activityTag = Request.query.tag || '';
-    if (!activityTag) {
+    let activityType = Request.query.tag || '';
+    if (!activityType) {
       Response.status(400).json({
         message: `bad request : you need to provide activity's tag value`
       });
       return;
     }
     let criteria = Object.assign({}, _findCriteria);
-    criteria.selector.tag = { "$eq": activityTag };
+    criteria.selector.type = { "$eq": activityType };
 
-    _logging.fetch(criteria).then(function (result) {
-      // todo : the results must be formated by a method implemented by the driver
+    _logging.fetch(criteria).then(function (data) {
+      // todo : the [data] must be formated by a method implemented by the driver
       // ex :  couchDBDriver.format(result) : Array<data : Object>
-      Response.json({ activity: activityTag, data: result.docs });
+      Response.json({ activity: activityType, data: data.docs });
     });
 
   }
@@ -82,6 +82,6 @@ function Adminer(mapFilePath, Logging) {
   }
 }
 
-module.exports =  function(config){
-  return new Adminer(config);
+module.exports = function(mapFilePath, Logging){
+  return new Adminer(mapFilePath, Logging);
 }

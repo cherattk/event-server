@@ -104932,8 +104932,6 @@ var _eventMapManager = _interopRequireDefault(require("./service/event-map-manag
 
 var _eventMap2 = _interopRequireDefault(require("./service/event-map"));
 
-var _listService = _interopRequireDefault(require("./ui/setting.module/list-service"));
-
 var _formService = _interopRequireDefault(require("./ui/setting.module/form-service"));
 
 var _formEvent = _interopRequireDefault(require("./ui/setting.module/form-event"));
@@ -104942,10 +104940,13 @@ var _formListener = _interopRequireDefault(require("./ui/setting.module/form-lis
 
 var _containerActivity = _interopRequireDefault(require("./ui/activity.module/container-activity"));
 
+var _containerSetting = _interopRequireDefault(require("./ui/setting.module/container-setting"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-// Setting module
-// Activity
+// ================
+// ================
+// ================
 function EventAdmin() {
   return _react["default"].createElement("div", {
     className: "app-content"
@@ -104983,7 +104984,7 @@ function EventAdmin() {
     id: "nav-setting",
     role: "tabpanel",
     "aria-labelledby": "nav-setting-tab"
-  }, _react["default"].createElement("h1", null, "Service Setting"), _react["default"].createElement(_listService["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
+  }, _react["default"].createElement("h1", null, "Service Setting"), _react["default"].createElement(_containerSetting["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
 }
 
 var dataUrl = 'http://localhost:4000/event-map';
@@ -104998,7 +104999,7 @@ _request["default"].get(dataUrl, function (error, response, body) {
   }
 });
 
-},{"./service/event-map":389,"./service/event-map-manager":388,"./ui/activity.module/container-activity":391,"./ui/setting.module/form-event":397,"./ui/setting.module/form-listener.js":398,"./ui/setting.module/form-service":399,"./ui/setting.module/list-service":402,"react":273,"react-dom":270,"request":288}],388:[function(require,module,exports){
+},{"./service/event-map":389,"./service/event-map-manager":388,"./ui/activity.module/container-activity":392,"./ui/setting.module/container-setting":395,"./ui/setting.module/form-event":399,"./ui/setting.module/form-listener.js":400,"./ui/setting.module/form-service":401,"react":273,"react-dom":270,"request":288}],388:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105121,11 +105122,41 @@ exports["default"] = _default;
  * It converts entities JSON Object to a Map Object to manage entities
  * @params {Object} entitiesMap
  */
+
+/**
+ * Entity Schema
+ * 
+ * event : { "id" , type , "service_id"  , "name", "description" }
+ * listener : { "id" , "event_id"  , "endpoint", "description" }
+ */
 module.exports = function EventMap(entities) {
   var prefix = {
     service: 's-',
     event: 'e-',
     listener: 'l-'
+  };
+  var _entitySchema = {
+    service: {
+      id: "",
+      type: "",
+      name: "",
+      host: "",
+      description: ""
+    },
+    event: {
+      id: "",
+      type: "",
+      service_id: "",
+      name: "",
+      description: ""
+    },
+    listener: {
+      id: "",
+      type: "",
+      event_id: "",
+      endpoint: "",
+      description: ""
+    }
   };
   var _eventMap = {
     service: new Map(),
@@ -105134,7 +105165,9 @@ module.exports = function EventMap(entities) {
   };
   ['service', 'event', 'listener'].map(function (type) {
     entities[type].map(function (item) {
-      _eventMap[type].set(item.id, item);
+      var _item = Object.assign(_entitySchema[type], item);
+
+      _eventMap[type].set(_item.id, _item);
     });
   });
 
@@ -105150,6 +105183,13 @@ module.exports = function EventMap(entities) {
     }
 
     var _map = _eventMap[entity.type];
+
+    if (entityData.type === 'event') {
+      var _serviceEntity = _eventMap.service.get(entityData.service_id);
+
+      entity.service_name = _serviceEntity.name;
+      entity.service_host = _serviceEntity.host;
+    }
 
     _map.set(entity.id, entity);
 
@@ -105174,7 +105214,7 @@ module.exports = function EventMap(entities) {
     if (type === 'service') {
       _eventMap.event.forEach(function (event) {
         if (event.service_id === id) {
-          event.service_id = '';
+          _eventMap.event["delete"](event.service_id);
         }
       });
     }
@@ -105182,7 +105222,7 @@ module.exports = function EventMap(entities) {
     if (type === 'event') {
       _eventMap.listener.forEach(function (listener) {
         if (listener.event_id === id) {
-          listener.event_id = '';
+          _eventMap.listener["delete"](listener.event_id);
         }
       });
     }
@@ -105255,6 +105295,21 @@ exports.DataEvent = DataEvent;
 });
 
 },{"eventset":152}],391:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+var app_url = 'http://localhost:4000';
+var activity_url = "".concat(app_url, "/activity");
+var _default = {
+  app_url: app_url,
+  activity_url: activity_url
+};
+exports["default"] = _default;
+
+},{}],392:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105337,7 +105392,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerActivity;
 
-},{"./list-activity-error":392,"./list-activity-event":393,"react":273}],392:[function(require,module,exports){
+},{"./list-activity-error":393,"./list-activity-event":394,"react":273}],393:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105346,6 +105401,10 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = void 0;
 
 var _react = _interopRequireDefault(require("react"));
+
+var _request = _interopRequireDefault(require("request"));
+
+var _ui = _interopRequireDefault(require("../../ui.config"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -105367,7 +105426,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-// import RequestPromise from 'request-promise-native';
 var ListActivityError =
 /*#__PURE__*/
 function (_React$Component) {
@@ -105388,44 +105446,30 @@ function (_React$Component) {
   _createClass(ListActivityError, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.setState(function () {
-        return {
-          list_activity_error: this.getList()
-        };
-      });
+      this.fetchList();
     }
   }, {
-    key: "getList",
-    value: function getList() {
-      return [{
-        id: 'l-123',
-        time: '2019-08-22T16:38:37.751Z',
-        type: 'error',
-        error_type: 'bad-request',
-        content: {
-          bad_field: 'bad-field-name',
-          message: 'machin'
+    key: "componentWillUnMount",
+    value: function componentWillUnMount() {}
+  }, {
+    key: "fetchList",
+    value: function fetchList() {
+      var self = this;
+      var endpoint = _ui["default"].activity_url + '?tag=error';
+
+      _request["default"].get(endpoint, {
+        json: true
+      }, function (error, response, body) {
+        if (error) {
+          return console.log(error);
         }
-      }, {
-        id: 'l-123',
-        time: '2019-08-22T16:38:37.751Z',
-        type: 'error',
-        error_type: 'invalid-event',
-        content: {
-          event_id: 'bad-event-id',
-          message: 'machin'
-        }
-      }, {
-        id: 'l-123',
-        time: '2019-08-22T16:38:37.751Z',
-        type: 'error',
-        error_type: 'dispatch-error',
-        content: {
-          event: 'object-LIVE-EVENT',
-          listener: 'object-LISTENER-OBJECT',
-          error: 'httpclient-catched-error'
-        }
-      }];
+
+        self.setState(function () {
+          return {
+            list_activity_error: body.data
+          };
+        });
+      });
     }
   }, {
     key: "emptyState",
@@ -105475,7 +105519,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivityError;
 
-},{"react":273}],393:[function(require,module,exports){
+},{"../../ui.config":391,"react":273,"request":288}],394:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105484,6 +105528,10 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = void 0;
 
 var _react = _interopRequireDefault(require("react"));
+
+var _request = _interopRequireDefault(require("request"));
+
+var _ui = _interopRequireDefault(require("../../ui.config"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -105505,7 +105553,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-// import RequestPromise from 'request-promise-native';
 var ListActivity =
 /*#__PURE__*/
 function (_React$Component) {
@@ -105526,52 +105573,31 @@ function (_React$Component) {
   _createClass(ListActivity, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.setState(function () {
-        return {
-          list_activity_event: this.getList()
-        };
-      });
+      this.fetchList();
     }
   }, {
-    key: "getList",
-    value: function getList() {
-      return [{
-        id: 'l-123',
-        type: 'event',
-        event_name: 'my-event',
-        service_name: 'my-service',
-        service_host: 'www.my-service.com',
-        time: '2019-08-22T16:38:37.751Z',
-        content: {
-          item_id: '1254',
-          item_qte: '1254',
-          toral: '12'
+    key: "componentWillUnMount",
+    value: function componentWillUnMount() {// clearInterval(this.fetchDataInterval);
+    }
+  }, {
+    key: "fetchList",
+    value: function fetchList() {
+      var self = this;
+      var endpoint = _ui["default"].activity_url + '?tag=event';
+
+      _request["default"].get(endpoint, {
+        json: true
+      }, function (error, response, body) {
+        if (error) {
+          return console.log(error);
         }
-      }, {
-        id: 'l-123',
-        type: 'event',
-        event_name: 'my-event',
-        service_name: 'my-service',
-        service_host: 'www.my-service.com',
-        time: '2019-08-22T16:38:37.751Z',
-        content: {
-          item_id: '1254',
-          item_qte: '1254',
-          toral: '12'
-        }
-      }, {
-        id: 'l-123',
-        type: 'event',
-        event_name: 'my-event',
-        service_name: 'my-service',
-        service_host: 'www.my-service.com',
-        time: '2019-08-22T16:38:37.751Z',
-        content: {
-          item_id: '1254',
-          item_qte: '1254',
-          toral: '12'
-        }
-      }];
+
+        self.setState(function () {
+          return {
+            list_activity_event: body.data
+          };
+        });
+      });
     }
   }, {
     key: "emptyState",
@@ -105596,10 +105622,10 @@ function (_React$Component) {
         }, _react["default"].createElement("div", {
           className: "element-activity",
           onClick: this.toggleElement.bind(this, key)
-        }, _react["default"].createElement("span", null, activity.service_name), _react["default"].createElement("span", null, activity.event_name), _react["default"].createElement("span", null, activity.time)), _react["default"].createElement("div", {
+        }, _react["default"].createElement("span", null, activity.event_content.service_name), _react["default"].createElement("span", null, activity.event_content.event_name), _react["default"].createElement("span", null, activity.time)), _react["default"].createElement("div", {
           id: key,
           className: "element-activity-content collapse"
-        }, _react["default"].createElement("label", null, "message : "), _react["default"].createElement("pre", null, JSON.stringify(activity.content)))));
+        }, _react["default"].createElement("label", null, "message : "), _react["default"].createElement("pre", null, JSON.stringify(activity.event_content)))));
       }, this);
       return _react["default"].createElement("ul", {
         className: "list-activity"
@@ -105619,7 +105645,90 @@ function (_React$Component) {
 
 exports["default"] = ListActivity;
 
-},{"react":273}],394:[function(require,module,exports){
+},{"../../ui.config":391,"react":273,"request":288}],395:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _listService = _interopRequireDefault(require("./list-service"));
+
+var _listEvent = _interopRequireDefault(require("./list-event"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var ContainerSetting =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(ContainerSetting, _React$Component);
+
+  function ContainerSetting(props) {
+    _classCallCheck(this, ContainerSetting);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(ContainerSetting).call(this, props));
+  }
+
+  _createClass(ContainerSetting, [{
+    key: "render",
+    value: function render() {
+      return _react["default"].createElement("div", null, _react["default"].createElement("nav", null, _react["default"].createElement("div", {
+        className: "nav nav-tabs",
+        id: "nav-activity",
+        role: "tablist"
+      }, _react["default"].createElement("a", {
+        className: "nav-item nav-link active",
+        "data-toggle": "tab",
+        href: "#container-list-service",
+        role: "tab",
+        "aria-selected": "true"
+      }, "Services"), _react["default"].createElement("a", {
+        className: "nav-item nav-link",
+        "data-toggle": "tab",
+        href: "#container-list-event",
+        role: "tab",
+        "aria-selected": "false"
+      }, "Events"))), _react["default"].createElement("div", {
+        className: "tab-content"
+      }, _react["default"].createElement("div", {
+        className: "tab-pane fade show active",
+        id: "container-list-service",
+        role: "tabpanel"
+      }, _react["default"].createElement(_listService["default"], null)), _react["default"].createElement("div", {
+        className: "tab-pane fade",
+        id: "container-list-event",
+        role: "tabpanel"
+      }, _react["default"].createElement(_listEvent["default"], null))));
+    }
+  }]);
+
+  return ContainerSetting;
+}(_react["default"].Component);
+
+exports["default"] = ContainerSetting;
+
+},{"./list-event":402,"./list-service":404,"react":273}],396:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105745,7 +105854,7 @@ function (_React$Component) {
       return _react["default"].createElement("li", {
         key: event.id,
         className: "el-event"
-      }, _react["default"].createElement("div", null, _react["default"].createElement("h4", null, _react["default"].createElement("span", null, "Service : ", this.props.service_name), _react["default"].createElement("span", null, "Event : ", event.event_name)), _react["default"].createElement("div", {
+      }, _react["default"].createElement("div", null, _react["default"].createElement("h4", null, _react["default"].createElement("span", null, "Event : "), _react["default"].createElement("span", null, event.event_name)), _react["default"].createElement("div", {
         className: "el-content"
       }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "id :"), event.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "name :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
         className: "el-control"
@@ -105757,7 +105866,10 @@ function (_React$Component) {
         className: "btn btn-danger btn-sm",
         type: "button",
         onClick: this.deleteEvent.bind(this)
-      }, "Delete Event")))), _react["default"].createElement("div", null, _react["default"].createElement("h4", null, "Listeners"), _react["default"].createElement("div", {
+      }, "Delete Event"), _react["default"].createElement("button", {
+        className: "btn btn-info btn-sm",
+        type: "button"
+      }, "Add Listener")))), _react["default"].createElement("div", null, _react["default"].createElement("h4", null, "Listeners"), _react["default"].createElement("div", {
         className: "el-content"
       }, _react["default"].createElement(_listListener["default"], {
         event_id: this.state.event.id
@@ -105770,7 +105882,7 @@ function (_React$Component) {
 
 exports["default"] = ElementEvent;
 
-},{"../../service/event":390,"../../service/event-map-manager":388,"./list-listener":401,"react":273}],395:[function(require,module,exports){
+},{"../../service/event":390,"../../service/event-map-manager":388,"./list-listener":403,"react":273}],397:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105893,7 +106005,7 @@ function (_React$Component) {
 
 exports["default"] = ElementListener;
 
-},{"../../service/event":390,"../../service/event-map-manager":388,"react":273}],396:[function(require,module,exports){
+},{"../../service/event":390,"../../service/event-map-manager":388,"react":273}],398:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106038,10 +106150,7 @@ function (_React$Component) {
         className: "btn btn-danger btn-sm",
         type: "button",
         onClick: this.deleteService.bind(this)
-      }, "Delete Service"))), _react["default"].createElement(_listEvent["default"], {
-        service_id: service.id,
-        service_name: service.name
-      }));
+      }, "Delete Service"))));
     }
   }]);
 
@@ -106050,7 +106159,7 @@ function (_React$Component) {
 
 exports["default"] = ElementService;
 
-},{"../../service/event":390,"../../service/event-map-manager":388,"./list-event":400,"react":273}],397:[function(require,module,exports){
+},{"../../service/event":390,"../../service/event-map-manager":388,"./list-event":402,"react":273}],399:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106248,7 +106357,7 @@ function (_React$Component) {
 
 exports["default"] = FormEvent;
 
-},{"../../service/event":390,"../../service/event-map-manager":388,"react":273}],398:[function(require,module,exports){
+},{"../../service/event":390,"../../service/event-map-manager":388,"react":273}],400:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106437,7 +106546,7 @@ function (_React$Component) {
 
 exports["default"] = FormListener;
 
-},{"../../service/event":390,"../../service/event-map-manager":388,"react":273}],399:[function(require,module,exports){
+},{"../../service/event":390,"../../service/event-map-manager":388,"react":273}],401:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106644,7 +106753,7 @@ function (_React$Component) {
 
 exports["default"] = FormService;
 
-},{"../../service/event":390,"../../service/event-map-manager":388,"react":273}],400:[function(require,module,exports){
+},{"../../service/event":390,"../../service/event-map-manager":388,"react":273}],402:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106703,24 +106812,22 @@ function (_React$Component) {
       var self = this;
 
       _event.DataEvent.addListener('update-list-event', function (dataEvent) {
-        if (dataEvent.message.service_id === self.props.service_id) {
-          self.setState(function () {
-            return {
-              list_event: _eventMapManager["default"].getDataList('event', {
-                service_id: self.props.service_id
-              })
-            };
-          });
-        }
+        return self.getEventList();
       });
 
       this.setState(function () {
-        return {
-          list_event: _eventMapManager["default"].getDataList('event', {
-            service_id: self.props.service_id
-          })
-        };
+        return self.getEventList();
       });
+    }
+  }, {
+    key: "getEventList",
+    value: function getEventList() {
+      // var data = EventMapManager.getDataList('event', { service_id: _service_id });
+      var data = _eventMapManager["default"].getDataList('event');
+
+      return {
+        list_event: data
+      };
     }
   }, {
     key: "getEventForm",
@@ -106732,16 +106839,14 @@ function (_React$Component) {
   }, {
     key: "renderList",
     value: function renderList() {
-      var list = [];
-      var self = this; // return event list
+      var list = []; // return event list
 
       this.state.list_event.forEach(function (event, idx) {
         var _key = new Date().getTime() + '-' + idx + '-event-list';
 
         list.push(_react["default"].createElement(_elementEvent["default"], {
           key: _key,
-          event_id: event.id,
-          service_name: self.props.service_name
+          event_id: event.id
         }));
       });
       return _react["default"].createElement("ul", {
@@ -106758,26 +106863,15 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var divId = this.props.service_id + '-' + 'list-event';
       return _react["default"].createElement("div", {
         className: "list-event"
-      }, _react["default"].createElement("h5", {
-        className: "toggle-content dropdown-toggle",
-        "data-toggle": "collapse",
-        "data-target": '#' + divId,
-        role: "button",
-        "aria-expanded": "false",
-        "aria-controls": "list-event"
-      }, "Events"), _react["default"].createElement("div", {
-        id: divId,
-        className: "collapse"
       }, _react["default"].createElement("div", {
         className: "list-control"
       }, _react["default"].createElement("button", {
         type: "button",
         className: "btn btn-info btn-sm btn-add",
         onClick: this.getEventForm.bind(this)
-      }, "Add Event")), this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState()));
+      }, "Add Event")), this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState());
     }
   }]);
 
@@ -106786,7 +106880,7 @@ function (_React$Component) {
 
 exports["default"] = ListEvent;
 
-},{"../../service/event":390,"../../service/event-map-manager":388,"./element-event":394,"react":273}],401:[function(require,module,exports){
+},{"../../service/event":390,"../../service/event-map-manager":388,"./element-event":396,"react":273}],403:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106896,11 +106990,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      return _react["default"].createElement(_react["default"].Fragment, null, _react["default"].createElement("button", {
-        type: "button",
-        className: "btn btn-info btn-sm btn-add",
-        onClick: this.getForm.bind(this)
-      }, "Add Listener"), this.state.list_listener.length > 0 ? this.renderList() : this.emptyState());
+      return _react["default"].createElement(_react["default"].Fragment, null, this.state.list_listener.length > 0 ? this.renderList() : this.emptyState());
     }
   }]);
 
@@ -106909,7 +106999,7 @@ function (_React$Component) {
 
 exports["default"] = ListListener;
 
-},{"../../service/event":390,"../../service/event-map-manager":388,"./element-listener":395,"react":273}],402:[function(require,module,exports){
+},{"../../service/event":390,"../../service/event-map-manager":388,"./element-listener":397,"react":273}],404:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107034,4 +107124,4 @@ function (_React$Component) {
 
 exports["default"] = ListService;
 
-},{"../../service/event":390,"../../service/event-map-manager":388,"./element-service":396,"react":273}]},{},[387]);
+},{"../../service/event":390,"../../service/event-map-manager":388,"./element-service":398,"react":273}]},{},[387]);

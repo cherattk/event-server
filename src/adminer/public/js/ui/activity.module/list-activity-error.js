@@ -1,55 +1,38 @@
 import React from 'react';
-// import RequestPromise from 'request-promise-native';
+import HttpClient from 'request';
+
+import config from '../../ui.config';
 
 export default class ListActivityError extends React.Component {
+
 
   constructor(props) {
     super(props);
     this.state = {
       list_activity_error: []
     }
+
   }
 
   componentDidMount() {
-    this.setState(function () {
-      return { list_activity_error: this.getList() }
-    });
+    this.fetchList();
   }
 
-  getList() {
-    return [
-      {
-        id: 'l-123',
-        time: '2019-08-22T16:38:37.751Z',
-        type: 'error',
-        error_type: 'bad-request',
-        content: {
-          bad_field: 'bad-field-name',
-          message: 'machin',
-        }
-      },
-      {
-        id: 'l-123',
-        time: '2019-08-22T16:38:37.751Z',
-        type: 'error',
-        error_type: 'invalid-event',
-        content: {
-          event_id: 'bad-event-id',
-          message: 'machin',
-        }
-      },
-      {
-        id: 'l-123',
-        time: '2019-08-22T16:38:37.751Z',
-        type: 'error',
-        error_type: 'dispatch-error',
-        content: {
-          event: 'object-LIVE-EVENT',
-          listener: 'object-LISTENER-OBJECT',
-          error: 'httpclient-catched-error',
-        }
+  componentWillUnMount(){
+  }
+
+  fetchList() {
+    var self = this;
+    var endpoint = config.activity_url + '?tag=error';
+    
+    HttpClient.get(endpoint , {json : true} , function(error, response, body){
+      if(error){
+        return console.log(error);
       }
-    ];
+      self.setState(function(){
+        return { list_activity_error: body.data }
+      });
+    });
   }
 
   emptyState() {

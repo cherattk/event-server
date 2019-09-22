@@ -70,7 +70,7 @@ export default class ElementService extends React.Component {
   }
 
   render() {
-    let service = this.state.service;
+    var service = this.state.service;
     // let target_list_event = '#' + service.id + '-' + 'list-event';
     return (
       <li key={service.id} id={service.id} className="el-service">
@@ -101,7 +101,7 @@ export default class ElementService extends React.Component {
           </div>
         </div>
 
-        <ListEvent service_id={service.id} service_name={service.name}/>
+        {/* <ListEvent service_id={service.id} service_name={service.name}/> */}
       </li>
     );
   }

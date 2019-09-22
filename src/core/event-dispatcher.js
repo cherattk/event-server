@@ -20,7 +20,7 @@ function loadListenerMap(filePath) {
       event.listener = jsonContent.listener.filter(function (listener) {
         return (listener.event_id === event.id);
       });
-      // 2- set event object inot the Map<id , eventObject>
+      // 2- set event object into the Map<id , eventObject>
       EventListenerMap.set(event.id, event);
     });
   } catch (error) {
@@ -62,11 +62,9 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
       
       if (_eventMap.has(requestBody.event_id)) {
         var _validEvent = _eventMap.get(requestBody.event_id);
-        var _liveEvent = {
-          event_name: _validEvent.event_name,
-          event_id: requestBody.event_id,
+        var _liveEvent = Object.assign({
           event_message: requestBody.message,
-        };
+        } , _validEvent);
         Logging.infoEvent(_liveEvent);
 
         var _Listener = this.getListener(requestBody.event_id);
@@ -89,16 +87,12 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
         Response.status(200).end();
       }
       else {
-        Logging.errorInvalidEvent({
-          request_body : requestBody
-        });
+        Logging.errorInvalidEvent(requestBody);
         Response.status(400).end();
       }
     }
     else {
-      Logging.erroBadRequest({
-        request_body : requestBody
-      });
+      Logging.erroBadRequest(requestBody);
       // bad requestBody
       Response.status(400).end();
     }

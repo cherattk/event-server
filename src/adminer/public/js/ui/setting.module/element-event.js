@@ -72,8 +72,8 @@ export default class ElementEvent extends React.Component {
       <li key={event.id} className="el-event">
         <div>
           <h4>
-            <span>Service : {this.props.service_name}</span>
-            <span>Event : {event.event_name}</span>
+            <span>Event : </span>
+            <span>{event.event_name}</span>
           </h4>
           <div className="el-content">
             <p>
@@ -94,6 +94,10 @@ export default class ElementEvent extends React.Component {
                 onClick={this.deleteEvent.bind(this)}>
                 Delete Event
               </button>
+              <button className="btn btn-info btn-sm" type="button">
+                {/* onClick={this.getForm.bind(this)}> */}
+                Add Listener
+            </button>
             </div>
           </div>
         </div>

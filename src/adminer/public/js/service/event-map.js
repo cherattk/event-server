@@ -10,9 +10,23 @@
  * It converts entities JSON Object to a Map Object to manage entities
  * @params {Object} entitiesMap
  */
+
+/**
+ * Entity Schema
+ * 
+ * event : { "id" , type , "service_id"  , "name", "description" }
+ * listener : { "id" , "event_id"  , "endpoint", "description" }
+ */
+
 module.exports = function EventMap(entities) {
 
   const prefix = { service: 's-', event: 'e-', listener: 'l-' };
+
+  var _entitySchema = {
+    service: { id: "", type: "", name: "", host: "", description: "" },
+    event : { id : "" , type : "" , service_id: "" , name : "" , description : ""},
+    listener : { id : "" , type : "" , event_id: "" , endpoint : "" , description : ""}
+  };
 
   const _eventMap = {
     service: new Map(),
@@ -22,7 +36,8 @@ module.exports = function EventMap(entities) {
 
   ['service', 'event', 'listener'].map(function (type) {
     entities[type].map(function (item) {
-      _eventMap[type].set(item.id, item);
+      let _item = Object.assign(_entitySchema[type] , item);
+      _eventMap[type].set(_item.id, _item);
     });
   });
 
@@ -32,10 +47,16 @@ module.exports = function EventMap(entities) {
 
   this.setEntity = function (entityData) {
     var entity = Object.assign({}, entityData);
-    if(typeof entityData.id === 'undefined' || !entityData.id){
+    if (typeof entityData.id === 'undefined' || !entityData.id) {
       entity.id = this.generateID(entityData.type);
     }
     var _map = _eventMap[entity.type];
+
+    if (entityData.type === 'event') {
+      let _serviceEntity = _eventMap.service.get(entityData.service_id);
+      entity.service_name = _serviceEntity.name;
+      entity.service_host = _serviceEntity.host;
+    }
     _map.set(entity.id, entity);
     return entity;
   }
@@ -56,14 +77,14 @@ module.exports = function EventMap(entities) {
     if (type === 'service') {
       _eventMap.event.forEach(function (event) {
         if (event.service_id === id) {
-          event.service_id = '';
+          _eventMap.event.delete(event.service_id);
         }
       });
     }
     if (type === 'event') {
       _eventMap.listener.forEach(function (listener) {
         if (listener.event_id === id) {
-          listener.event_id = '';
+          _eventMap.listener.delete(listener.event_id);
         }
       });
     }
@@ -88,7 +109,7 @@ module.exports = function EventMap(entities) {
     if (field.length > 0) {
       _map.forEach(element => {
         let ok = true;
-        field.forEach(function(_field){
+        field.forEach(function (_field) {
           ok = ok && (element[_field] === criteria[_field]);
         });
         if (ok) {
@@ -96,7 +117,7 @@ module.exports = function EventMap(entities) {
         }
       });
     }
-    else{
+    else {
       // return all entries
       result = Array.from(_map.values());
     }

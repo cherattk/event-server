@@ -2,17 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import httpRequest from 'request';
 
+// ================
 import EventMapManager from './service/event-map-manager';
 import EventMap from './service/event-map';
 
-// Setting module
-import ListService from './ui/setting.module/list-service';
+// ================
 import FormService from './ui/setting.module/form-service';
 import FormEvent from './ui/setting.module/form-event';
 import FormListener from './ui/setting.module/form-listener.js';
 
-// Activity
+// ================
 import ContainerActivity from './ui/activity.module/container-activity';
+import ContainerSetting from './ui/setting.module/container-setting';
 
 function EventAdmin() {
   return (
@@ -40,7 +41,7 @@ function EventAdmin() {
         <div className="tab-pane fade" id="nav-setting"
           role="tabpanel" aria-labelledby="nav-setting-tab">
           <h1>Service Setting</h1>
-          <ListService />
+          <ContainerSetting />
         </div>
       </div>
 

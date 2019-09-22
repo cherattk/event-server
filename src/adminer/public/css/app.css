@@ -71,24 +71,25 @@
 .el-service {
   margin: 0 0 30px 0;
   padding:30px;
-  border: 1px solid #c7c7c7;
+  border: 1px solid #d1e4f9;
   box-shadow: 0 1px 1px #e7ebef;
+  background-color:#f5fbff;
+  border-radius:5px;
 }
 
 .list-event {
-  background-color:#e7f4ff;
-  margin-top:10px;
+  padding:15px;
 }
 .list-event-content{
   padding-bottom:10px;
-}
-.list-event > div{
-  margin:20px;
 }
 .empty-list{
   margin:0 0 10px 0;
   padding:20px;
   background-color:#fff;
+}
+.empty-list-listener{
+  background-color:#eee;
 }
 .el-event {
   position: relative;
@@ -127,18 +128,11 @@
   margin:0;
   text-transform:capitalize;
 }
-.el-event >div:nth-of-type(1) h4 span{
-  margin-right:10px;
-}
-.el-event >div:nth-of-type(1) h4 span:not(:first-child):before{
-  content : "/";
-  margin-right:10px;
-}
 .el-event >div:nth-of-type(2) h4{
   font-size: 16px;
-  padding: 10px;
+  padding:15px 20px;
   color: #07386d;
-  background-color: #e7f4ff;
+  background-color: #d9e9fb;
   margin:0 20px;
 }
 /* .el-event>div:nth-of-type(2) {
@@ -146,11 +140,12 @@
 } */
 
 .el-listener {
-  padding:10px;
+  padding:7px 10px;
   margin-bottom: 5px;
-  border:2px solid #d1e6fd;
+  border:1px solid #d1e6fd;
   background-color:#fff;
   border-radius:5px;
+  background-color:#e7f4ff;
 }
 .el-listener:hover{
   border-color:#b3d7ff;
@@ -178,6 +173,7 @@
 
 .activity-head {
   color: #fff;
+  text-transform:capitalize;
 }
 .activity-head span, .element-activity span {
   width: 20%;
@@ -203,9 +199,6 @@
 
 .element-activity-content{
   padding:10px 20px;
-  box-shadow:0 1px 2px #e5e5e5 inset , 0 1px 2px #eee;
-  border:1px solid #d2d4d6;
-  background-color:#f7f8f9;
 }
 .element-activity-content label {
   font-weight: bold;
