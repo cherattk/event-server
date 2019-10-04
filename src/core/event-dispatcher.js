@@ -12,16 +12,20 @@
  */
 function loadListenerMap(filePath) {
   // Map <event_id , eventObject>
-  const EventListenerMap = new Map();
+  const EventListenerMap = {
+    event : new Map(),
+    listener : new Map()
+  };
   try {
     const jsonContent = require(filePath);
     jsonContent.event.map(function (event) {
-      // 1- set Array of listeners into event object
-      event.listener = jsonContent.listener.filter(function (listener) {
-        return (listener.event_id === event.id);
+      // Set event map Map<id , eventObject>
+      EventListenerMap.event.set(event.id, event);
+      // Set event map Map<id , listenerArray>
+      var listenerArray = jsonContent.listener.filter(function (listener) {
+        return event.id === listener.id;
       });
-      // 2- set event object into the Map<id , eventObject>
-      EventListenerMap.set(event.id, event);
+      EventListenerMap.listener.set(event.id, listenerArray);
     });
   } catch (error) {
     // console.error(error);
@@ -35,9 +39,10 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
   const _eventMap = loadListenerMap(mapFilePath);
 
   this.getListener = function (event_id) {
-    var event = _eventMap.size > 0 /* if not empty map */ && _eventMap.get(event_id);
+    var event = _eventMap.event.size > 0 /* if not empty map */ 
+                && _eventMap.event.has(event_id);
     if (event) {
-      return event.listener;
+      return _eventMap.listener.get(event_id);
     }
     return [];
   };
@@ -59,13 +64,13 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
     var requestBody = Object.assign({}, Request.body);
 
     if (this.validRequest(requestBody)) {
-      
-      if (_eventMap.has(requestBody.event_id)) {
-        var _validEvent = _eventMap.get(requestBody.event_id);
-        var _liveEvent = Object.assign({
-          event_message: requestBody.message,
-        } , _validEvent);
-        Logging.infoEvent(_liveEvent);
+
+      if (_eventMap.event.has(requestBody.event_id)) {
+        var currentEvent = _eventMap.event.get(requestBody.event_id);
+        Logging.infoEvent({
+          event: currentEvent,
+          event_message: requestBody.message
+        });
 
         var _Listener = this.getListener(requestBody.event_id);
         for (let idx = 0, max = _Listener.length; idx < max; idx++) {
@@ -74,13 +79,13 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
             url: _Listener[idx].endpoint,
             form: JSON.stringify(requestBody.message)
           })
-            .catch((dispatchError) => {
-              Logging.errorDispatch({
-                event: _liveEvent,
-                listener: _Listener[idx],
-                error: dispatchError,
-              });
+          .catch((dispatchError) => {
+            Logging.errorDispatch({
+              event: currentEvent,
+              listener: _Listener[idx],
+              error: dispatchError,
             });
+          });
 
         } // end loop
 

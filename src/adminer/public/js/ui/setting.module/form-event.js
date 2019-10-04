@@ -1,6 +1,6 @@
 import React from 'react';
 import EventMapManager from '../../service/event-map-manager';
-import { UIEvent } from '../../service/event';
+import { UIEvent } from '../../service/ui-event';
 
 export default class FormEvent extends React.Component {
 
@@ -21,19 +21,14 @@ export default class FormEvent extends React.Component {
   }
 
 
-  componentDidMount(){
+  componentDidMount() {
     var self = this;
     //===============================================
     UIEvent.addListener('show-event-form', function (uiEvent) {
-      var data = Object.assign({} , self.initialState);
-      if(typeof uiEvent.message.event_id !== 'undefined') {
+      var data = Object.assign({}, self.initialState);
+      if (uiEvent.message && typeof uiEvent.message.event_id !== 'undefined') {
         // get event data to edition
         data = EventMapManager.getData('event', uiEvent.message.event_id)
-      }
-      else if(typeof uiEvent.message.service_id !== 'undefined'){
-        // show form to add a new 
-        // event to service idetified by [service_id]
-        data.service_id = uiEvent.message.service_id;
       }
       self.setState(function () {
         return { event: data };
@@ -52,8 +47,14 @@ export default class FormEvent extends React.Component {
     });
   }
 
-  saveForm(){  
+  saveForm() {
     let event = this.state.event;
+    if (!event.service_id) {
+      return alert('You must select a service that trigger the event');
+    }
+    if (!event.event_name) {
+      return alert('The event must have a name');
+    }
     if (event.id) {
       // element already exists
       EventMapManager.updateData(event);
@@ -71,6 +72,15 @@ export default class FormEvent extends React.Component {
   formValue(event) {
     this.state.event[event.target.name] = event.target.value;
     this.setState(this.state);
+  }
+
+  listService() {
+    let dataList = EventMapManager.getDataList('service', null).reverse();
+    var list = [];
+    dataList.forEach(function (service, idx) {
+      list.push(<option key={idx + '-opt-service'} value={service.id}>{service.name}</option>);
+    });
+    return list;
   }
 
   render() {
@@ -93,7 +103,20 @@ export default class FormEvent extends React.Component {
             </div>
 
             <form onSubmit={this.submitForm.bind(this)}>
-            <div className="modal-body">
+              <div className="modal-body">
+
+                <div className="form-group">
+                  <label htmlFor="event-service-id" className="col-form-label">Service:</label>
+                  <select id="event-service-id"
+                    className="custom-select"
+                    name="service_id"
+                    value={this.state.event.service_id}
+                    onChange={this.formValue.bind(this)} >
+                    <option value="">List of Services</option>
+                    {this.listService()}
+                  </select>
+                </div>
+
                 <div className="form-group">
                   <label htmlFor="event-name" className="col-form-label">Name:</label>
                   <input id="event-name" type="text" className="form-control"
@@ -110,13 +133,13 @@ export default class FormEvent extends React.Component {
                     onChange={this.formValue.bind(this)}></textarea>
                 </div>
 
-            </div>
-            <div className="modal-footer">
-            <button type="button" className="btn btn-primary"
-                    onClick={this.saveForm.bind(this)}>Save changes</button>
-              <button type="button" className="btn btn-secondary"
-                onClick={this.close.bind(this)}>Close</button>
-            </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-primary"
+                  onClick={this.saveForm.bind(this)}>Save changes</button>
+                <button type="button" className="btn btn-secondary"
+                  onClick={this.close.bind(this)}>Close</button>
+              </div>
             </form>
           </div>
         </div>

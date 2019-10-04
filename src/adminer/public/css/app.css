@@ -1,12 +1,138 @@
+html , body{
+  font-family: 'Rubik', sans-serif;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.theme-bg{
+  background-color: #278af3;
+  color:#fff;
+}
+
+.btn-add{
+  position:relative;
+  margin-bottom:10px;
+  padding-left:35px;
+  padding-right:15px;
+  border-radius:20px;
+  text-transform:capitalize;
+}
+.btn-add:before{
+  content:"+";
+  font-size:26px;
+  position:absolute;
+  top:-6px;
+  left:10px;
+}
+
+/************************************************************************
+OVERRIDE BOOTSTRAP
+**************************************************************************/
+.app-modal-form .modal-body,
+.app-modal-form .modal-header,
+.app-modal-form .modal-footer{
+  padding-left: 30px;
+  padding-right: 30px;
+  margin:1px;
+  }
+.app-modal-form .modal-header,
+.app-modal-form .modal-footer{
+  background-color:#eef6fd;
+}
+
+.app-modal-form .modal-header {
+  color: #0a53a2;
+}
+
+.app-modal-form .modal-footer {
+  justify-content: flex-start;
+}
+
+.app-modal-form label {
+  color: #0a53a2; }
+
+/* disabling bootstrap transition */
+.collapsing {
+  -webkit-transition: none;
+  transition: none;
+  display: none; }
+
+.element{
+  margin:20px 0;
+  border:0;/* override bootstrap .card class */
+}
+.element-card-header{
+  text-transform:capitalize;
+  border:0;
+  font-size:1rem;
+}
+.element-card-body{
+  border-radius:0 0 .25rem .25rem;
+  border:1px solid #ccc;
+  border-top:0;
+  box-shadow:0 1px 1px #eee;
+  background-color:#f8f9fa;
+}
+
+.element-content p{
+  margin:0 0 10px 0;
+}
+.element-content label {
+  font-weight: bold;
+  margin: 0 10px 0 0;
+  text-transform:capitalize;
+}
+.element-control {
+  padding: 10px 0;
+}
+
+.element-control button {
+  padding:3px 10px;
+  margin-right:10px;
+  font-size:.85rem;
+}
+
+.element-list{
+  border:1px solid #ddd;
+}
+.element-list p{
+  margin: 0 80px 0 0;
+  padding:5px;
+  text-decoration:underline;
+}
+.element-list-control{
+  float:right;
+  margin-top: -35px;
+}
+.element-list-control button{
+  margin-left:10px;
+  font-size:14px;
+  padding:2px 10px;
+  text-transform:capitalize;
+}
+
+/************************************************************************
+APPLICATION
+**************************************************************************/
 .app-container {
   padding: 0 0 100px 0;
 }
 
-.app-container .app-header {
-  padding: 10px 0;
-}
 .app-header{
   margin-bottom:50px;
+  padding: 10px 0;
+  background-color:#3381d4;
 }
 
 .app-logout-button {
@@ -41,16 +167,6 @@
   color:#fff;
 }
 
-/******************************************************/
-.el-control {
-  padding: 10px 0;
-}
-
-.el-control button {
-  min-width: 100px;
-  margin-right:10px;
-}
-
 .toggle-content {
   display: block;
   padding: 10px 20px;
@@ -64,25 +180,9 @@
   cursor: pointer;
   background-color: #167ff1;
 }
-.list-service{
-  margin-top:10px;
-}
 
-.el-service {
-  margin: 0 0 30px 0;
-  padding:30px;
-  border: 1px solid #d1e4f9;
-  box-shadow: 0 1px 1px #e7ebef;
-  background-color:#f5fbff;
-  border-radius:5px;
-}
+/*///////////////////////////////////////////////*/
 
-.list-event {
-  padding:15px;
-}
-.list-event-content{
-  padding-bottom:10px;
-}
 .empty-list{
   margin:0 0 10px 0;
   padding:20px;
@@ -91,81 +191,13 @@
 .empty-list-listener{
   background-color:#eee;
 }
-.el-event {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  margin-bottom:15px;
-  border:1px solid #ccc;
-  background-color:#fff;
-}
-.list-listener {
-  margin-top:10px;
-}
-.el-content p{
-  margin:0 0 10px 0;
-}
-.el-content label {
-  font-weight: bold;
-  margin: 0 10px 0 0;
-  text-transform:capitalize;
-}
-
-.el-event > div {
-  vertical-align: top;
-}
-
-.el-event .el-content {
-  padding:15px 20px;
-}
-
-.el-event >div:nth-of-type(1) h4 {
-  font-size: 16px;
-  padding:15px 20px;
-  color: #07386d;
-  background-color: #b3d7ff;
-  border: 1px solid #fff;
-  margin:0;
-  text-transform:capitalize;
-}
-.el-event >div:nth-of-type(2) h4{
-  font-size: 16px;
-  padding:15px 20px;
-  color: #07386d;
-  background-color: #d9e9fb;
-  margin:0 20px;
-}
-/* .el-event>div:nth-of-type(2) {
-  width: 55%;
-} */
-
-.el-listener {
-  padding:7px 10px;
-  margin-bottom: 5px;
-  border:1px solid #d1e6fd;
-  background-color:#fff;
-  border-radius:5px;
-  background-color:#e7f4ff;
-}
-.el-listener:hover{
-  border-color:#b3d7ff;
-}
-.el-listener p{
-  margin:0 70px 0 0;
-}
-.el-listener-control{
-  float:right;
-  margin-top:-25px;
-}
-.el-listener-control button{
-  margin-left:10px;
-  font-size:14px;
-  padding:2px 10px;
-  text-transform:capitalize;
-}
 
 /*******************************************************/
 
+.list-activity li{
+  border:1px solid #ccdff3;
+  border-top:0;
+}
 .activity-head, .element-activity {
   display: table;
   width: 100%;
@@ -179,13 +211,12 @@
   width: 20%;
   display: table-cell;
   padding: 10px 20px;
-  border-bottom: 1px solid #fff;
-  border-left: 1px solid #fff;
 }
 
 .element-activity {
   cursor: pointer;
   background-color: #e2f1ff;
+  color:#214265;
 }
 
 .element-activity:hover {
@@ -193,24 +224,22 @@
 }
 
 .element-activity-content {
-  background-color: #e2f1ff;
-  margin:0 1px 30px 1px;
+  background-color: #fff;
+  padding:20px;
+  border-top:1px solid #d5d5d5;
+  box-shadow:0 0 3px #ddd inset;
 }
 
-.element-activity-content{
-  padding:10px 20px;
-}
 .element-activity-content label {
   font-weight: bold;
-  margin: 10px 10px 0 0;
+  margin:0 0 5px 0;
   text-transform: capitalize;
   font-size: 14px;
 }
 
 .element-activity-content pre {
-  padding: 15px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  padding:0 10px;
+  color: #004085;
 }
 
 .empty-panel{

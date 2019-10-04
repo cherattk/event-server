@@ -2,7 +2,7 @@ import React from 'react';
 
 import ElementListener from './element-listener';
 import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/event';
+import { UIEvent, DataEvent } from '../../service/ui-event';
 
 export default class ListListener extends React.Component {
 
@@ -37,10 +37,6 @@ export default class ListListener extends React.Component {
     });
   }
 
-  getForm() {
-    UIEvent.dispatch('show-listener-form', { event_id: this.props.event_id });
-  }
-
   renderList() {
     var list = [];
     this.state.list_listener.forEach(function (listener, idx) {
@@ -48,28 +44,20 @@ export default class ListListener extends React.Component {
       list.push(<ElementListener key={_key} listener_id={listener.id} />);
     }, this);
 
-    return (
-      <ul className="list-listener">
-        {list}  
-      </ul>
-    );
-  }
-
-  emptyState() {
-    return <div className="empty-list">Empty Listener List</div>
+    return list;
   }
 
   render() {
     return (
-      <React.Fragment>
-        {/* <button type="button" className="btn btn-info btn-sm btn-add"
-          onClick={this.getForm.bind(this)}>
-          Add Listener
-      </button> */}
-          
-        {this.state.list_listener.length > 0 ? this.renderList() : this.emptyState() }
-        
-      </React.Fragment>
+      <div className="card element">
+        <h5 className="card-header element-card-header theme-bg"> Listeners </h5>
+        <ul className="list-group list-group-flush element-list">
+          {
+            this.state.list_listener.length > 0 ? this.renderList() :
+              <li className="empty-list">Empty Listener List</li>
+          }
+        </ul>
+      </div>
     );
   }
 }

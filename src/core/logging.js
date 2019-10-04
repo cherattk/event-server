@@ -9,11 +9,10 @@
  * Async Logging
  */
 
-const logFormat = function (_type) {
+const defaultLog = function () {
   return {
-    type: _type,
-    id: new Date().getTime(),
-    time: new Date().toISOString()
+    log_id: new Date().getTime(),
+    log_time: new Date().toISOString()
   }
 }
 
@@ -24,30 +23,31 @@ function Logging(driver) {
   /**
    * live event is a valid event with the a message
    */
-  this.infoEvent = function (_liveEvent) {
-    let _log = logFormat('event');
-        _log.event_content = _liveEvent;
+  this.infoEvent = function (content) {
+    let _log = defaultLog();
+        _log.log_type = 'event';
+        _log.content = content;
     return _Driver.insert(_log);
   }
 
   this.errorInvalidEvent = function (content) {
-    let _log = logFormat('error');
-        _log.error_type = 'invalid-event';
-        _log.error_content = content;
+    let _log = defaultLog();
+        _log.log_type = 'invalid-event';
+        _log.content = content;
     return _Driver.insert(_log);
   }
 
   this.erroBadRequest = function (content) {
-    let _log = logFormat('error');
-        _log.error_type = 'bad-request';
-        _log.error_content = content;
+    let _log = defaultLog();
+        _log.log_type = 'bad-request';
+        _log.content = content;
     return _Driver.insert(_log);
   }
 
   this.errorDispatch = function (content) {
-    let _log = logFormat('error');
-        _log.error_type = 'dispatch-error';
-        _log.error_content = content;
+    let _log = defaultLog();
+        _log.log_type = 'dispatch-error';
+        _log.content = content;
     return _Driver.insert(_log);
   }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import ListListener from './list-listener';
 import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/event';
+import { UIEvent, DataEvent } from '../../service/ui-event';
 
 export default class ElementEvent extends React.Component {
 
@@ -52,7 +52,7 @@ export default class ElementEvent extends React.Component {
     }
   }
 
-  getForm() {
+  getEventForm() {
     UIEvent.dispatch('show-event-form', { event_id: this.props.event_id });
   }
 
@@ -66,16 +66,20 @@ export default class ElementEvent extends React.Component {
     }
   }
 
+  getListenerForm(){
+    var event_id = this.state.event.id;
+    UIEvent.dispatch('show-listener-form', { event_id : event_id });
+  }
+
   render() {
     let event = this.state.event;
     return (
-      <li key={event.id} className="el-event">
-        <div>
-          <h4>
-            <span>Event : </span>
-            <span>{event.event_name}</span>
-          </h4>
-          <div className="el-content">
+      <li key={event.id} className="card element">
+        
+        <h5 className="card-header element-card-header theme-bg">{event.event_name}</h5>
+        
+        <div className="card-body element-card-body">
+          <div className="element-content">
             <p>
               <label>id :</label>{event.id}
             </p>
@@ -85,27 +89,27 @@ export default class ElementEvent extends React.Component {
             <p>
               <label>description :</label>{event.description}
             </p>
-            <div className="el-control">
-              <button className="btn btn-primary btn-sm" type="button"
-                onClick={this.getForm.bind(this)}>
-                Edit Event
+          </div>
+
+          <div className="element-control">
+            <button className="btn btn-primary btn-sm" type="button"
+              onClick={this.getEventForm.bind(this)}>
+              Edit Event
               </button>
-              <button className="btn btn-danger btn-sm" type="button"
-                onClick={this.deleteEvent.bind(this)}>
-                Delete Event
+            <button className="btn btn-danger btn-sm" type="button"
+              onClick={this.deleteEvent.bind(this)}>
+              Delete Event
               </button>
-              <button className="btn btn-info btn-sm" type="button">
-                {/* onClick={this.getForm.bind(this)}> */}
-                Add Listener
+            <button className="btn btn-info btn-sm" type="button"
+              onClick={this.getListenerForm.bind(this)}>
+              Add Listener
             </button>
-            </div>
           </div>
-        </div>
-        <div>
-          <h4>Listeners</h4>
-          <div className="el-content">
-            <ListListener event_id={this.state.event.id} />
-          </div>
+          
+          <br/>
+          
+          <ListListener event_id={this.state.event.id} />
+
         </div>
 
       </li>

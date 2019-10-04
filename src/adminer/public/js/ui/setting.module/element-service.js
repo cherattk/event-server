@@ -1,29 +1,28 @@
 import React from 'react';
-import ListEvent from './list-event';
 import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/event';
+import { UIEvent, DataEvent } from '../../service/ui-event';
+
+
+const __initialState = {
+  id: "",
+  type: "service",
+  name: "",
+  host: "",
+  description: ""
+};
 
 export default class ElementService extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const self = this;
-    this.initialState = {
-      id: "",
-      type : "service",
-      name: "",
-      host: "",
-      description: ""
-    };
-
     this.state = {
-      service: [],
+      service: __initialState,
       showEventList: false
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     var self = this;
     DataEvent.addListener('update-element-service', function (uiEvent) {
       /**
@@ -37,12 +36,12 @@ export default class ElementService extends React.Component {
       }
     });
 
-    this.setState(function(){
-      return { service : EventMapManager.getData('service', self.props.service_id)}
+    this.setState(function () {
+      return { service: EventMapManager.getData('service', self.props.service_id) }
     });
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     // todo : remove eventset.listener
   }
 
@@ -59,7 +58,7 @@ export default class ElementService extends React.Component {
     UIEvent.dispatch('show-service-form', { id: this.state.service.id });
   }
 
-  deleteService(){
+  deleteService() {
     let event_name = this.state.service.service_name;
     // todo : use some modal component
     var msg = `You are going to delete the service : + ${event_name} \n Are you sure ?`;
@@ -73,23 +72,27 @@ export default class ElementService extends React.Component {
     var service = this.state.service;
     // let target_list_event = '#' + service.id + '-' + 'list-event';
     return (
-      <li key={service.id} id={service.id} className="el-service">
+      <li key={service.id} id={service.id} className="card element">
 
-        <div className="el-content">
-          <p>
-            <label>id</label> : {service.id}
-          </p>
-          <p>
-            <label>name</label> : {service.name}
-          </p>
-          <p>
-            <label>host</label> : {service.host}
-          </p>
-          <p>
-            <label>description</label> : {service.description}
-          </p>
+        <h5 className="card-header element-card-header theme-bg">{service.name}</h5>
 
-          <div className="el-control">
+        <div className="card-body element-card-body">
+          <div className="element-content">
+            <p>
+              <label>id</label> : {service.id}
+            </p>
+            <p>
+              <label>name</label> : {service.name}
+            </p>
+            <p>
+              <label>host</label> : {service.host}
+            </p>
+            <p>
+              <label>description</label> : {service.description}
+            </p>
+          </div>
+
+          <div className="element-control">
             <button className="btn btn-primary btn-sm" type="button"
               onClick={this.getServiceForm.bind(this)}>
               Edit Service
@@ -100,8 +103,6 @@ export default class ElementService extends React.Component {
             </button>
           </div>
         </div>
-
-        {/* <ListEvent service_id={service.id} service_name={service.name}/> */}
       </li>
     );
   }

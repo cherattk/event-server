@@ -4,7 +4,7 @@
  * @license MIT Licence
  */
 
-import {DataEvent} from './event';
+import {DataEvent} from './ui-event';
 import HttpClient from 'request';
 
 var _eventMap = null;

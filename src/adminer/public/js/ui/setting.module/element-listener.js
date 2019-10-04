@@ -1,6 +1,6 @@
 import React from 'react';
 import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/event';
+import { UIEvent, DataEvent } from '../../service/ui-event';
 
 export default class ElementListener extends React.Component {
 
@@ -53,15 +53,15 @@ export default class ElementListener extends React.Component {
   render() {
     let listener = this.state.listener;
     return (
-      <li id={listener.id} className="el-listener">
+      <li id={listener.id} className="list-group-item element-list-item">
         <p>{listener.endpoint}</p>
-        <div className="el-listener-control">
+        <div className="element-list-control">
           <button type="button" className="btn btn-primary"
-                onClick={this.editElement.bind(this)}>
+            onClick={this.editElement.bind(this)}>
             E
           </button>
           <button type="button" className="btn btn-danger"
-                onClick={this.deleteElement.bind(this)}>
+            onClick={this.deleteElement.bind(this)}>
             D
           </button>
         </div>

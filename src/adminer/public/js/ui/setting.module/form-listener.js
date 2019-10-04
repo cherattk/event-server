@@ -1,6 +1,6 @@
 import React from 'react';
 import EventMapManager from '../../service/event-map-manager';
-import { UIEvent } from '../../service/event';
+import { UIEvent } from '../../service/ui-event';
 
 export default class FormListener extends React.Component {
 
@@ -24,7 +24,7 @@ export default class FormListener extends React.Component {
 
       var data = Object.assign({} , self.initialState);
 
-      if(typeof uiEvent.message.listener_id !== 'undefined'){
+      if(uiEvent.message.listener_id){
         // get listener data to edit
         data = EventMapManager.getData('listener', uiEvent.message.listener_id);
       }
@@ -33,6 +33,7 @@ export default class FormListener extends React.Component {
         // listener to event identified by [event_id]
         data.event_id = uiEvent.message.event_id;
       }
+      
       self.setState(function () {
         return {listener : data}
 

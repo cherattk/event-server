@@ -1,7 +1,7 @@
 import React from 'react';
 import ElementEvent from './element-event';
 import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/event';
+import { UIEvent, DataEvent } from '../../service/ui-event';
 
 export default class ListEvent extends React.Component {
 
@@ -15,8 +15,10 @@ export default class ListEvent extends React.Component {
 
   componentDidMount() {
     var self = this;
-    DataEvent.addListener('update-list-event', function (dataEvent) {
-      return self.getEventList();
+    DataEvent.addListener('update-list-event', function () {
+      self.setState(function (){
+        return self.getEventList();
+      });
     });
 
     this.setState(function () {
@@ -28,11 +30,11 @@ export default class ListEvent extends React.Component {
   getEventList() {
     // var data = EventMapManager.getDataList('event', { service_id: _service_id });
     var data = EventMapManager.getDataList('event');
-    return { list_event: data }
+    return { list_event : data }
   }
 
   getEventForm() {
-    UIEvent.dispatch('show-event-form', { service_id: this.props.service_id });
+    UIEvent.dispatch('show-event-form');
   }
 
   renderList() {
@@ -55,17 +57,13 @@ export default class ListEvent extends React.Component {
 
   render() {
     return (
-      <div className="list-event">
-        <div className="list-control">
-          {/* add filter control later */}
-          <button type="button" className="btn btn-info btn-sm btn-add"
-            onClick={this.getEventForm.bind(this)}>
-            Add Event
+      <React.Fragment>
+        <button type="button" className="btn btn-info btn-sm btn-add"
+          onClick={this.getEventForm.bind(this)}>
+          new event
           </button>
-        </div>
-
         {this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState()}
-      </div>
+      </React.Fragment>
     );
   }
 }

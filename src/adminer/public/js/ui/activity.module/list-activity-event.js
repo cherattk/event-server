@@ -17,19 +17,19 @@ export default class ListActivity extends React.Component {
     this.fetchList();
   }
 
-  componentWillUnMount(){
+  componentWillUnMount() {
     // clearInterval(this.fetchDataInterval);
   }
 
   fetchList() {
     var self = this;
     var endpoint = config.activity_url + '?tag=event';
-    
-    HttpClient.get(endpoint , {json : true} , function(error, response, body){
-      if(error){
+
+    HttpClient.get(endpoint, { json: true }, function (error, response, body) {
+      if (error) {
         return console.log(error);
       }
-      self.setState(function(){
+      self.setState(function () {
         return { list_activity_event: body.data }
       });
     });
@@ -38,7 +38,7 @@ export default class ListActivity extends React.Component {
   emptyState() {
     return (
       <div className="empty-panel">
-        <h3>There is no logged events</h3>
+        <h3>There is no events yet</h3>
       </div>
     );
   }
@@ -56,16 +56,18 @@ export default class ListActivity extends React.Component {
 
           <div className="element-activity"
             onClick={this.toggleElement.bind(this, key)}>
-            <span>{activity.event_content.service_name}</span>
-            <span>{activity.event_content.event_name}</span>
-            <span>{activity.time}</span>
+            <span>{activity.content.event.service_name}</span>
+            <span>{activity.content.event.event_name}</span>
+            <span>{activity.log_time}</span>
           </div>
 
           <div id={key} className="element-activity-content collapse">
-          <label>message : </label>
-          <pre>
-            {JSON.stringify(activity.event_content)}
-          </pre>
+            <label>Content : </label>
+            <pre>
+              <code>
+                {JSON.stringify(activity.content , null , 2)}
+              </code>
+            </pre>
           </div>
 
         </li>
@@ -87,7 +89,7 @@ export default class ListActivity extends React.Component {
   render() {
     return (
       <React.Fragment>
-      { this.state.list_activity_event.length ? this.renderList() : this.emptyState() }
+        {this.state.list_activity_event.length ? this.renderList() : this.emptyState()}
       </React.Fragment>
     );
   }

@@ -34,13 +34,11 @@ function EventAdmin() {
 
         <div className="tab-pane fade show active" id="nav-activity"
           role="tabpanel" aria-labelledby="nav-activity-tab">
-          {/* <h1>Activities List</h1> */}
           <ContainerActivity />
         </div>
 
         <div className="tab-pane fade" id="nav-setting"
           role="tabpanel" aria-labelledby="nav-setting-tab">
-          <h1>Service Setting</h1>
           <ContainerSetting />
         </div>
       </div>

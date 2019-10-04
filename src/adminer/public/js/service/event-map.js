@@ -12,8 +12,7 @@
  */
 
 /**
- * Entity Schema
- * 
+ * Schema : 
  * event : { "id" , type , "service_id"  , "name", "description" }
  * listener : { "id" , "event_id"  , "endpoint", "description" }
  */
@@ -22,11 +21,11 @@ module.exports = function EventMap(entities) {
 
   const prefix = { service: 's-', event: 'e-', listener: 'l-' };
 
-  var _entitySchema = {
-    service: { id: "", type: "", name: "", host: "", description: "" },
-    event : { id : "" , type : "" , service_id: "" , name : "" , description : ""},
-    listener : { id : "" , type : "" , event_id: "" , endpoint : "" , description : ""}
-  };
+  // var _entitySchema = {
+  //   service: { id: "", type: "", name: "", host: "", description: "" },
+  //   event : { id : "" , type : "" , service_id: "" , name : "" , description : ""},
+  //   listener : { id : "" , type : "" , event_id: "" , endpoint : "" , description : ""}
+  // };
 
   const _eventMap = {
     service: new Map(),
@@ -36,7 +35,7 @@ module.exports = function EventMap(entities) {
 
   ['service', 'event', 'listener'].map(function (type) {
     entities[type].map(function (item) {
-      let _item = Object.assign(_entitySchema[type] , item);
+      let _item = Object.assign({} , item);
       _eventMap[type].set(_item.id, _item);
     });
   });
@@ -103,9 +102,10 @@ module.exports = function EventMap(entities) {
   this.getList = function (type, criteria) {
 
     var _map = _eventMap[type];
-    const field = !!criteria && Object.keys(criteria);
-
     var result = [];
+
+    // todo : buggy code , must be changed
+    const field = !!criteria && Object.keys(criteria);
     if (field.length > 0) {
       _map.forEach(element => {
         let ok = true;
