@@ -105472,6 +105472,13 @@ function (_React$Component) {
       $('#' + id).collapse('toggle');
     }
   }, {
+    key: "getDateFormat",
+    value: function getDateFormat(time) {
+      var __time = new Date(time).toLocaleString();
+
+      return __time;
+    }
+  }, {
     key: "renderList",
     value: function renderList() {
       var list = [];
@@ -105482,10 +105489,10 @@ function (_React$Component) {
         }, _react["default"].createElement("div", {
           className: "element-activity",
           onClick: this.toggleElement.bind(this, key)
-        }, _react["default"].createElement("span", null, activity.error_type), _react["default"].createElement("span", null, activity.time)), _react["default"].createElement("div", {
+        }, _react["default"].createElement("span", null, activity.error_type), _react["default"].createElement("span", null, this.getDateFormat(activity.log_time))), _react["default"].createElement("div", {
           id: key,
           className: "element-activity-content collapse"
-        }, _react["default"].createElement("label", null, "content : "), _react["default"].createElement("pre", null, JSON.stringify(activity.content)))));
+        }, _react["default"].createElement("label", null, "Request : "), _react["default"].createElement("pre", null, JSON.stringify(activity.content, null, 2)))));
       }, this);
       return _react["default"].createElement("ul", {
         className: "list-activity"
@@ -105598,6 +105605,13 @@ function (_React$Component) {
       $('#' + id).collapse('toggle');
     }
   }, {
+    key: "getDateFormat",
+    value: function getDateFormat(time) {
+      var __time = new Date(time).toLocaleString();
+
+      return __time;
+    }
+  }, {
     key: "renderList",
     value: function renderList() {
       var list = [];
@@ -105608,7 +105622,7 @@ function (_React$Component) {
         }, _react["default"].createElement("div", {
           className: "element-activity",
           onClick: this.toggleElement.bind(this, key)
-        }, _react["default"].createElement("span", null, activity.content.event.service_name), _react["default"].createElement("span", null, activity.content.event.event_name), _react["default"].createElement("span", null, activity.log_time)), _react["default"].createElement("div", {
+        }, _react["default"].createElement("span", null, activity.content.event.service_name), _react["default"].createElement("span", null, activity.content.event.event_name), _react["default"].createElement("span", null, " ", this.getDateFormat(activity.log_time))), _react["default"].createElement("div", {
           id: key,
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Content : "), _react["default"].createElement("pre", null, _react["default"].createElement("code", null, JSON.stringify(activity.content, null, 2))))));

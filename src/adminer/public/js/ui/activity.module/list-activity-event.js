@@ -47,10 +47,16 @@ export default class ListActivity extends React.Component {
     $('#' + id).collapse('toggle');
   }
 
+  getDateFormat(time) {
+    let __time = new Date(time).toLocaleString();
+    return __time;
+  }
+  
   renderList() {
     let list = [];
     this.state.list_activity_event.forEach(function (activity, idx) {
       let key = (new Date()).getTime() + '-' + idx + 'activity-event';
+
       list.push(
         <li key={key}>
 
@@ -58,7 +64,7 @@ export default class ListActivity extends React.Component {
             onClick={this.toggleElement.bind(this, key)}>
             <span>{activity.content.event.service_name}</span>
             <span>{activity.content.event.event_name}</span>
-            <span>{activity.log_time}</span>
+            <span> {this.getDateFormat(activity.log_time)}</span>
           </div>
 
           <div id={key} className="element-activity-content collapse">

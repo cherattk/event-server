@@ -149,10 +149,10 @@ APPLICATION
 }
 
 .app-brand {
-  border:1px solid #fff;
   text-transform: uppercase;
   color: #fff;
-  padding:0 10px;
+  padding:7px 14px;
+  background-color:#073c75;
 }
 
 .tab-content {

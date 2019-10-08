@@ -18,18 +18,18 @@ export default class ListActivityError extends React.Component {
     this.fetchList();
   }
 
-  componentWillUnMount(){
+  componentWillUnMount() {
   }
 
   fetchList() {
     var self = this;
     var endpoint = config.activity_url + '?tag=error';
-    
-    HttpClient.get(endpoint , {json : true} , function(error, response, body){
-      if(error){
+
+    HttpClient.get(endpoint, { json: true }, function (error, response, body) {
+      if (error) {
         return console.log(error);
       }
-      self.setState(function(){
+      self.setState(function () {
         return { list_activity_error: body.data }
       });
     });
@@ -49,6 +49,11 @@ export default class ListActivityError extends React.Component {
     $('#' + id).collapse('toggle');
   }
 
+  getDateFormat(time) {
+    let __time = new Date(time).toLocaleString();
+    return __time;
+  }
+
   renderList() {
     let list = [];
     this.state.list_activity_error.forEach(function (activity, idx) {
@@ -59,13 +64,15 @@ export default class ListActivityError extends React.Component {
           <div className="element-activity"
             onClick={this.toggleElement.bind(this, key)}>
             <span>{activity.error_type}</span>
-            <span>{activity.time}</span>
+            <span>
+              {this.getDateFormat(activity.log_time)}
+            </span>
           </div>
 
           <div id={key} className="element-activity-content collapse">
-            <label>content : </label>
+            <label>Request : </label>
             <pre>
-              {JSON.stringify(activity.content)}
+              {JSON.stringify(activity.content, null, 2)}
             </pre>
           </div>
 

@@ -23,7 +23,7 @@ function loadListenerMap(filePath) {
       EventListenerMap.event.set(event.id, event);
       // Set event map Map<id , listenerArray>
       var listenerArray = jsonContent.listener.filter(function (listener) {
-        return event.id === listener.id;
+        return event.id === listener.event_id;
       });
       EventListenerMap.listener.set(event.id, listenerArray);
     });
