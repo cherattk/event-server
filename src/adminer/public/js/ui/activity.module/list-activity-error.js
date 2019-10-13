@@ -82,7 +82,7 @@ export default class ListActivityError extends React.Component {
 
     return (
       <ul className="list-activity">
-        <li className="activity-head theme-bg">
+        <li className="activity-head theme-bg-blue">
           <span>error</span>
           <span>time</span>
         </li>

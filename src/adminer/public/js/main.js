@@ -22,7 +22,7 @@ function EventAdmin() {
         <div className="nav nav-tabs container" id="nav-tab" role="tablist">
           <a className="nav-item nav-link active" id="nav-activity-tab"
             data-toggle="tab" href="#nav-activity" role="tab"
-            aria-controls="nav-activity" aria-selected="true">Activities</a>
+            aria-controls="nav-activity" aria-selected="true">Activity</a>
 
           <a className="nav-item nav-link" id="nav-setting-tab"
             data-toggle="tab" href="#nav-setting" role="tab"
@@ -34,11 +34,13 @@ function EventAdmin() {
 
         <div className="tab-pane fade show active" id="nav-activity"
           role="tabpanel" aria-labelledby="nav-activity-tab">
+          <h1>System Activity</h1>
           <ContainerActivity />
         </div>
 
         <div className="tab-pane fade" id="nav-setting"
           role="tabpanel" aria-labelledby="nav-setting-tab">
+          <h1>Services Communication Setting</h1>
           <ContainerSetting />
         </div>
       </div>

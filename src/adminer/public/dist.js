@@ -26268,30 +26268,36 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":73,"minimalistic-assert":219,"minimalistic-crypto-utils":220}],150:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@^6.0.0",
+  "_args": [
+    [
+      "elliptic@6.5.0",
+      "C:\\Users\\karim\\Documents\\coding\\myapp\\eventset-component\\event-server"
+    ]
+  ],
+  "_development": true,
+  "_from": "elliptic@6.5.0",
   "_id": "elliptic@6.5.0",
   "_inBundle": false,
   "_integrity": "sha512-eFOJTMyCYb7xtE/caJ6JJu+bhi67WCYNbkGSknu20pmM8Ke/bqOfdnZWxyoGN26JgfxTbXrsCkEw4KheCT/KGg==",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "elliptic@^6.0.0",
+    "raw": "elliptic@6.5.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "^6.0.0",
+    "rawSpec": "6.5.0",
     "saveSpec": null,
-    "fetchSpec": "^6.0.0"
+    "fetchSpec": "6.5.0"
   },
   "_requiredBy": [
     "/browserify-sign",
     "/create-ecdh"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.0.tgz",
-  "_shasum": "2b8ed4c891b7de3200e14412a5b8248c7af505ca",
-  "_spec": "elliptic@^6.0.0",
-  "_where": "C:\\Users\\karim\\Documents\\coding\\myapp\\eventset-component\\event-server\\node_modules\\browserify-sign",
+  "_spec": "6.5.0",
+  "_where": "C:\\Users\\karim\\Documents\\coding\\myapp\\eventset-component\\event-server",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -26299,7 +26305,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -26309,7 +26314,6 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
-  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
@@ -26900,7 +26904,7 @@ function EventSet() {
 
   this.Topic = function (topicName) {
 
-    if (!Util.isValidString(topicName)) {
+    if (!Util.isString(topicName)) {
       throw new TypeError(`package eventset : EventSet.createTopic() : topicName argument must be of type string`);
     }
 
@@ -26939,7 +26943,7 @@ const Util = require('./util.js');
 
 function Topic(topicName) {
 
-  if (!Util.isValidString(topicName)) {
+  if (!Util.isString(topicName)) {
     throw new TypeError(`package eventset : Topic.Topic() : topicName argument must be of type string`);
   }
 
@@ -26972,7 +26976,7 @@ function Topic(topicName) {
    * @returns {Array<string>} An array of event names
    */
   this.addEvent = function (eventName) {
-    if (!Util.isValidString(eventName)) {
+    if (!Util.isString(eventName)) {
       throw new TypeError(`package eventset : Topic.addEvent() : eventName argument must be of type string`);
     }
 
@@ -26992,7 +26996,7 @@ function Topic(topicName) {
    */
 
   this.removeEvent = function (eventName) {
-    if (!Util.isValidString(eventName)) {
+    if (!Util.isString(eventName)) {
       throw new TypeError(`package eventset : Topic.removeEvent() : eventName argument must be of type string`);
     }
 
@@ -27013,7 +27017,7 @@ function Topic(topicName) {
    * @returns {string} listener identifier
    */
   this.addListener = function (eventName, listener) {
-    if (!Util.isValidString(eventName)) {
+    if (!Util.isString(eventName)) {
       throw new TypeError(`package eventset : Topic.addListener() : eventName argument must be a String type`);
     }
 
@@ -27043,7 +27047,7 @@ function Topic(topicName) {
    * @retruns {boolean} true if it succeeds, false otherwise
    */
   this.removeListener = function (listenerId) {
-    if (!Util.isValidString(listenerId)) {
+    if (!Util.isString(listenerId)) {
       throw new TypeError(`package eventset : Topic.removeListener() : listenerId argument must be of type string`);
     }
 
@@ -27065,7 +27069,7 @@ function Topic(topicName) {
    * @returns {undefined}
    */
   this.dispatch = function (eventName, message) {
-    if (!Util.isValidString(eventName)) {
+    if (!Util.isString(eventName)) {
       throw new TypeError(`package eventset : Topic.dispatch() : eventName argument must be of type string`);
     }
     var eventToken = Util.clean(eventName);
@@ -27074,11 +27078,7 @@ function Topic(topicName) {
                         event named ${eventName} does not exists`);
     }
 
-    var event = { 
-      topic: topicName, 
-      event: eventName,
-      message: null 
-    };
+    var event = { topic: topicName, event: eventName };
     
     // check if the message is of a valid type
     // JSON.stringify() returns undefined for "Function" and "undefined" value
@@ -27111,7 +27111,7 @@ const Util = {
    * @param {string} value to clean 
    */
   clean: function (input) {
-    if (!this.isValidString(input)) {
+    if (!this.isString(input)) {
       throw new TypeError(`package eventset : Util.clean(input) : input argument must be of type string`);
     }
     return input.toLowerCase().replace(/\s|\//g, "");
@@ -27121,7 +27121,7 @@ const Util = {
    * 
    * @param {string} input
    */
-  isValidString: function (input) {
+  isString: function (input) {
     return (typeof input === 'string' && input !== '');
   }
 
@@ -99255,29 +99255,35 @@ Store.prototype.getAllCookies = function(cb) {
 
 },{}],372:[function(require,module,exports){
 module.exports={
-  "_from": "tough-cookie@~2.4.3",
+  "_args": [
+    [
+      "tough-cookie@2.4.3",
+      "C:\\Users\\karim\\Documents\\coding\\myapp\\eventset-component\\event-server"
+    ]
+  ],
+  "_from": "tough-cookie@2.4.3",
   "_id": "tough-cookie@2.4.3",
   "_inBundle": false,
   "_integrity": "sha512-Q5srk/4vDM54WJsJio3XNn6K2sCG+CQ8G5Wz6bZhRZoAe/+TxjWB/GlFAnYEbkYVlON9FMk/fE3h2RLpPXo4lQ==",
   "_location": "/tough-cookie",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "tough-cookie@~2.4.3",
+    "raw": "tough-cookie@2.4.3",
     "name": "tough-cookie",
     "escapedName": "tough-cookie",
-    "rawSpec": "~2.4.3",
+    "rawSpec": "2.4.3",
     "saveSpec": null,
-    "fetchSpec": "~2.4.3"
+    "fetchSpec": "2.4.3"
   },
   "_requiredBy": [
-    "/request"
+    "/request",
+    "/request-promise-native"
   ],
   "_resolved": "https://registry.npmjs.org/tough-cookie/-/tough-cookie-2.4.3.tgz",
-  "_shasum": "53f36da3f47783b0925afa06ff9f3b165280f781",
-  "_spec": "tough-cookie@~2.4.3",
-  "_where": "C:\\Users\\karim\\Documents\\my-projects\\eventset-component\\eventset-server\\node_modules\\request",
+  "_spec": "2.4.3",
+  "_where": "C:\\Users\\karim\\Documents\\coding\\myapp\\eventset-component\\event-server",
   "author": {
     "name": "Jeremy Stashewsky",
     "email": "jstash@gmail.com"
@@ -99285,7 +99291,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/salesforce/tough-cookie/issues"
   },
-  "bundleDependencies": false,
   "contributors": [
     {
       "name": "Alexander Savin"
@@ -99310,7 +99315,6 @@ module.exports={
     "psl": "^1.1.24",
     "punycode": "^1.4.1"
   },
-  "deprecated": false,
   "description": "RFC6265 Cookies and Cookie Jar for node.js",
   "devDependencies": {
     "async": "^1.4.2",
@@ -104968,7 +104972,7 @@ function EventAdmin() {
     role: "tab",
     "aria-controls": "nav-activity",
     "aria-selected": "true"
-  }, "Activities"), _react["default"].createElement("a", {
+  }, "Activity"), _react["default"].createElement("a", {
     className: "nav-item nav-link",
     id: "nav-setting-tab",
     "data-toggle": "tab",
@@ -104983,12 +104987,12 @@ function EventAdmin() {
     id: "nav-activity",
     role: "tabpanel",
     "aria-labelledby": "nav-activity-tab"
-  }, _react["default"].createElement(_containerActivity["default"], null)), _react["default"].createElement("div", {
+  }, _react["default"].createElement("h1", null, "System Activity"), _react["default"].createElement(_containerActivity["default"], null)), _react["default"].createElement("div", {
     className: "tab-pane fade",
     id: "nav-setting",
     role: "tabpanel",
     "aria-labelledby": "nav-setting-tab"
-  }, _react["default"].createElement(_containerSetting["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
+  }, _react["default"].createElement("h1", null, "Services Communication Setting"), _react["default"].createElement(_containerSetting["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
 }
 
 var dataUrl = 'http://localhost:4000/event-map';
@@ -105497,7 +105501,7 @@ function (_React$Component) {
       return _react["default"].createElement("ul", {
         className: "list-activity"
       }, _react["default"].createElement("li", {
-        className: "activity-head theme-bg"
+        className: "activity-head theme-bg-blue"
       }, _react["default"].createElement("span", null, "error"), _react["default"].createElement("span", null, "time")), list);
     }
   }, {
@@ -105630,7 +105634,7 @@ function (_React$Component) {
       return _react["default"].createElement("ul", {
         className: "list-activity"
       }, _react["default"].createElement("li", {
-        className: "activity-head theme-bg"
+        className: "activity-head theme-bg-blue"
       }, _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "time")), list);
     }
   }, {
@@ -105864,8 +105868,8 @@ function (_React$Component) {
         key: event.id,
         className: "card element"
       }, _react["default"].createElement("h5", {
-        className: "card-header element-card-header theme-bg"
-      }, event.event_name), _react["default"].createElement("div", {
+        className: "card-header element-card-header theme-bg-blue"
+      }, "Event : ", event.event_name), _react["default"].createElement("div", {
         className: "card-body element-card-body"
       }, _react["default"].createElement("div", {
         className: "element-content"
@@ -105883,7 +105887,7 @@ function (_React$Component) {
         className: "btn btn-info btn-sm",
         type: "button",
         onClick: this.getListenerForm.bind(this)
-      }, "Add Listener")), _react["default"].createElement("br", null), _react["default"].createElement(_listListener["default"], {
+      }, "Add Listener")), _react["default"].createElement(_listListener["default"], {
         event_id: this.state.event.id
       })));
     }
@@ -106147,7 +106151,7 @@ function (_React$Component) {
         id: service.id,
         className: "card element"
       }, _react["default"].createElement("h5", {
-        className: "card-header element-card-header theme-bg"
+        className: "card-header element-card-header theme-bg-blue"
       }, service.name), _react["default"].createElement("div", {
         className: "card-body element-card-body"
       }, _react["default"].createElement("div", {
@@ -107039,9 +107043,9 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       return _react["default"].createElement("div", {
-        className: "card element"
+        className: "card element list-listener"
       }, _react["default"].createElement("h5", {
-        className: "card-header element-card-header theme-bg"
+        className: "card-header element-card-header theme-bg-green"
       }, " Listeners "), _react["default"].createElement("ul", {
         className: "list-group list-group-flush element-list"
       }, this.state.list_listener.length > 0 ? this.renderList() : _react["default"].createElement("li", {

@@ -74,7 +74,7 @@ export default class ElementService extends React.Component {
     return (
       <li key={service.id} id={service.id} className="card element">
 
-        <h5 className="card-header element-card-header theme-bg">{service.name}</h5>
+        <h5 className="card-header element-card-header theme-bg-blue">{service.name}</h5>
 
         <div className="card-body element-card-body">
           <div className="element-content">

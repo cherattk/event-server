@@ -82,7 +82,7 @@ export default class ListActivity extends React.Component {
 
     return (
       <ul className="list-activity">
-        <li className="activity-head theme-bg">
+        <li className="activity-head theme-bg-blue">
           <span>service</span>
           <span>event</span>
           <span>time</span>

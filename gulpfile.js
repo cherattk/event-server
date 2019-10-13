@@ -14,12 +14,12 @@ function build_js(){
 
 }
 
-function build_css() {
-  return src('./src/adminer/public/css/sass/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(dest('./src/adminer/public/css'));
-}
+// function build_css() {
+//   return src('./src/adminer/public/css/sass/*.scss')
+//     .pipe(sass().on('error', sass.logError))
+//     .pipe(dest('./src/adminer/public/css'));
+// }
 
-exports.css = build_css;
+// exports.css = build_css;
 exports.js = build_js;
-exports.default = series(build_js , build_css);
+exports.default = build_js;

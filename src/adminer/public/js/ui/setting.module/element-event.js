@@ -76,7 +76,9 @@ export default class ElementEvent extends React.Component {
     return (
       <li key={event.id} className="card element">
         
-        <h5 className="card-header element-card-header theme-bg">{event.event_name}</h5>
+        <h5 className="card-header element-card-header theme-bg-blue">
+        Event : {event.event_name}
+        </h5>
         
         <div className="card-body element-card-body">
           <div className="element-content">
@@ -105,8 +107,6 @@ export default class ElementEvent extends React.Component {
               Add Listener
             </button>
           </div>
-          
-          <br/>
           
           <ListListener event_id={this.state.event.id} />
 

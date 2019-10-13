@@ -15,8 +15,13 @@ ul {
   display: none;
 }
 
-.theme-bg{
+.theme-bg-blue{
   background-color: #278af3;
+  color:#fff;
+}
+
+.theme-bg-green{
+  background-color:#33984a;
   color:#fff;
 }
 
@@ -134,7 +139,9 @@ APPLICATION
   padding: 10px 0;
   background-color:#3381d4;
 }
-
+.app-header .container{
+  padding:0;
+}
 .app-logout-button {
   width: 100px;
 }

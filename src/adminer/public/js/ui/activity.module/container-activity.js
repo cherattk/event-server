@@ -20,6 +20,7 @@ export default class ContainerActivity extends React.Component {
           </div>
         </nav>
         <div className="tab-content">
+
           <div className="tab-pane fade show active" id="list-activity-event"
             role="tabpanel">
               <ListActivityEvent/>
