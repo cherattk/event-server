@@ -13,8 +13,8 @@
 function loadListenerMap(filePath) {
   // Map <event_id , eventObject>
   const EventListenerMap = {
-    event : new Map(),
-    listener : new Map()
+    event: new Map(),
+    listener: new Map()
   };
   try {
     const jsonContent = require(filePath);
@@ -39,8 +39,8 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
   const _eventMap = loadListenerMap(mapFilePath);
 
   this.getListener = function (event_id) {
-    var event = _eventMap.event.size > 0 /* if not empty map */ 
-                && _eventMap.event.has(event_id);
+    var event = _eventMap.event.size > 0 /* if not empty map */
+      && _eventMap.event.has(event_id);
     if (event) {
       return _eventMap.listener.get(event_id);
     }
@@ -59,49 +59,54 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
     return valid;
   };
 
-  this.dispatchEvent = function (Request, Response) {
+  this.dispatchEvent = function (event_id, eventMessage) {
+
+    var _eventObject = _eventMap.event.get(event_id);
+    // - LOG THE SUCCESSFULLY-PUBLISHED EVENT
+    Logging.infoEvent({
+      event: _eventObject,
+      event_message: eventMessage
+    });
+
+    var listListener = this.getListener(event_id);
+
+    for (let idx = 0, max = listListener.length; idx < max; idx++) {
+      HttpClient.post({
+        url: listListener[idx].endpoint,
+        form: JSON.stringify(eventMessage)
+      }).catch(function (dispatchError) {
+        Logging.errorDispatch({
+          event: _eventObject,
+          listener: listListener[idx],
+          error: dispatchError,
+        });
+      });
+    } // end loop
+  }
+
+  this.dispatchRequestController = function (Request, Response) {
 
     var requestBody = Object.assign({}, Request.body);
+    var event_id = requestBody.event_id;
+    var eventMessage = requestBody.message;
 
-    if (this.validRequest(requestBody)) {
-
-      if (_eventMap.event.has(requestBody.event_id)) {
-        var currentEvent = _eventMap.event.get(requestBody.event_id);
-        Logging.infoEvent({
-          event: currentEvent,
-          event_message: requestBody.message
-        });
-
-        var _Listener = this.getListener(requestBody.event_id);
-        for (let idx = 0, max = _Listener.length; idx < max; idx++) {
-
-          HttpClient.post({
-            url: _Listener[idx].endpoint,
-            form: JSON.stringify(requestBody.message)
-          })
-          .catch((dispatchError) => {
-            Logging.errorDispatch({
-              event: currentEvent,
-              listener: _Listener[idx],
-              error: dispatchError,
-            });
-          });
-
-        } // end loop
-
-        Response.status(200).end();
-      }
-      else {
-        Logging.errorInvalidEvent(requestBody);
-        Response.status(400).end();
-      }
-    }
-    else {
+    if (!this.validRequest(requestBody)) {
+      // - LOG BAD REQUEST
       Logging.erroBadRequest(requestBody);
-      // bad requestBody
       Response.status(400).end();
+      return;
     }
-  };
+    // - CHECK IF IS A VALID EVENT
+    if (!_eventMap.event.has(event_id)) {
+      Logging.errorInvalidEvent(requestBody);
+      Response.status(400).end();
+      return;
+    }
+    
+    this.dispatchEvent(event_id , eventMessage);
+
+    Response.status(200).end();
+  }
 
 };
 

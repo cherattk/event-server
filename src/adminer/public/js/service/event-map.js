@@ -76,14 +76,14 @@ module.exports = function EventMap(entities) {
     if (type === 'service') {
       _eventMap.event.forEach(function (event) {
         if (event.service_id === id) {
-          _eventMap.event.delete(event.service_id);
+          _eventMap.event.delete(event.id);
         }
       });
     }
     if (type === 'event') {
       _eventMap.listener.forEach(function (listener) {
         if (listener.event_id === id) {
-          _eventMap.listener.delete(listener.event_id);
+          _eventMap.listener.delete(listener.id);
         }
       });
     }

@@ -104930,11 +104930,30 @@ function extend() {
 },{}],387:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+var app_url = 'http://localhost:3000/adminer';
+var eventmap_url = "".concat(app_url, "/event-map");
+var activity_url = "".concat(app_url, "/activity");
+var _default = {
+  app_url: app_url,
+  eventmap_url: eventmap_url,
+  activity_url: activity_url
+};
+exports["default"] = _default;
+
+},{}],388:[function(require,module,exports){
+"use strict";
+
 var _react = _interopRequireDefault(require("react"));
 
 var _reactDom = _interopRequireDefault(require("react-dom"));
 
 var _request = _interopRequireDefault(require("request"));
+
+var _adminer = _interopRequireDefault(require("./adminer.config"));
 
 var _eventMapManager = _interopRequireDefault(require("./service/event-map-manager"));
 
@@ -104955,7 +104974,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 // ================
 // ================
 // ================
-function EventAdmin() {
+function Adminer() {
   return _react["default"].createElement("div", {
     className: "app-content"
   }, _react["default"].createElement("nav", {
@@ -104995,19 +105014,17 @@ function EventAdmin() {
   }, _react["default"].createElement("h1", null, "Services Communication Setting"), _react["default"].createElement(_containerSetting["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
 }
 
-var dataUrl = 'http://localhost:4000/event-map';
-
-_request["default"].get(dataUrl, function (error, response, body) {
+_request["default"].get(_adminer["default"].eventmap_url, function (error, response, body) {
   if (response.statusCode === 200) {
     var _eventMap = new _eventMap2["default"](JSON.parse(body));
 
     _eventMapManager["default"].setEventMap(_eventMap);
 
-    _reactDom["default"].render(_react["default"].createElement(EventAdmin, null), document.getElementById('app'));
+    _reactDom["default"].render(_react["default"].createElement(Adminer, null), document.getElementById('app'));
   }
 });
 
-},{"./service/event-map":389,"./service/event-map-manager":388,"./ui/activity.module/container-activity":392,"./ui/setting.module/container-setting":395,"./ui/setting.module/form-event":399,"./ui/setting.module/form-listener.js":400,"./ui/setting.module/form-service":401,"react":273,"react-dom":270,"request":288}],388:[function(require,module,exports){
+},{"./adminer.config":387,"./service/event-map":390,"./service/event-map-manager":389,"./ui/activity.module/container-activity":393,"./ui/setting.module/container-setting":396,"./ui/setting.module/form-event":400,"./ui/setting.module/form-listener.js":401,"./ui/setting.module/form-service":402,"react":273,"react-dom":270,"request":288}],389:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105018,6 +105035,8 @@ exports["default"] = void 0;
 var _uiEvent = require("./ui-event");
 
 var _request = _interopRequireDefault(require("request"));
+
+var _adminer = _interopRequireDefault(require("../adminer.config"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -105066,14 +105085,12 @@ var EventMapManager = {
   },
   ///////////////////////////////////////////////////////////
   deleteData: function deleteData(entity) {
-    var list = _eventMap.removeById(entity.type, entity.id);
+    _eventMap.removeById(entity.type, entity.id);
 
     var eventName = 'update-list-' + entity.type;
     var message = {};
 
-    if (entity.type === 'event') {
-      message.service_id = entity.service_id;
-    } else if (entity.type === 'listener') {
+    if (entity.type === 'listener') {
       message.event_id = entity.event_id;
     }
 
@@ -105100,7 +105117,7 @@ var EventMapManager = {
 
     _request["default"].post({
       json: true,
-      url: 'http://localhost:4000/event-map',
+      url: _adminer["default"].eventmap_url,
       form: {
         event_map: JSON.stringify(mapStore)
       }
@@ -105116,7 +105133,7 @@ var EventMapManager = {
 var _default = EventMapManager;
 exports["default"] = _default;
 
-},{"./ui-event":390,"request":288}],389:[function(require,module,exports){
+},{"../adminer.config":387,"./ui-event":392,"request":288}],390:[function(require,module,exports){
 "use strict";
 
 /**
@@ -105203,7 +105220,7 @@ module.exports = function EventMap(entities) {
     if (type === 'service') {
       _eventMap.event.forEach(function (event) {
         if (event.service_id === id) {
-          _eventMap.event["delete"](event.service_id);
+          _eventMap.event["delete"](event.id);
         }
       });
     }
@@ -105211,7 +105228,7 @@ module.exports = function EventMap(entities) {
     if (type === 'event') {
       _eventMap.listener.forEach(function (listener) {
         if (listener.event_id === id) {
-          _eventMap.listener["delete"](listener.event_id);
+          _eventMap.listener["delete"](listener.id);
         }
       });
     }
@@ -105255,7 +105272,21 @@ module.exports = function EventMap(entities) {
   };
 };
 
-},{}],390:[function(require,module,exports){
+},{}],391:[function(require,module,exports){
+"use strict";
+
+var Misc = {
+  getDateFormat: function getDateFormat(time) {
+    var _time = new Date(time);
+
+    var result = _time.toLocaleDateString() + ' - ' + _time.toLocaleTimeString();
+
+    return result;
+  }
+};
+module.exports = Misc;
+
+},{}],392:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105284,22 +105315,7 @@ exports.DataEvent = DataEvent;
   DataEvent.addEvent('update-element-' + type);
 });
 
-},{"eventset":152}],391:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-var app_url = 'http://localhost:4000';
-var activity_url = "".concat(app_url, "/activity");
-var _default = {
-  app_url: app_url,
-  activity_url: activity_url
-};
-exports["default"] = _default;
-
-},{}],392:[function(require,module,exports){
+},{"eventset":152}],393:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105382,7 +105398,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerActivity;
 
-},{"./list-activity-error":393,"./list-activity-event":394,"react":273}],393:[function(require,module,exports){
+},{"./list-activity-error":394,"./list-activity-event":395,"react":273}],394:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105394,7 +105410,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _request = _interopRequireDefault(require("request"));
 
-var _ui = _interopRequireDefault(require("../../ui.config"));
+var _adminer = _interopRequireDefault(require("../../adminer.config"));
+
+var _misc = _interopRequireDefault(require("../../service/misc"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -105445,7 +105463,7 @@ function (_React$Component) {
     key: "fetchList",
     value: function fetchList() {
       var self = this;
-      var endpoint = _ui["default"].activity_url + '?tag=error';
+      var endpoint = _adminer["default"].activity_url + '?tag=error';
 
       _request["default"].get(endpoint, {
         json: true
@@ -105476,13 +105494,6 @@ function (_React$Component) {
       $('#' + id).collapse('toggle');
     }
   }, {
-    key: "getDateFormat",
-    value: function getDateFormat(time) {
-      var __time = new Date(time).toLocaleString();
-
-      return __time;
-    }
-  }, {
     key: "renderList",
     value: function renderList() {
       var list = [];
@@ -105493,7 +105504,7 @@ function (_React$Component) {
         }, _react["default"].createElement("div", {
           className: "element-activity",
           onClick: this.toggleElement.bind(this, key)
-        }, _react["default"].createElement("span", null, activity.error_type), _react["default"].createElement("span", null, this.getDateFormat(activity.log_time))), _react["default"].createElement("div", {
+        }, _react["default"].createElement("span", null, activity.error_type), _react["default"].createElement("span", null, _misc["default"].getDateFormat(activity.log_time))), _react["default"].createElement("div", {
           id: key,
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Request : "), _react["default"].createElement("pre", null, JSON.stringify(activity.content, null, 2)))));
@@ -105516,7 +105527,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivityError;
 
-},{"../../ui.config":391,"react":273,"request":288}],394:[function(require,module,exports){
+},{"../../adminer.config":387,"../../service/misc":391,"react":273,"request":288}],395:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105528,7 +105539,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _request = _interopRequireDefault(require("request"));
 
-var _ui = _interopRequireDefault(require("../../ui.config"));
+var _adminer = _interopRequireDefault(require("../../adminer.config"));
+
+var _misc = _interopRequireDefault(require("../../service/misc"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -105580,7 +105593,7 @@ function (_React$Component) {
     key: "fetchList",
     value: function fetchList() {
       var self = this;
-      var endpoint = _ui["default"].activity_url + '?tag=event';
+      var endpoint = _adminer["default"].activity_url + '?tag=event';
 
       _request["default"].get(endpoint, {
         json: true
@@ -105609,13 +105622,6 @@ function (_React$Component) {
       $('#' + id).collapse('toggle');
     }
   }, {
-    key: "getDateFormat",
-    value: function getDateFormat(time) {
-      var __time = new Date(time).toLocaleString();
-
-      return __time;
-    }
-  }, {
     key: "renderList",
     value: function renderList() {
       var list = [];
@@ -105626,7 +105632,7 @@ function (_React$Component) {
         }, _react["default"].createElement("div", {
           className: "element-activity",
           onClick: this.toggleElement.bind(this, key)
-        }, _react["default"].createElement("span", null, activity.content.event.service_name), _react["default"].createElement("span", null, activity.content.event.event_name), _react["default"].createElement("span", null, " ", this.getDateFormat(activity.log_time))), _react["default"].createElement("div", {
+        }, _react["default"].createElement("span", null, activity.content.event.service_name), _react["default"].createElement("span", null, activity.content.event.event_name), _react["default"].createElement("span", null, " ", _misc["default"].getDateFormat(activity.log_time))), _react["default"].createElement("div", {
           id: key,
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Content : "), _react["default"].createElement("pre", null, _react["default"].createElement("code", null, JSON.stringify(activity.content, null, 2))))));
@@ -105649,7 +105655,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivity;
 
-},{"../../ui.config":391,"react":273,"request":288}],395:[function(require,module,exports){
+},{"../../adminer.config":387,"../../service/misc":391,"react":273,"request":288}],396:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105732,7 +105738,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerSetting;
 
-},{"./list-event":402,"./list-service":404,"react":273}],396:[function(require,module,exports){
+},{"./list-event":403,"./list-service":405,"react":273}],397:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105785,6 +105791,8 @@ function (_React$Component) {
         type: 'event',
         event_name: '',
         service_id: '',
+        service_name: '',
+        service_host: '',
         description: ''
       }
     };
@@ -105873,7 +105881,7 @@ function (_React$Component) {
         className: "card-body element-card-body"
       }, _react["default"].createElement("div", {
         className: "element-content"
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "id :"), event.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "name :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description)), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Published By :"), event.service_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description)), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -105898,7 +105906,7 @@ function (_React$Component) {
 
 exports["default"] = ElementEvent;
 
-},{"../../service/event-map-manager":388,"../../service/ui-event":390,"./list-listener":403,"react":273}],397:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./list-listener":404,"react":273}],398:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106021,7 +106029,7 @@ function (_React$Component) {
 
 exports["default"] = ElementListener;
 
-},{"../../service/event-map-manager":388,"../../service/ui-event":390,"react":273}],398:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],399:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106175,7 +106183,7 @@ function (_React$Component) {
 
 exports["default"] = ElementService;
 
-},{"../../service/event-map-manager":388,"../../service/ui-event":390,"react":273}],399:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],400:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106404,7 +106412,7 @@ function (_React$Component) {
 
 exports["default"] = FormEvent;
 
-},{"../../service/event-map-manager":388,"../../service/ui-event":390,"react":273}],400:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],401:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106593,7 +106601,7 @@ function (_React$Component) {
 
 exports["default"] = FormListener;
 
-},{"../../service/event-map-manager":388,"../../service/ui-event":390,"react":273}],401:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],402:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106775,7 +106783,7 @@ function (_React$Component) {
         ,
         name: "name",
         value: this.state.service.name,
-        placeholder: "ex: stcok manager",
+        placeholder: "ex: stock manager",
         onChange: this.formValue.bind(this)
       }), _react["default"].createElement("div", {
         className: "invalid-feedback"
@@ -106825,7 +106833,7 @@ function (_React$Component) {
 
 exports["default"] = FormService;
 
-},{"../../service/event-map-manager":388,"../../service/ui-event":390,"react":273}],402:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],403:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106889,6 +106897,12 @@ function (_React$Component) {
         });
       });
 
+      _uiEvent.DataEvent.addListener('update-list-service', function () {
+        self.setState(function () {
+          return self.getEventList();
+        });
+      });
+
       this.setState(function () {
         return self.getEventList();
       });
@@ -106921,16 +106935,14 @@ function (_React$Component) {
           event_id: event.id
         }));
       });
-      return _react["default"].createElement("ul", {
-        className: "list-event-content"
-      }, list);
+      return list;
     }
   }, {
     key: "renderEmptyState",
     value: function renderEmptyState() {
-      return _react["default"].createElement("div", {
-        className: "empty-list"
-      }, "Empty Event List");
+      return _react["default"].createElement("li", {
+        className: "empty-panel"
+      }, _react["default"].createElement("h3", null, "There is no registered Event"));
     }
   }, {
     key: "render",
@@ -106939,7 +106951,9 @@ function (_React$Component) {
         type: "button",
         className: "btn btn-info btn-sm btn-add",
         onClick: this.getEventForm.bind(this)
-      }, "new event"), this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState());
+      }, "new event"), _react["default"].createElement("ul", {
+        className: "list-event-content"
+      }, this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState()));
     }
   }]);
 
@@ -106948,7 +106962,7 @@ function (_React$Component) {
 
 exports["default"] = ListEvent;
 
-},{"../../service/event-map-manager":388,"../../service/ui-event":390,"./element-event":396,"react":273}],403:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-event":397,"react":273}],404:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107026,6 +107040,13 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "renderEmptyState",
+    value: function renderEmptyState() {
+      return _react["default"].createElement("li", {
+        className: "empty-panel"
+      }, _react["default"].createElement("p", null, "There is no registered Listener"));
+    }
+  }, {
     key: "renderList",
     value: function renderList() {
       var list = [];
@@ -107045,12 +107066,10 @@ function (_React$Component) {
       return _react["default"].createElement("div", {
         className: "card element list-listener"
       }, _react["default"].createElement("h5", {
-        className: "card-header element-card-header theme-bg-green"
+        className: "card-header element-card-header"
       }, " Listeners "), _react["default"].createElement("ul", {
         className: "list-group list-group-flush element-list"
-      }, this.state.list_listener.length > 0 ? this.renderList() : _react["default"].createElement("li", {
-        className: "empty-list"
-      }, "Empty Listener List")));
+      }, this.state.list_listener.length > 0 ? this.renderList() : this.renderEmptyState()));
     }
   }]);
 
@@ -107059,7 +107078,7 @@ function (_React$Component) {
 
 exports["default"] = ListListener;
 
-},{"../../service/event-map-manager":388,"../../service/ui-event":390,"./element-listener":397,"react":273}],404:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-listener":398,"react":273}],405:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107184,4 +107203,4 @@ function (_React$Component) {
 
 exports["default"] = ListService;
 
-},{"../../service/event-map-manager":388,"../../service/ui-event":390,"./element-service":398,"react":273}]},{},[387]);
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-service":399,"react":273}]},{},[388]);

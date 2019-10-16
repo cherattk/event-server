@@ -1,7 +1,7 @@
 import React from 'react';
 import HttpClient from 'request';
-
-import config from '../../ui.config';
+import config from '../../adminer.config';
+import Misc from '../../service/misc';
 
 export default class ListActivityError extends React.Component {
 
@@ -49,11 +49,6 @@ export default class ListActivityError extends React.Component {
     $('#' + id).collapse('toggle');
   }
 
-  getDateFormat(time) {
-    let __time = new Date(time).toLocaleString();
-    return __time;
-  }
-
   renderList() {
     let list = [];
     this.state.list_activity_error.forEach(function (activity, idx) {
@@ -65,7 +60,7 @@ export default class ListActivityError extends React.Component {
             onClick={this.toggleElement.bind(this, key)}>
             <span>{activity.error_type}</span>
             <span>
-              {this.getDateFormat(activity.log_time)}
+              {Misc.getDateFormat(activity.log_time)}
             </span>
           </div>
 

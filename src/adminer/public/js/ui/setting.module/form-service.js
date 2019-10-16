@@ -111,7 +111,7 @@ export default class FormService extends React.Component {
                     // className="form-control"
                     name="name"
                     value={this.state.service.name}
-                    placeholder="ex: stcok manager"
+                    placeholder="ex: stock manager"
                     onChange={this.formValue.bind(this)}/>
                   <div className="invalid-feedback">
                   Service name can not be empty.

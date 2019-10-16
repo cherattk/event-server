@@ -13,6 +13,8 @@ export default class ElementEvent extends React.Component {
         type: 'event',
         event_name: '',
         service_id: '',
+        service_name: '',
+        service_host: '',
         description: ''
       }
     };
@@ -82,11 +84,11 @@ export default class ElementEvent extends React.Component {
         
         <div className="card-body element-card-body">
           <div className="element-content">
-            <p>
+            {/* <p>
               <label>id :</label>{event.id}
-            </p>
+            </p> */}
             <p>
-              <label>name :</label>{event.event_name}
+              <label>Published By :</label>{event.service_name}
             </p>
             <p>
               <label>description :</label>{event.description}

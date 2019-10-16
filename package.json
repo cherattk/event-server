@@ -11,10 +11,9 @@
     "license": "MIT",
     "main": "index.js",
     "scripts": {
-        "dispatcher": "node ./src/dispatcher/index.js",
-        "adminer": "node ./src/adminer/index.js",
+        "start": "node ./src/index.js",
         "mocha": "node_modules/.bin/_mocha",
-        "test:unit": "mocha --colors test/unit/*.js"
+        "test:unit": "npm run mocha --colors test/unit/*.js"
     },
     "devDependencies": {
         "@babel/core": "^7.5.5",

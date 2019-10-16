@@ -1,7 +1,7 @@
 import React from 'react';
 import HttpClient from 'request';
-
-import config from '../../ui.config';
+import config from '../../adminer.config';
+import Misc from '../../service/misc';
 
 export default class ListActivity extends React.Component {
 
@@ -46,11 +46,6 @@ export default class ListActivity extends React.Component {
   toggleElement(id) {
     $('#' + id).collapse('toggle');
   }
-
-  getDateFormat(time) {
-    let __time = new Date(time).toLocaleString();
-    return __time;
-  }
   
   renderList() {
     let list = [];
@@ -64,7 +59,7 @@ export default class ListActivity extends React.Component {
             onClick={this.toggleElement.bind(this, key)}>
             <span>{activity.content.event.service_name}</span>
             <span>{activity.content.event.event_name}</span>
-            <span> {this.getDateFormat(activity.log_time)}</span>
+            <span> {Misc.getDateFormat(activity.log_time)}</span>
           </div>
 
           <div id={key} className="element-activity-content collapse">

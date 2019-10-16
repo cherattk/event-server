@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import httpRequest from 'request';
+import config from './adminer.config';
+
 
 // ================
 import EventMapManager from './service/event-map-manager';
@@ -15,7 +17,7 @@ import FormListener from './ui/setting.module/form-listener.js';
 import ContainerActivity from './ui/activity.module/container-activity';
 import ContainerSetting from './ui/setting.module/container-setting';
 
-function EventAdmin() {
+function Adminer() {
   return (
     <div className="app-content">
       <nav className="app-module-nav">
@@ -52,13 +54,11 @@ function EventAdmin() {
   );
 }
 
-const dataUrl = 'http://localhost:4000/event-map';
-
-httpRequest.get(dataUrl, function (error, response, body) {
+httpRequest.get(config.eventmap_url, function (error, response, body) {
   if (response.statusCode === 200) {
     const _eventMap = new EventMap(JSON.parse(body));
     EventMapManager.setEventMap(_eventMap);
-    ReactDOM.render(<EventAdmin />, document.getElementById('app'));
+    ReactDOM.render(<Adminer />, document.getElementById('app'));
   }
 });
 

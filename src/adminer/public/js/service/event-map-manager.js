@@ -6,6 +6,7 @@
 
 import {DataEvent} from './ui-event';
 import HttpClient from 'request';
+import config from '../adminer.config';
 
 var _eventMap = null;
 
@@ -47,16 +48,12 @@ const EventMapManager = {
 
   ///////////////////////////////////////////////////////////
   deleteData : function (entity) {
-    const list = _eventMap.removeById(entity.type , entity.id);
+    _eventMap.removeById(entity.type , entity.id);
     let eventName = 'update-list-' + entity.type;
     let message = {};
-    if(entity.type === 'event'){
-      message.service_id = entity.service_id;
-    }
-    else if(entity.type === 'listener'){
+    if(entity.type === 'listener'){
       message.event_id = entity.event_id;
     }
-
     DataEvent.dispatch(eventName , message);
     
     this.saveEventMap();
@@ -83,7 +80,7 @@ const EventMapManager = {
     
     HttpClient.post({
       json : true,
-      url : 'http://localhost:4000/event-map',
+      url : config.eventmap_url,
       form : {event_map : JSON.stringify(mapStore)}
     } , function cb(err,httpResponse,body){
       if(err){

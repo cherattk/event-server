@@ -16,7 +16,12 @@ export default class ListEvent extends React.Component {
   componentDidMount() {
     var self = this;
     DataEvent.addListener('update-list-event', function () {
-      self.setState(function (){
+      self.setState(function () {
+        return self.getEventList();
+      });
+    });
+    DataEvent.addListener('update-list-service', function () {
+      self.setState(function () {
         return self.getEventList();
       });
     });
@@ -30,7 +35,7 @@ export default class ListEvent extends React.Component {
   getEventList() {
     // var data = EventMapManager.getDataList('event', { service_id: _service_id });
     var data = EventMapManager.getDataList('event');
-    return { list_event : data }
+    return { list_event: data }
   }
 
   getEventForm() {
@@ -44,15 +49,15 @@ export default class ListEvent extends React.Component {
       let _key = (new Date()).getTime() + '-' + idx + '-event-list';
       list.push(<ElementEvent key={_key} event_id={event.id} />);
     });
-    return (
-      <ul className="list-event-content">
-        {list}
-      </ul>
-    );
+    return list;
   }
 
   renderEmptyState() {
-    return <div className="empty-list">Empty Event List</div>
+    return (
+      <li className="empty-panel">
+        <h3>There is no registered Event</h3>
+      </li>
+    );
   }
 
   render() {
@@ -62,7 +67,9 @@ export default class ListEvent extends React.Component {
           onClick={this.getEventForm.bind(this)}>
           new event
           </button>
-        {this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState()}
+        <ul className="list-event-content">
+          {this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState()}
+        </ul>
       </React.Fragment>
     );
   }

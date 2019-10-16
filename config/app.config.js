@@ -1,6 +1,5 @@
 const path = require('path');
 
-
 const db_address = `http://localhost:5984/event_db`;
 
 const loggingDriver = require('../src/driver/couchdb')(db_address);

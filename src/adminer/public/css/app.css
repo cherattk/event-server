@@ -188,19 +188,17 @@ APPLICATION
   background-color: #167ff1;
 }
 
-/*///////////////////////////////////////////////*/
-
-.empty-list{
-  margin:0 0 10px 0;
-  padding:20px;
-  background-color:#fff;
+/**********************************************************/
+.list-listener{
+  box-shadow:0 1px 1px #eee;
 }
-.empty-list-listener{
-  background-color:#eee;
+.list-listener  .card-header{
+  background-color:#eae9e9;
+  border:1px solid #d1d1d1;
+  border-bottom:0;
 }
 
 /*******************************************************/
-
 .list-activity li{
   border:1px solid #ccdff3;
   border-top:0;
@@ -259,4 +257,7 @@ APPLICATION
 .empty-panel .error-yet{
   text-decoration:line-through;
   margin-left:10px;
+}
+.list-listener .empty-panel{
+  background-color:#fff;
 }
