@@ -6,6 +6,10 @@ const loggingDriver = require('../src/driver/couchdb')(db_address);
 
 const Logging = require('../src/core/logging')(loggingDriver);
 
-const EventMapFile = path.resolve('./config/dev-data-event-map.json');
+// PROD
+// const EventMapFile = path.resolve('./config/data-eventmap.json');
+
+// DEV
+const EventMapFile = path.resolve('./dev/data-eventmap.json');
 
 module.exports = { Logging ,  EventMapFile };
