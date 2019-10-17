@@ -27,7 +27,7 @@ const Dispatcher = EventDispatcher(
 );
 
 /**************** ADMINER ************************************/
-Server.use('/adminer', express.static('./src/adminer/public'));
+Server.use('/', express.static('./src/adminer/public'));
 
 Server.get('/adminer/event-map', Adminer.getEventMap.bind(Adminer));
 

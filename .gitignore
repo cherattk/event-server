@@ -4,3 +4,4 @@ node_modules/
 draft/
 todo.md
 dev/
+config/*data-eventmap.json

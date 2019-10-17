@@ -105881,7 +105881,7 @@ function (_React$Component) {
         className: "card-body element-card-body"
       }, _react["default"].createElement("div", {
         className: "element-content"
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Published By :"), event.service_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description)), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Published By :"), event.service_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -105895,7 +105895,7 @@ function (_React$Component) {
         className: "btn btn-info btn-sm",
         type: "button",
         onClick: this.getListenerForm.bind(this)
-      }, "Add Listener")), _react["default"].createElement(_listListener["default"], {
+      }, "Add Listener"))), _react["default"].createElement(_listListener["default"], {
         event_id: this.state.event.id
       })));
     }
@@ -106160,11 +106160,11 @@ function (_React$Component) {
         className: "card element"
       }, _react["default"].createElement("h5", {
         className: "card-header element-card-header theme-bg-blue"
-      }, service.name), _react["default"].createElement("div", {
+      }, "Service : ", service.name), _react["default"].createElement("div", {
         className: "card-body element-card-body"
       }, _react["default"].createElement("div", {
         className: "element-content"
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "id"), " : ", service.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "name"), " : ", service.name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host"), " : ", service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description"), " : ", service.description)), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host"), " : ", service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description"), " : ", service.description), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -106174,7 +106174,7 @@ function (_React$Component) {
         className: "btn btn-danger btn-sm",
         type: "button",
         onClick: this.deleteService.bind(this)
-      }, "Delete Service"))));
+      }, "Delete Service")))));
     }
   }]);
 

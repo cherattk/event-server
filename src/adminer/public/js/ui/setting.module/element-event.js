@@ -85,7 +85,10 @@ export default class ElementEvent extends React.Component {
         <div className="card-body element-card-body">
           <div className="element-content">
             {/* <p>
-              <label>id :</label>{event.id}
+              <label>Name :</label>{event.event_name}
+            </p>
+            <p>
+              <label>ID :</label>{event.id}
             </p> */}
             <p>
               <label>Published By :</label>{event.service_name}
@@ -93,7 +96,6 @@ export default class ElementEvent extends React.Component {
             <p>
               <label>description :</label>{event.description}
             </p>
-          </div>
 
           <div className="element-control">
             <button className="btn btn-primary btn-sm" type="button"
@@ -109,6 +111,9 @@ export default class ElementEvent extends React.Component {
               Add Listener
             </button>
           </div>
+
+          </div>
+
           
           <ListListener event_id={this.state.event.id} />
 

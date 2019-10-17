@@ -78,7 +78,7 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
         Logging.errorDispatch({
           event: _eventObject,
           listener: listListener[idx],
-          error: dispatchError,
+          error: dispatchError.message, // error message from node.js
         });
       });
     } // end loop

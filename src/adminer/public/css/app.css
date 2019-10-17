@@ -75,7 +75,7 @@ OVERRIDE BOOTSTRAP
 
 .element{
   margin:20px 0;
-  border:0;/* override bootstrap .card class */
+  /* border:0; *//* override bootstrap .card class */
 }
 .element-card-header{
   text-transform:capitalize;
@@ -84,19 +84,21 @@ OVERRIDE BOOTSTRAP
 }
 .element-card-body{
   border-radius:0 0 .25rem .25rem;
-  border:1px solid #ccc;
   border-top:0;
-  box-shadow:0 1px 1px #eee;
-  background-color:#f8f9fa;
+  padding:13px;
 }
-
+.element-content{
+  background-color:#e6f2ff;
+  padding:20px;
+}
 .element-content p{
   margin:0 0 10px 0;
 }
 .element-content label {
-  font-weight: bold;
+  /* font-weight: bold; */
   margin: 0 10px 0 0;
   text-transform:capitalize;
+  color:#004085;
 }
 .element-control {
   padding: 10px 0;
@@ -105,12 +107,9 @@ OVERRIDE BOOTSTRAP
 .element-control button {
   padding:3px 10px;
   margin-right:10px;
-  font-size:.85rem;
+  font-size:.8rem;
 }
 
-.element-list{
-  border:1px solid #ddd;
-}
 .element-list p{
   margin: 0 80px 0 0;
   padding:5px;
@@ -136,7 +135,7 @@ APPLICATION
 
 .app-header{
   margin-bottom:50px;
-  padding: 10px 0;
+  height:50px;
   background-color:#3381d4;
 }
 .app-header .container{
@@ -156,10 +155,9 @@ APPLICATION
 }
 
 .app-brand {
-  text-transform: uppercase;
+  text-transform: capitalize;
   color: #fff;
-  padding:7px 14px;
-  background-color:#073c75;
+  font-size:18px;
 }
 
 .tab-content {
@@ -192,10 +190,11 @@ APPLICATION
 .list-listener{
   box-shadow:0 1px 1px #eee;
 }
+.list-listener li{
+  color:#004085;
+}
 .list-listener  .card-header{
   background-color:#eae9e9;
-  border:1px solid #d1d1d1;
-  border-bottom:0;
 }
 
 /*******************************************************/
