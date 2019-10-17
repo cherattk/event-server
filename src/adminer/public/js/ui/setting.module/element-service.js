@@ -74,24 +74,23 @@ export default class ElementService extends React.Component {
     return (
       <li key={service.id} id={service.id} className="card element">
 
-        <h5 className="card-header element-card-header theme-bg-blue">
+        {/* <h5 className="card-header element-card-header theme-bg-blue">
         Service : {service.name} 
-        </h5>
+        </h5> */}
 
-        <div className="card-body element-card-body">
-          <div className="element-content">
-            {/* <p>
-              <label>name</label> : {service.name}
-            </p>
-            <p>
+        <div className="element-content">
+          <p>
+            <label>Service :</label>{service.name}
+          </p>
+          {/* <p>
               <label>ID</label> : {service.id}
             </p> */}
-            <p>
-              <label>host</label> : {service.host}
-            </p>
-            <p>
-              <label>description</label> : {service.description}
-            </p>
+          <p>
+            <label>host :</label>{service.host}
+          </p>
+          <p>
+            <label>description :</label>{service.description}
+          </p>
 
           <div className="element-control">
             <button className="btn btn-primary btn-sm" type="button"
@@ -103,9 +102,6 @@ export default class ElementService extends React.Component {
               Delete Service
             </button>
           </div>
-
-          </div>
-
 
         </div>
       </li>

@@ -68,34 +68,32 @@ export default class ElementEvent extends React.Component {
     }
   }
 
-  getListenerForm(){
+  getListenerForm() {
     var event_id = this.state.event.id;
-    UIEvent.dispatch('show-listener-form', { event_id : event_id });
+    UIEvent.dispatch('show-listener-form', { event_id: event_id });
   }
 
   render() {
     let event = this.state.event;
     return (
       <li key={event.id} className="card element">
-        
-        <h5 className="card-header element-card-header theme-bg-blue">
+
+        {/* <h5 className="card-header element-card-header theme-bg-blue">
         Event : {event.event_name}
-        </h5>
-        
-        <div className="card-body element-card-body">
-          <div className="element-content">
-            {/* <p>
-              <label>Name :</label>{event.event_name}
-            </p>
-            <p>
+        </h5> */}
+        <div className="element-content">
+          <p>
+            <label>Event :</label>{event.event_name}
+          </p>
+          {/* <p>
               <label>ID :</label>{event.id}
             </p> */}
-            <p>
-              <label>Published By :</label>{event.service_name}
-            </p>
-            <p>
-              <label>description :</label>{event.description}
-            </p>
+          <p>
+            <label>Published By :</label>{event.service_name}
+          </p>
+          <p>
+            <label>description :</label>{event.description}
+          </p>
 
           <div className="element-control">
             <button className="btn btn-primary btn-sm" type="button"
@@ -111,11 +109,8 @@ export default class ElementEvent extends React.Component {
               Add Listener
             </button>
           </div>
-
-          </div>
-
-          
-          <ListListener event_id={this.state.event.id} />
+        
+        <ListListener event_id={this.state.event.id} />
 
         </div>
 

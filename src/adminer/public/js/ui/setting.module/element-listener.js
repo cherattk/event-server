@@ -53,9 +53,9 @@ export default class ElementListener extends React.Component {
   render() {
     let listener = this.state.listener;
     return (
-      <li id={listener.id} className="list-group-item element-list-item">
+      <li id={listener.id}>
         <p>{listener.endpoint}</p>
-        <div className="element-list-control">
+        <div className="div-control">
           <button type="button" className="btn btn-primary"
             onClick={this.editElement.bind(this)}>
             E

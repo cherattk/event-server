@@ -57,13 +57,20 @@ export default class ListListener extends React.Component {
 
   render() {
     return (
-      <div className="card element list-listener">
-        <h5 className="card-header element-card-header"> Listeners </h5>
-        
-        <ul className="list-group list-group-flush element-list">
-          { this.state.list_listener.length > 0 ? this.renderList() : this.renderEmptyState()}
+      <div className="list-listener">
+        <h5> Listeners </h5>
+        <ul>
+          {this.state.list_listener.length > 0 ? this.renderList() : this.renderEmptyState()}
         </ul>
       </div>
+
+      // <div className="card element list-listener">
+      //   <h5 className="card-header element-card-header"> Listeners </h5>
+
+      //   <ul className="list-group list-group-flush element-list">
+      //     { this.state.list_listener.length > 0 ? this.renderList() : this.renderEmptyState()}
+      //   </ul>
+      // </div>
     );
   }
 }

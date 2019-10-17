@@ -105875,13 +105875,9 @@ function (_React$Component) {
       return _react["default"].createElement("li", {
         key: event.id,
         className: "card element"
-      }, _react["default"].createElement("h5", {
-        className: "card-header element-card-header theme-bg-blue"
-      }, "Event : ", event.event_name), _react["default"].createElement("div", {
-        className: "card-body element-card-body"
       }, _react["default"].createElement("div", {
         className: "element-content"
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Published By :"), event.service_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Published By :"), event.service_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -105895,7 +105891,7 @@ function (_React$Component) {
         className: "btn btn-info btn-sm",
         type: "button",
         onClick: this.getListenerForm.bind(this)
-      }, "Add Listener"))), _react["default"].createElement(_listListener["default"], {
+      }, "Add Listener")), _react["default"].createElement(_listListener["default"], {
         event_id: this.state.event.id
       })));
     }
@@ -106008,10 +106004,9 @@ function (_React$Component) {
     value: function render() {
       var listener = this.state.listener;
       return _react["default"].createElement("li", {
-        id: listener.id,
-        className: "list-group-item element-list-item"
+        id: listener.id
       }, _react["default"].createElement("p", null, listener.endpoint), _react["default"].createElement("div", {
-        className: "element-list-control"
+        className: "div-control"
       }, _react["default"].createElement("button", {
         type: "button",
         className: "btn btn-primary",
@@ -106158,13 +106153,9 @@ function (_React$Component) {
         key: service.id,
         id: service.id,
         className: "card element"
-      }, _react["default"].createElement("h5", {
-        className: "card-header element-card-header theme-bg-blue"
-      }, "Service : ", service.name), _react["default"].createElement("div", {
-        className: "card-body element-card-body"
       }, _react["default"].createElement("div", {
         className: "element-content"
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host"), " : ", service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description"), " : ", service.description), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service :"), service.name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host :"), service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), service.description), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -106174,7 +106165,7 @@ function (_React$Component) {
         className: "btn btn-danger btn-sm",
         type: "button",
         onClick: this.deleteService.bind(this)
-      }, "Delete Service")))));
+      }, "Delete Service"))));
     }
   }]);
 
@@ -107064,12 +107055,14 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       return _react["default"].createElement("div", {
-        className: "card element list-listener"
-      }, _react["default"].createElement("h5", {
-        className: "card-header element-card-header"
-      }, " Listeners "), _react["default"].createElement("ul", {
-        className: "list-group list-group-flush element-list"
-      }, this.state.list_listener.length > 0 ? this.renderList() : this.renderEmptyState()));
+        className: "list-listener"
+      }, _react["default"].createElement("h5", null, " Listeners "), _react["default"].createElement("ul", null, this.state.list_listener.length > 0 ? this.renderList() : this.renderEmptyState())) // <div className="card element list-listener">
+      //   <h5 className="card-header element-card-header"> Listeners </h5>
+      //   <ul className="list-group list-group-flush element-list">
+      //     { this.state.list_listener.length > 0 ? this.renderList() : this.renderEmptyState()}
+      //   </ul>
+      // </div>
+      ;
     }
   }]);
 
