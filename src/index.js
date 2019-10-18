@@ -30,7 +30,7 @@ const Dispatcher = EventDispatcher(
 Server.use('/', express.static('./src/adminer/public'));
 
 Server.post('/adminer/auth_token', function(Request , Response) {
-  
+
   var statusResponse = 400;
   var params = Request.body.auth_token;
 
@@ -38,7 +38,19 @@ Server.post('/adminer/auth_token', function(Request , Response) {
     statusResponse = 200;
   }
   Response.status(statusResponse).json({
-    message : 'successfully authenticated'
+    success : 'true',
+    message : 'authenticated'
+  });
+});
+
+Server.post('/adminer/logout', function(Request , Response) {
+  
+  // todo
+  // remove the AUTH-TOKEN
+  //var params = Request.body.auth_token;
+  Response.status(200).json({
+    success : 'true',
+    message : 'lougout'
   });
 });
 

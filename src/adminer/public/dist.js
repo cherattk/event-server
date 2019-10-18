@@ -104939,12 +104939,14 @@ var eventmap_url = "".concat(app_url, "/event-map");
 var activity_url = "".concat(app_url, "/activity");
 var login_url = "".concat(app_url, "/login");
 var auth_token_url = "".concat(app_url, "/auth_token");
+var log_out_url = "".concat(app_url, "/logout");
 var _default = {
   app_url: app_url,
   eventmap_url: eventmap_url,
   activity_url: activity_url,
   login_url: login_url,
-  auth_token_url: auth_token_url
+  auth_token_url: auth_token_url,
+  log_out_url: log_out_url
 };
 exports["default"] = _default;
 
@@ -104971,7 +104973,7 @@ var _containerActivity = _interopRequireDefault(require("./ui/activity.module/co
 
 var _containerSetting = _interopRequireDefault(require("./ui/setting.module/container-setting"));
 
-var _loginForm = _interopRequireDefault(require("./ui/login-form"));
+var _loginForm = _interopRequireDefault(require("./ui/frame/login-form"));
 
 var _uiEvent = require("./service/ui-event");
 
@@ -105022,6 +105024,12 @@ function Adminer() {
 } ///////////////////////////////////////////////////////////////////////////
 
 
+function renderLoginForm() {
+  _reactDom["default"].render(_react["default"].createElement(_loginForm["default"], null), document.getElementById('app'));
+
+  _misc["default"].setCookie('eser-auth', '', 0);
+}
+
 function RenderApp() {
   // load eventmap
   _request["default"].get(_adminer["default"].eventmap_url, function (error, response, body) {
@@ -105033,6 +105041,8 @@ function RenderApp() {
       _reactDom["default"].render(_react["default"].createElement(Adminer, null), document.getElementById('app'));
 
       _misc["default"].setCookie('eser-auth', 'valid', 1);
+
+      document.getElementById('logout').style.visibility = 'visible';
     }
   });
 }
@@ -105051,7 +105061,7 @@ if (auth_cookie) {
   // check cookie validity
   _request["default"].post({
     json: true,
-    url: _adminer["default"].auth_token_url,
+    url: _adminer["default"].log_out_url,
     form: {
       auth_token: auth_cookie
     }
@@ -105064,10 +105074,29 @@ if (auth_cookie) {
     }
   });
 } else {
-  _reactDom["default"].render(_react["default"].createElement(_loginForm["default"], null), document.getElementById('app'));
-}
+  renderLoginForm();
+} // Log out //////////////////////////////////////////////////////////////////
 
-},{"./adminer.config":387,"./service/event-map":390,"./service/event-map-manager":389,"./service/misc":391,"./service/ui-event":392,"./ui/activity.module/container-activity":393,"./ui/login-form":396,"./ui/setting.module/container-setting":397,"./ui/setting.module/form-event":401,"./ui/setting.module/form-listener.js":402,"./ui/setting.module/form-service":403,"react":273,"react-dom":270,"request":288}],389:[function(require,module,exports){
+
+document.getElementById('logout').onclick = function (e) {
+  _request["default"].post({
+    json: true,
+    url: _adminer["default"].auth_token_url,
+    form: {
+      auth_token: auth_cookie
+    }
+  }, function (error, httpResponse, body) {
+    // valid auth cookie
+    if (httpResponse.statusCode === 200) {
+      renderLoginForm();
+      e.target.style.visibility = 'hidden';
+    } else {
+      console.log(error);
+    }
+  });
+};
+
+},{"./adminer.config":387,"./service/event-map":390,"./service/event-map-manager":389,"./service/misc":391,"./service/ui-event":392,"./ui/activity.module/container-activity":393,"./ui/frame/login-form":396,"./ui/setting.module/container-setting":397,"./ui/setting.module/form-event":401,"./ui/setting.module/form-listener.js":402,"./ui/setting.module/form-service":403,"react":273,"react-dom":270,"request":288}],389:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105739,9 +105768,9 @@ var _react = _interopRequireDefault(require("react"));
 
 var _request = _interopRequireDefault(require("request"));
 
-var _adminer = _interopRequireDefault(require("../adminer.config"));
+var _adminer = _interopRequireDefault(require("../../adminer.config"));
 
-var _uiEvent = require("../service/ui-event");
+var _uiEvent = require("../../service/ui-event");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -105801,31 +105830,28 @@ function (_React$Component) {
         };
       }); // Dev
 
-      setTimeout(function (params) {
-        _request["default"].post({
-          json: true,
-          url: _adminer["default"].login_url,
-          // form: this.state.login_data // prod
-          form: self.state.login_data // dev
+      _request["default"].post({
+        json: true,
+        url: _adminer["default"].login_url,
+        form: this.state.login_data // prod
 
-        }, function (err, httpResponse, body) {
-          self.setState(function () {
-            return {
-              loading: false
-            };
-          });
-
-          if (err) {
-            return console.log(err);
-          }
-
-          var loginSuccess = httpResponse.statusCode === 200;
-
-          _uiEvent.UIEvent.dispatch('login-success', {
-            success: loginSuccess
-          });
+      }, function (err, httpResponse, body) {
+        self.setState(function () {
+          return {
+            loading: false
+          };
         });
-      }, 1000);
+
+        if (err) {
+          return console.log(err);
+        }
+
+        var loginSuccess = httpResponse.statusCode === 200;
+
+        _uiEvent.UIEvent.dispatch('login-success', {
+          success: loginSuccess
+        });
+      });
     }
   }, {
     key: "render",
@@ -105863,7 +105889,7 @@ function (_React$Component) {
         className: buttonClass,
         onClick: this.submitForm.bind(this)
       }, _react["default"].createElement("span", {
-        className: "spinner-border",
+        className: "spinner-border spinner-border-sm",
         role: "status",
         "aria-hidden": "true"
       }), _react["default"].createElement("span", {
@@ -105877,7 +105903,7 @@ function (_React$Component) {
 
 exports["default"] = LoginForm;
 
-},{"../adminer.config":387,"../service/ui-event":392,"react":273,"request":288}],397:[function(require,module,exports){
+},{"../../adminer.config":387,"../../service/ui-event":392,"react":273,"request":288}],397:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

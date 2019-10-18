@@ -1,8 +1,8 @@
 import React from 'react';
 import HttpClient from 'request';
 
-import AdminerConfig from '../adminer.config';
-import { UIEvent } from '../service/ui-event';
+import AdminerConfig from '../../adminer.config';
+import { UIEvent } from '../../service/ui-event';
 
 export default class LoginForm extends React.Component {
   constructor(props) {
@@ -33,28 +33,24 @@ export default class LoginForm extends React.Component {
     });
 
     // Dev
-    setTimeout(function (params) {
-      HttpClient.post({
-        json: true,
-        url: AdminerConfig.login_url,
-        // form: this.state.login_data // prod
-        form: self.state.login_data // dev
-      }, function (err, httpResponse, body) {
-        
-        self.setState(function () {
-          return { loading: false }
-        });
+    HttpClient.post({
+      json: true,
+      url: AdminerConfig.login_url,
+      form: this.state.login_data // prod
+    }, function (err, httpResponse, body) {
+      
+      self.setState(function () {
+        return { loading: false }
+      });
 
-        if (err) {
-          return console.log(err);
-        }
+      if (err) {
+        return console.log(err);
+      }
 
-        var loginSuccess = (httpResponse.statusCode === 200);
-        UIEvent.dispatch('login-success', { success: loginSuccess });
+      var loginSuccess = (httpResponse.statusCode === 200);
+      UIEvent.dispatch('login-success', { success: loginSuccess });
 
-      })
-    }, 1000);
-
+    });
   }
 
 
@@ -83,7 +79,7 @@ export default class LoginForm extends React.Component {
         <button type="submit"
           className={buttonClass}
           onClick={this.submitForm.bind(this)}>
-          <span className="spinner-border" role="status" aria-hidden="true"></span>
+          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
           <span className="button-text">Login</span>
         </button>
       </form>

@@ -82,9 +82,9 @@ OVERRIDE BOOTSTRAP
   margin: auto;
   border-radius:.3rem;
   background-color:#f4f8fd;
-  border:1px solid #c6def7;
+  border:1px solid #d8eafd;
   border-bottom-color:#bad0e6;
-  box-shadow:0 1px 3px #e5e8ea;
+  box-shadow:0 1px 2px #eeeeee;
 }
 .login-form input{
   height: 3.125rem;
@@ -92,7 +92,15 @@ OVERRIDE BOOTSTRAP
   margin-bottom:30px;
   border-color:#c6def7;
 }
-
+.login-form .spinner-border{
+  display:none;
+}
+.submited-form .spinner-border{
+  display:inline-block;
+}
+.submited-form .button-text{
+  display:none;
+}
 /********************************************************************/
 
 .element{

@@ -9,13 +9,14 @@ import FormEvent from './ui/setting.module/form-event';
 import FormListener from './ui/setting.module/form-listener.js';
 import ContainerActivity from './ui/activity.module/container-activity';
 import ContainerSetting from './ui/setting.module/container-setting';
-import LoginForm from './ui/login-form';
-import {UIEvent} from './service/ui-event';
+import LoginForm from './ui/frame/login-form';
+import { UIEvent } from './service/ui-event';
 import EventMap from './service/event-map';
 import EventMapManager from './service/event-map-manager';
 
 function Adminer() {
   return (
+
     <div className="app-content">
       <nav className="app-module-nav">
         <div className="nav nav-tabs container" id="nav-tab" role="tablist">
@@ -47,39 +48,48 @@ function Adminer() {
       <FormService />
       <FormEvent />
       <FormListener />
-    </div >
+
+    </div>
+
   );
 }
 
 ///////////////////////////////////////////////////////////////////////////
-function RenderApp(){
+function renderLoginForm() {
+  ReactDOM.render(<LoginForm />, document.getElementById('app'));
+  Misc.setCookie('eser-auth' , '' , 0);
+}
+
+function RenderApp() {
   // load eventmap
-  httpRequest.get(AdminerConfig.eventmap_url , function (error, response, body) {
+  httpRequest.get(AdminerConfig.eventmap_url, function (error, response, body) {
     if (response.statusCode === 200) {
       const _eventMap = new EventMap(JSON.parse(body));
       EventMapManager.setEventMap(_eventMap);
       ReactDOM.render(<Adminer />, document.getElementById('app'));
-      Misc.setCookie('eser-auth' , 'valid' , 1);
+      Misc.setCookie('eser-auth', 'valid', 1);
+      document.getElementById('logout').style.visibility = 'visible';
     }
   });
 }
 
-UIEvent.addListener('login-success' , function(uiEvent) {
-  if(uiEvent.message.success){
+UIEvent.addListener('login-success', function (uiEvent) {
+  if (uiEvent.message.success) {
     RenderApp();
   }
-  else{
+  else {
     // display message error
   }
 })
 
 //////////////////////////////////////////////////////////////////////////
 var auth_cookie = Misc.getCookie('eser-auth');
+
 if (auth_cookie) {
   // check cookie validity
   httpRequest.post({
     json: true,
-    url: AdminerConfig.auth_token_url,
+    url: AdminerConfig.log_out_url,
     form: {
       auth_token: auth_cookie
     }
@@ -95,7 +105,29 @@ if (auth_cookie) {
     });
 }
 else {
-  ReactDOM.render(<LoginForm />, document.getElementById('app'));
+  renderLoginForm();
+}
+
+
+// Log out //////////////////////////////////////////////////////////////////
+document.getElementById('logout').onclick = function (e) {
+  httpRequest.post({
+    json: true,
+    url: AdminerConfig.auth_token_url,
+    form: {
+      auth_token: auth_cookie
+    }
+  },
+    function (error, httpResponse, body) {
+      // valid auth cookie
+      if (httpResponse.statusCode === 200) {
+        renderLoginForm();
+        e.target.style.visibility = 'hidden';
+      }
+      else {
+        console.log(error);
+      }
+    });
 }
 
 
