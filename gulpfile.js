@@ -1,10 +1,10 @@
-const { series, src, dest } = require('gulp');
-const sass = require('gulp-sass');
+// const { series, src, dest } = require('gulp');
+// const sass = require('gulp-sass');
 const browserify = require("browserify");
 const fs = require('fs');
 
 function build_js(){
- return browserify("./src/adminer/public/js/main.js")
+ return browserify("./src/adminer/public/js/app.js")
  .transform("babelify", { 
    presets: ["@babel/preset-env", "@babel/preset-react"],
    plugins : ["babel-plugin-transform-class-properties"]

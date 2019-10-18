@@ -57,8 +57,8 @@ export default class ListActivity extends React.Component {
 
           <div className="element-activity"
             onClick={this.toggleElement.bind(this, key)}>
-            <span>{activity.content.event.service_name}</span>
             <span>{activity.content.event.event_name}</span>
+            <span>{activity.content.event.service_name}</span>
             <span> {Misc.getDateFormat(activity.log_time)}</span>
           </div>
 
@@ -78,8 +78,8 @@ export default class ListActivity extends React.Component {
     return (
       <ul className="list-activity">
         <li className="activity-head theme-bg-blue">
-          <span>service</span>
           <span>event</span>
+          <span>service</span>
           <span>time</span>
         </li>
         {list}

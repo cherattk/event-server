@@ -104937,10 +104937,14 @@ exports["default"] = void 0;
 var app_url = 'http://localhost:3000/adminer';
 var eventmap_url = "".concat(app_url, "/event-map");
 var activity_url = "".concat(app_url, "/activity");
+var login_url = "".concat(app_url, "/login");
+var auth_token_url = "".concat(app_url, "/auth_token");
 var _default = {
   app_url: app_url,
   eventmap_url: eventmap_url,
-  activity_url: activity_url
+  activity_url: activity_url,
+  login_url: login_url,
+  auth_token_url: auth_token_url
 };
 exports["default"] = _default;
 
@@ -104955,9 +104959,7 @@ var _request = _interopRequireDefault(require("request"));
 
 var _adminer = _interopRequireDefault(require("./adminer.config"));
 
-var _eventMapManager = _interopRequireDefault(require("./service/event-map-manager"));
-
-var _eventMap2 = _interopRequireDefault(require("./service/event-map"));
+var _misc = _interopRequireDefault(require("./service/misc"));
 
 var _formService = _interopRequireDefault(require("./ui/setting.module/form-service"));
 
@@ -104969,11 +104971,16 @@ var _containerActivity = _interopRequireDefault(require("./ui/activity.module/co
 
 var _containerSetting = _interopRequireDefault(require("./ui/setting.module/container-setting"));
 
+var _loginForm = _interopRequireDefault(require("./ui/login-form"));
+
+var _uiEvent = require("./service/ui-event");
+
+var _eventMap2 = _interopRequireDefault(require("./service/event-map"));
+
+var _eventMapManager = _interopRequireDefault(require("./service/event-map-manager"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-// ================
-// ================
-// ================
 function Adminer() {
   return _react["default"].createElement("div", {
     className: "app-content"
@@ -105012,19 +105019,55 @@ function Adminer() {
     role: "tabpanel",
     "aria-labelledby": "nav-setting-tab"
   }, _react["default"].createElement("h1", null, "Services Communication Setting"), _react["default"].createElement(_containerSetting["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
+} ///////////////////////////////////////////////////////////////////////////
+
+
+function RenderApp() {
+  // load eventmap
+  _request["default"].get(_adminer["default"].eventmap_url, function (error, response, body) {
+    if (response.statusCode === 200) {
+      var _eventMap = new _eventMap2["default"](JSON.parse(body));
+
+      _eventMapManager["default"].setEventMap(_eventMap);
+
+      _reactDom["default"].render(_react["default"].createElement(Adminer, null), document.getElementById('app'));
+
+      _misc["default"].setCookie('eser-auth', 'valid', 1);
+    }
+  });
 }
 
-_request["default"].get(_adminer["default"].eventmap_url, function (error, response, body) {
-  if (response.statusCode === 200) {
-    var _eventMap = new _eventMap2["default"](JSON.parse(body));
-
-    _eventMapManager["default"].setEventMap(_eventMap);
-
-    _reactDom["default"].render(_react["default"].createElement(Adminer, null), document.getElementById('app'));
+_uiEvent.UIEvent.addListener('login-success', function (uiEvent) {
+  if (uiEvent.message.success) {
+    RenderApp();
+  } else {// display message error
   }
-});
+}); //////////////////////////////////////////////////////////////////////////
 
-},{"./adminer.config":387,"./service/event-map":390,"./service/event-map-manager":389,"./ui/activity.module/container-activity":393,"./ui/setting.module/container-setting":396,"./ui/setting.module/form-event":400,"./ui/setting.module/form-listener.js":401,"./ui/setting.module/form-service":402,"react":273,"react-dom":270,"request":288}],389:[function(require,module,exports){
+
+var auth_cookie = _misc["default"].getCookie('eser-auth');
+
+if (auth_cookie) {
+  // check cookie validity
+  _request["default"].post({
+    json: true,
+    url: _adminer["default"].auth_token_url,
+    form: {
+      auth_token: auth_cookie
+    }
+  }, function (error, httpResponse, body) {
+    // valid auth cookie
+    if (httpResponse.statusCode === 200) {
+      RenderApp();
+    } else {
+      console.log(error);
+    }
+  });
+} else {
+  _reactDom["default"].render(_react["default"].createElement(_loginForm["default"], null), document.getElementById('app'));
+}
+
+},{"./adminer.config":387,"./service/event-map":390,"./service/event-map-manager":389,"./service/misc":391,"./service/ui-event":392,"./ui/activity.module/container-activity":393,"./ui/login-form":396,"./ui/setting.module/container-setting":397,"./ui/setting.module/form-event":401,"./ui/setting.module/form-listener.js":402,"./ui/setting.module/form-service":403,"react":273,"react-dom":270,"request":288}],389:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105121,12 +105164,10 @@ var EventMapManager = {
       form: {
         event_map: JSON.stringify(mapStore)
       }
-    }, function cb(err, httpResponse, body) {
+    }, function (err, httpResponse, body) {
       if (err) {
         return console.log(err);
       }
-
-      console.log(body);
     });
   }
 };
@@ -105275,14 +105316,44 @@ module.exports = function EventMap(entities) {
 },{}],391:[function(require,module,exports){
 "use strict";
 
+// import ReactDOM from 'react-dom';
+// const EventMapManager  = require('./event-map-manager');
+// const EventMap = require('./event-map');
+// const AdminerConfig = require('../adminer.config');
 var Misc = {
+  getCookie: function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+
+    return "";
+  },
+  setCookie: function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  },
   getDateFormat: function getDateFormat(time) {
     var _time = new Date(time);
 
     var result = _time.toLocaleDateString() + ' - ' + _time.toLocaleTimeString();
 
     return result;
-  }
+  },
+  LoadApp: function LoadApp() {}
 };
 module.exports = Misc;
 
@@ -105305,7 +105376,8 @@ var UIEvent = _eventset["default"].Topic('ui-event'); // UIEvent.addEvent('show-
 exports.UIEvent = UIEvent;
 UIEvent.addEvent('show-service-form');
 UIEvent.addEvent('show-event-form');
-UIEvent.addEvent('show-listener-form'); // DataEvent
+UIEvent.addEvent('show-listener-form');
+UIEvent.addEvent('login-success'); // DataEvent
 
 var DataEvent = _eventset["default"].Topic('data-event');
 
@@ -105632,7 +105704,7 @@ function (_React$Component) {
         }, _react["default"].createElement("div", {
           className: "element-activity",
           onClick: this.toggleElement.bind(this, key)
-        }, _react["default"].createElement("span", null, activity.content.event.service_name), _react["default"].createElement("span", null, activity.content.event.event_name), _react["default"].createElement("span", null, " ", _misc["default"].getDateFormat(activity.log_time))), _react["default"].createElement("div", {
+        }, _react["default"].createElement("span", null, activity.content.event.event_name), _react["default"].createElement("span", null, activity.content.event.service_name), _react["default"].createElement("span", null, " ", _misc["default"].getDateFormat(activity.log_time))), _react["default"].createElement("div", {
           id: key,
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Content : "), _react["default"].createElement("pre", null, _react["default"].createElement("code", null, JSON.stringify(activity.content, null, 2))))));
@@ -105641,7 +105713,7 @@ function (_React$Component) {
         className: "list-activity"
       }, _react["default"].createElement("li", {
         className: "activity-head theme-bg-blue"
-      }, _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "time")), list);
+      }, _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "time")), list);
     }
   }, {
     key: "render",
@@ -105656,6 +105728,156 @@ function (_React$Component) {
 exports["default"] = ListActivity;
 
 },{"../../adminer.config":387,"../../service/misc":391,"react":273,"request":288}],396:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _request = _interopRequireDefault(require("request"));
+
+var _adminer = _interopRequireDefault(require("../adminer.config"));
+
+var _uiEvent = require("../service/ui-event");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var LoginForm =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(LoginForm, _React$Component);
+
+  function LoginForm(props) {
+    var _this;
+
+    _classCallCheck(this, LoginForm);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(LoginForm).call(this, props));
+    _this.state = {
+      loading: false,
+      login_data: {
+        username: '',
+        password: ''
+      }
+    };
+    return _this;
+  }
+
+  _createClass(LoginForm, [{
+    key: "formValue",
+    value: function formValue(event) {
+      this.state.login_data[event.target.name] = event.target.value;
+      this.setState(this.state);
+    }
+  }, {
+    key: "submitForm",
+    value: function submitForm(e) {
+      e.preventDefault();
+      var self = this;
+      this.setState(function () {
+        return {
+          loading: true
+        };
+      }); // Dev
+
+      setTimeout(function (params) {
+        _request["default"].post({
+          json: true,
+          url: _adminer["default"].login_url,
+          // form: this.state.login_data // prod
+          form: self.state.login_data // dev
+
+        }, function (err, httpResponse, body) {
+          self.setState(function () {
+            return {
+              loading: false
+            };
+          });
+
+          if (err) {
+            return console.log(err);
+          }
+
+          var loginSuccess = httpResponse.statusCode === 200;
+
+          _uiEvent.UIEvent.dispatch('login-success', {
+            success: loginSuccess
+          });
+        });
+      }, 1000);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var buttonClass = "btn btn-primary btn-block";
+      buttonClass += this.state.loading ? " submited-form" : "";
+      return _react["default"].createElement("form", {
+        className: "login-form"
+      }, _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "login-username"
+      }, "User"), _react["default"].createElement("input", {
+        type: "text",
+        name: "username",
+        className: "form-control",
+        id: "login-username",
+        placeholder: "Enter User Name",
+        value: this.state.login_data.username,
+        onChange: this.formValue.bind(this)
+      })), _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "login-password"
+      }, "Password"), _react["default"].createElement("input", {
+        type: "password",
+        name: "password",
+        className: "form-control",
+        id: "login-password",
+        placeholder: "Password",
+        value: this.state.login_data.password,
+        onChange: this.formValue.bind(this)
+      })), _react["default"].createElement("button", {
+        type: "submit",
+        className: buttonClass,
+        onClick: this.submitForm.bind(this)
+      }, _react["default"].createElement("span", {
+        className: "spinner-border",
+        role: "status",
+        "aria-hidden": "true"
+      }), _react["default"].createElement("span", {
+        className: "button-text"
+      }, "Login")));
+    }
+  }]);
+
+  return LoginForm;
+}(_react["default"].Component);
+
+exports["default"] = LoginForm;
+
+},{"../adminer.config":387,"../service/ui-event":392,"react":273,"request":288}],397:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105738,7 +105960,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerSetting;
 
-},{"./list-event":403,"./list-service":405,"react":273}],397:[function(require,module,exports){
+},{"./list-event":404,"./list-service":406,"react":273}],398:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105902,7 +106124,7 @@ function (_React$Component) {
 
 exports["default"] = ElementEvent;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./list-listener":404,"react":273}],398:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./list-listener":405,"react":273}],399:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106024,7 +106246,7 @@ function (_React$Component) {
 
 exports["default"] = ElementListener;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],399:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],400:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106174,7 +106396,7 @@ function (_React$Component) {
 
 exports["default"] = ElementService;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],400:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],401:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106403,7 +106625,7 @@ function (_React$Component) {
 
 exports["default"] = FormEvent;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],401:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],402:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106592,7 +106814,7 @@ function (_React$Component) {
 
 exports["default"] = FormListener;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],402:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],403:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106824,7 +107046,7 @@ function (_React$Component) {
 
 exports["default"] = FormService;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],403:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":273}],404:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -106953,7 +107175,7 @@ function (_React$Component) {
 
 exports["default"] = ListEvent;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-event":397,"react":273}],404:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-event":398,"react":273}],405:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107071,7 +107293,7 @@ function (_React$Component) {
 
 exports["default"] = ListListener;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-listener":398,"react":273}],405:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-listener":399,"react":273}],406:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107196,4 +107418,4 @@ function (_React$Component) {
 
 exports["default"] = ListService;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-service":399,"react":273}]},{},[388]);
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-service":400,"react":273}]},{},[388]);

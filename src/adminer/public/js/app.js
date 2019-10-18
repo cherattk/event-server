@@ -1,21 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import httpRequest from 'request';
-import config from './adminer.config';
 
-
-// ================
-import EventMapManager from './service/event-map-manager';
-import EventMap from './service/event-map';
-
-// ================
+import AdminerConfig from './adminer.config';
+import Misc from './service/misc';
 import FormService from './ui/setting.module/form-service';
 import FormEvent from './ui/setting.module/form-event';
 import FormListener from './ui/setting.module/form-listener.js';
-
-// ================
 import ContainerActivity from './ui/activity.module/container-activity';
 import ContainerSetting from './ui/setting.module/container-setting';
+import LoginForm from './ui/login-form';
+import {UIEvent} from './service/ui-event';
+import EventMap from './service/event-map';
+import EventMapManager from './service/event-map-manager';
 
 function Adminer() {
   return (
@@ -54,11 +51,53 @@ function Adminer() {
   );
 }
 
-httpRequest.get(config.eventmap_url, function (error, response, body) {
-  if (response.statusCode === 200) {
-    const _eventMap = new EventMap(JSON.parse(body));
-    EventMapManager.setEventMap(_eventMap);
-    ReactDOM.render(<Adminer />, document.getElementById('app'));
+///////////////////////////////////////////////////////////////////////////
+function RenderApp(){
+  // load eventmap
+  httpRequest.get(AdminerConfig.eventmap_url , function (error, response, body) {
+    if (response.statusCode === 200) {
+      const _eventMap = new EventMap(JSON.parse(body));
+      EventMapManager.setEventMap(_eventMap);
+      ReactDOM.render(<Adminer />, document.getElementById('app'));
+      Misc.setCookie('eser-auth' , 'valid' , 1);
+    }
+  });
+}
+
+UIEvent.addListener('login-success' , function(uiEvent) {
+  if(uiEvent.message.success){
+    RenderApp();
   }
-});
+  else{
+    // display message error
+  }
+})
+
+//////////////////////////////////////////////////////////////////////////
+var auth_cookie = Misc.getCookie('eser-auth');
+if (auth_cookie) {
+  // check cookie validity
+  httpRequest.post({
+    json: true,
+    url: AdminerConfig.auth_token_url,
+    form: {
+      auth_token: auth_cookie
+    }
+  },
+    function (error, httpResponse, body) {
+      // valid auth cookie
+      if (httpResponse.statusCode === 200) {
+        RenderApp();
+      }
+      else {
+        console.log(error);
+      }
+    });
+}
+else {
+  ReactDOM.render(<LoginForm />, document.getElementById('app'));
+}
+
+
+
 

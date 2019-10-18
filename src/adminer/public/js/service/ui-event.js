@@ -7,6 +7,8 @@ UIEvent.addEvent('show-service-form');
 UIEvent.addEvent('show-event-form');
 UIEvent.addEvent('show-listener-form');
 
+UIEvent.addEvent('login-success');
+
 // DataEvent
 const DataEvent = EventSet.Topic('data-event');
 ['service' , 'event' , 'listener'].forEach(function(type){

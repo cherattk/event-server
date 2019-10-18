@@ -71,7 +71,29 @@ OVERRIDE BOOTSTRAP
 .collapsing {
   -webkit-transition: none;
   transition: none;
-  display: none; }
+  display: none;
+}
+
+/****************************************************************/
+.login-form{
+  width: 100%;
+  max-width:460px;
+  padding:30px;
+  margin: auto;
+  border-radius:.3rem;
+  background-color:#f4f8fd;
+  border:1px solid #c6def7;
+  border-bottom-color:#bad0e6;
+  box-shadow:0 1px 3px #e5e8ea;
+}
+.login-form input{
+  height: 3.125rem;
+  padding: .75rem;
+  margin-bottom:30px;
+  border-color:#c6def7;
+}
+
+/********************************************************************/
 
 .element{
   margin:0 0 20px 0;
@@ -228,13 +250,11 @@ APPLICATION
 
 .element-activity-content {
   background-color: #fff;
-  padding:20px;
-  border-top:1px solid #d5d5d5;
-  box-shadow:0 0 3px #ddd inset;
+  padding:10px;
+  color: #004085;
 }
 
 .element-activity-content label {
-  font-weight: bold;
   margin:0 0 5px 0;
   text-transform: capitalize;
   font-size: 14px;
@@ -252,9 +272,13 @@ APPLICATION
   text-transform:capitalize;
   color:#333;
 }
+.empty-panel *{
+  margin:0;
+}
 .empty-panel .error-yet{
   text-decoration:line-through;
   margin-left:10px;
+  text-transform:capitalize;
 }
 .list-listener .empty-panel{
   background-color:#fff;

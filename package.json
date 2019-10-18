@@ -1,7 +1,7 @@
 {
     "name": "event-server",
     "version": "0.1.0",
-    "description": "Publish Subscrib Server",
+    "description": "An HTTP PubSub Server",
     "author": "Karim Cheratt",
     "keywords": [
         "event server",

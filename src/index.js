@@ -29,6 +29,33 @@ const Dispatcher = EventDispatcher(
 /**************** ADMINER ************************************/
 Server.use('/', express.static('./src/adminer/public'));
 
+Server.post('/adminer/auth_token', function(Request , Response) {
+  
+  var statusResponse = 400;
+  var params = Request.body.auth_token;
+
+  if(params === 'valid'){
+    statusResponse = 200;
+  }
+  Response.status(statusResponse).json({
+    message : 'successfully authenticated'
+  });
+});
+
+Server.post('/adminer/login', function(Request , Response) {
+  
+  var statusResponse = 400;
+  var username = Request.body.username;
+  var password = Request.body.password;
+
+  if(username === 'admin' && password === 'admin'){
+    statusResponse = 200;
+  }
+  Response.status(statusResponse).json({
+    message : 'successfully authenticated'
+  });
+});
+
 Server.get('/adminer/event-map', Adminer.getEventMap.bind(Adminer));
 
 Server.post('/adminer/event-map', Adminer.saveEventMap.bind(Adminer));
