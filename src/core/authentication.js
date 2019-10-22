@@ -32,7 +32,7 @@ function Authenticate() {
    * generate a new token hash for each call
    */
   this.setAuthToken = function (callback) {
-    AUTH_DATA.auth_token = (new Date()).getTime().toString('hex');
+    AUTH_DATA.auth_token = (new Date()).getTime().toString(16);
     this.saveAuthData(function (error) {
       if (error) {
         console.error(error);
