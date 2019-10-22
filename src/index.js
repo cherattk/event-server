@@ -13,6 +13,8 @@ Server.use(cookieParser());
 Server.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 /******************* CONTROLLER *******************************/
+const Authenticate = require("./core/authentication")();
+
 const appConfig = require('../config/app.config');
 const Adminer = require('./core/adminer')(
   appConfig.EventMapFile , 
@@ -31,41 +33,51 @@ Server.use('/', express.static('./src/adminer/public'));
 
 Server.post('/adminer/auth_token', function(Request , Response) {
 
-  var statusResponse = 400;
-  var params = Request.body.auth_token;
+  var user_token = Request.body.auth_token;
 
-  if(params === 'valid'){
-    statusResponse = 200;
+  if(Authenticate.validateAuthToken(user_token)){
+    Authenticate.setAuthToken(function(token_hash){
+      Response.status(200).json({
+        auth_token : token_hash
+      });
+    });    
   }
-  Response.status(statusResponse).json({
-    success : 'true',
-    message : 'authenticated'
-  });
-});
-
-Server.post('/adminer/logout', function(Request , Response) {
-  
-  // todo
-  // remove the AUTH-TOKEN
-  //var params = Request.body.auth_token;
-  Response.status(200).json({
-    success : 'true',
-    message : 'lougout'
-  });
+  else{
+    Response.status(400).end();
+  }
 });
 
 Server.post('/adminer/login', function(Request , Response) {
   
-  var statusResponse = 400;
-  var username = Request.body.username;
-  var password = Request.body.password;
+  var user_password = Request.body.password;
 
-  if(username === 'admin' && password === 'admin'){
-    statusResponse = 200;
+  if(Authenticate.validatePassword(user_password)){
+      Authenticate.setAuthToken(function(token_hash){
+      Response.status(200).json({
+        auth_token : token_hash
+      });
+    });
   }
-  Response.status(statusResponse).json({
-    message : 'successfully authenticated'
-  });
+  else{
+    Response.status(400).end();
+  }
+
+});
+
+Server.post('/adminer/logout', function(Request , Response) {
+  
+  var user_token = Request.body.auth_token;
+  if(Authenticate.validateAuthToken(user_token)){
+    Authenticate.removeAuthToken(function(){
+      Response.status(200).json({
+        success : true
+      });
+    });    
+  }
+  else{
+    Response.status(400).end();
+  }
+
 });
 
 Server.get('/adminer/event-map', Adminer.getEventMap.bind(Adminer));

@@ -60,6 +60,12 @@ function renderLoginForm() {
   Misc.setCookie('eser-auth' , '' , 0);
 }
 
+function renderConnectedState(auth_token) {
+  document.getElementById('logout').style.visibility = 'visible';
+  Misc.setCookie('eser-auth', auth_token, 1);  
+  RenderApp();
+}
+
 function RenderApp() {
   // load eventmap
   httpRequest.get(AdminerConfig.eventmap_url, function (error, response, body) {
@@ -67,53 +73,56 @@ function RenderApp() {
       const _eventMap = new EventMap(JSON.parse(body));
       EventMapManager.setEventMap(_eventMap);
       ReactDOM.render(<Adminer />, document.getElementById('app'));
-      Misc.setCookie('eser-auth', 'valid', 1);
-      document.getElementById('logout').style.visibility = 'visible';
     }
+
   });
 }
 
 UIEvent.addListener('login-success', function (uiEvent) {
   if (uiEvent.message.success) {
-    RenderApp();
+    renderConnectedState(uiEvent.message.auth_token);
   }
   else {
     // display message error
   }
 })
 
-//////////////////////////////////////////////////////////////////////////
-var auth_cookie = Misc.getCookie('eser-auth');
+/**
+ *   IF user has a valid auth token render the app() 
+ */
+function checkAuthToken() {
+  var auth_cookie = Misc.getCookie('eser-auth');
+  if (auth_cookie) {
+    // check cookie validity
+    httpRequest.post({
+      json: true,
+      url: AdminerConfig.auth_token_url,
+      form: {
+        auth_token: auth_cookie
+      }
+    },
+      function (error, httpResponse, body) {
+        // valid auth cookie
+        if (httpResponse.statusCode === 200) {
+          renderConnectedState(body.auth_token);
+        }
+        // bad auth cookie
+        else{
+          renderLoginForm();
+        }
+      });
+  }
+  else{
+    renderLoginForm();
+  }
+}
 
-if (auth_cookie) {
-  // check cookie validity
+// LOG OUT ACTION
+document.getElementById('logout').onclick = function (e) {
+  var auth_cookie = Misc.getCookie('eser-auth');
   httpRequest.post({
     json: true,
     url: AdminerConfig.log_out_url,
-    form: {
-      auth_token: auth_cookie
-    }
-  },
-    function (error, httpResponse, body) {
-      // valid auth cookie
-      if (httpResponse.statusCode === 200) {
-        RenderApp();
-      }
-      else {
-        console.log(error);
-      }
-    });
-}
-else {
-  renderLoginForm();
-}
-
-
-// Log out //////////////////////////////////////////////////////////////////
-document.getElementById('logout').onclick = function (e) {
-  httpRequest.post({
-    json: true,
-    url: AdminerConfig.auth_token_url,
     form: {
       auth_token: auth_cookie
     }
@@ -129,6 +138,10 @@ document.getElementById('logout').onclick = function (e) {
       }
     });
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+checkAuthToken();
 
 
 

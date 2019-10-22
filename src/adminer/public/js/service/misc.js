@@ -1,12 +1,11 @@
-// import ReactDOM from 'react-dom';
 
-// const EventMapManager  = require('./event-map-manager');
-// const EventMap = require('./event-map');
-// const AdminerConfig = require('../adminer.config');
 
-const Misc = {
+module.exports = {
 
   getCookie : function(cname) {
+
+    // the code bellow is from : 
+    // https://www.w3schools.com/js/js_cookies.asp
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
@@ -23,6 +22,8 @@ const Misc = {
   },
 
   setCookie : function(cname, cvalue, exdays) {
+    // the code bellow is from :
+    // https://www.w3schools.com/js/js_cookies.asp
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+ d.toUTCString();
@@ -40,5 +41,3 @@ const Misc = {
   }
 
 };
-
-module.exports = Misc;

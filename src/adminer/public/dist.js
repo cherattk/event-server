@@ -105030,6 +105030,14 @@ function renderLoginForm() {
   _misc["default"].setCookie('eser-auth', '', 0);
 }
 
+function renderConnectedState(auth_token) {
+  document.getElementById('logout').style.visibility = 'visible';
+
+  _misc["default"].setCookie('eser-auth', auth_token, 1);
+
+  RenderApp();
+}
+
 function RenderApp() {
   // load eventmap
   _request["default"].get(_adminer["default"].eventmap_url, function (error, response, body) {
@@ -105039,49 +105047,53 @@ function RenderApp() {
       _eventMapManager["default"].setEventMap(_eventMap);
 
       _reactDom["default"].render(_react["default"].createElement(Adminer, null), document.getElementById('app'));
-
-      _misc["default"].setCookie('eser-auth', 'valid', 1);
-
-      document.getElementById('logout').style.visibility = 'visible';
     }
   });
 }
 
 _uiEvent.UIEvent.addListener('login-success', function (uiEvent) {
   if (uiEvent.message.success) {
-    RenderApp();
+    renderConnectedState(uiEvent.message.auth_token);
   } else {// display message error
   }
-}); //////////////////////////////////////////////////////////////////////////
+});
+/**
+ *   IF user has a valid auth token render the app() 
+ */
 
 
-var auth_cookie = _misc["default"].getCookie('eser-auth');
+function checkAuthToken() {
+  var auth_cookie = _misc["default"].getCookie('eser-auth');
 
-if (auth_cookie) {
-  // check cookie validity
-  _request["default"].post({
-    json: true,
-    url: _adminer["default"].log_out_url,
-    form: {
-      auth_token: auth_cookie
-    }
-  }, function (error, httpResponse, body) {
-    // valid auth cookie
-    if (httpResponse.statusCode === 200) {
-      RenderApp();
-    } else {
-      console.log(error);
-    }
-  });
-} else {
-  renderLoginForm();
-} // Log out //////////////////////////////////////////////////////////////////
+  if (auth_cookie) {
+    // check cookie validity
+    _request["default"].post({
+      json: true,
+      url: _adminer["default"].auth_token_url,
+      form: {
+        auth_token: auth_cookie
+      }
+    }, function (error, httpResponse, body) {
+      // valid auth cookie
+      if (httpResponse.statusCode === 200) {
+        renderConnectedState(body.auth_token);
+      } // bad auth cookie
+      else {
+          renderLoginForm();
+        }
+    });
+  } else {
+    renderLoginForm();
+  }
+} // LOG OUT ACTION
 
 
 document.getElementById('logout').onclick = function (e) {
+  var auth_cookie = _misc["default"].getCookie('eser-auth');
+
   _request["default"].post({
     json: true,
-    url: _adminer["default"].auth_token_url,
+    url: _adminer["default"].log_out_url,
     form: {
       auth_token: auth_cookie
     }
@@ -105094,7 +105106,10 @@ document.getElementById('logout').onclick = function (e) {
       console.log(error);
     }
   });
-};
+}; //////////////////////////////////////////////////////////////////////////
+
+
+checkAuthToken();
 
 },{"./adminer.config":387,"./service/event-map":390,"./service/event-map-manager":389,"./service/misc":391,"./service/ui-event":392,"./ui/activity.module/container-activity":393,"./ui/frame/login-form":396,"./ui/setting.module/container-setting":397,"./ui/setting.module/form-event":401,"./ui/setting.module/form-listener.js":402,"./ui/setting.module/form-service":403,"react":273,"react-dom":270,"request":288}],389:[function(require,module,exports){
 "use strict";
@@ -105345,12 +105360,10 @@ module.exports = function EventMap(entities) {
 },{}],391:[function(require,module,exports){
 "use strict";
 
-// import ReactDOM from 'react-dom';
-// const EventMapManager  = require('./event-map-manager');
-// const EventMap = require('./event-map');
-// const AdminerConfig = require('../adminer.config');
-var Misc = {
+module.exports = {
   getCookie: function getCookie(cname) {
+    // the code bellow is from : 
+    // https://www.w3schools.com/js/js_cookies.asp
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
@@ -105370,6 +105383,8 @@ var Misc = {
     return "";
   },
   setCookie: function setCookie(cname, cvalue, exdays) {
+    // the code bellow is from :
+    // https://www.w3schools.com/js/js_cookies.asp
     var d = new Date();
     d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
     var expires = "expires=" + d.toUTCString();
@@ -105384,7 +105399,6 @@ var Misc = {
   },
   LoadApp: function LoadApp() {}
 };
-module.exports = Misc;
 
 },{}],392:[function(require,module,exports){
 "use strict";
@@ -105844,13 +105858,20 @@ function (_React$Component) {
 
         if (err) {
           return console.log(err);
+        } // default message
+
+
+        var eventMessage = {
+          success: false,
+          auth_token: ''
+        };
+
+        if (httpResponse.statusCode === 200) {
+          eventMessage.success = true;
+          eventMessage.auth_token = body.auth_token;
         }
 
-        var loginSuccess = httpResponse.statusCode === 200;
-
-        _uiEvent.UIEvent.dispatch('login-success', {
-          success: loginSuccess
-        });
+        _uiEvent.UIEvent.dispatch('login-success', eventMessage);
       });
     }
   }, {
@@ -105861,18 +105882,6 @@ function (_React$Component) {
       return _react["default"].createElement("form", {
         className: "login-form"
       }, _react["default"].createElement("div", {
-        className: "form-group"
-      }, _react["default"].createElement("label", {
-        htmlFor: "login-username"
-      }, "User"), _react["default"].createElement("input", {
-        type: "text",
-        name: "username",
-        className: "form-control",
-        id: "login-username",
-        placeholder: "Enter User Name",
-        value: this.state.login_data.username,
-        onChange: this.formValue.bind(this)
-      })), _react["default"].createElement("div", {
         className: "form-group"
       }, _react["default"].createElement("label", {
         htmlFor: "login-password"

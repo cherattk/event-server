@@ -47,8 +47,15 @@ export default class LoginForm extends React.Component {
         return console.log(err);
       }
 
-      var loginSuccess = (httpResponse.statusCode === 200);
-      UIEvent.dispatch('login-success', { success: loginSuccess });
+      // default message
+      var eventMessage = { success : false, auth_token : '' };
+
+      if(httpResponse.statusCode === 200){
+        eventMessage.success = true;
+        eventMessage.auth_token = body.auth_token;
+      }
+
+      UIEvent.dispatch('login-success', eventMessage);
 
     });
   }
@@ -60,14 +67,14 @@ export default class LoginForm extends React.Component {
 
     return (
       <form className="login-form">
-        <div className="form-group">
+        {/* <div className="form-group">
           <label htmlFor="login-username">User</label>
           <input type="text" name="username"
             className="form-control"
-            id="login-username" placeholder="Enter User Name"
+            id="login-username" placeholder="User Name"
             value={this.state.login_data.username}
             onChange={this.formValue.bind(this)} />
-        </div>
+        </div> */}
         <div className="form-group">
           <label htmlFor="login-password">Password</label>
           <input type="password" name="password"

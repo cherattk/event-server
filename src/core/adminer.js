@@ -22,7 +22,7 @@ function Adminer(mapFilePath, Logging) {
   this.getEventMap = function (Request, Response) {
     /**
      * @todo check map's schema
-     * dont use require because it uses a cache
+     * dont use require() because it uses a cache
      */
     fs.readFile(_eventMapFile, { encoding: 'utf8' }, function (error, data) {
       if (error) {
