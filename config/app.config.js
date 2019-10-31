@@ -1,12 +1,14 @@
 const path = require('path');
 
-const db_address = `http://localhost:5984/event_db`;
+const Logging = require('../src/core/logging');
 
-const loggingDriver = require('../src/driver/couchdb')(db_address);
-
-const Logging = require('../src/core/logging')(loggingDriver);
+const loggingDriver = require('../src/driver/couchdb')('http://localhost:5984/event_db');
 
 // PROD
 const EventMapFile = path.resolve('./config/data-eventmap.json');
 
-module.exports = { Logging ,  EventMapFile };
+module.exports = {
+  Logging: Logging(loggingDriver),
+  EventMapFile,
+  HOSTNAME: "127.0.0.1", PORT: "8080"
+};

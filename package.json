@@ -1,7 +1,7 @@
 {
-    "name": "event-server",
+    "name": "plaid",
     "version": "0.1.0",
-    "description": "An HTTP PubSub Server",
+    "description": "An HTTP Event Dispatcher",
     "author": "Karim Cheratt",
     "keywords": [
         "event server",
@@ -33,12 +33,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/cherattk/eventset.git"
+        "url": "git+https://github.com/cherattk/pleiad.git"
     },
     "bugs": {
-        "url": "https://github.com/cherattk/eventset/issues"
+        "url": "https://github.com/cherattk/pleiad/issues"
     },
-    "homepage": "https://github.com/cherattk/eventset#readme",
+    "homepage": "https://github.com/cherattk/pleiad#readme",
     "dependencies": {
         "body-parser": "^1.19.0",
         "cookie-parser": "^1.4.4",

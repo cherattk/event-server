@@ -31,7 +31,7 @@ const Dispatcher = EventDispatcher(
 /**************** ADMINER ************************************/
 Server.use('/', express.static('./src/adminer/public'));
 
-Server.post('/adminer/auth_token', function(Request , Response) {
+Server.post('/auth_token', function(Request , Response) {
 
   var user_token = Request.body.auth_token;
 
@@ -47,7 +47,7 @@ Server.post('/adminer/auth_token', function(Request , Response) {
   }
 });
 
-Server.post('/adminer/login', function(Request , Response) {
+Server.post('/login', function(Request , Response) {
   
   var user_password = Request.body.password;
 
@@ -64,7 +64,7 @@ Server.post('/adminer/login', function(Request , Response) {
 
 });
 
-Server.post('/adminer/logout', function(Request , Response) {
+Server.post('/logout', function(Request , Response) {
   
   var user_token = Request.body.auth_token;
   if(Authenticate.validateAuthToken(user_token)){
@@ -80,11 +80,11 @@ Server.post('/adminer/logout', function(Request , Response) {
 
 });
 
-Server.get('/adminer/event-map', Adminer.getEventMap.bind(Adminer));
+Server.get('/event-map', Adminer.getEventMap.bind(Adminer));
 
-Server.post('/adminer/event-map', Adminer.saveEventMap.bind(Adminer));
+Server.post('/event-map', Adminer.saveEventMap.bind(Adminer));
 
-Server.get('/adminer/activity', Adminer.getActivity.bind(Adminer));
+Server.get('/activity', Adminer.getActivity.bind(Adminer));
 
 
 /***************** DISPATCHER ************************************/
@@ -92,8 +92,6 @@ Server.post('/dispatch', Dispatcher.dispatchRequestController.bind(Dispatcher));
 
 
 /* RUN SERVER */
-const HOSTNAME = "127.0.0.1";
-const PORT = "3000";
-Server.listen(PORT, HOSTNAME, function () {
-  console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
+Server.listen(appConfig.PORT, appConfig.HOSTNAME, function () {
+  console.log(`Server running at http://${appConfig.HOSTNAME}:${appConfig.PORT}/`);
 });

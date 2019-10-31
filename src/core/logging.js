@@ -19,7 +19,24 @@ const defaultLog = function () {
 
 function Logging(driver) {
 
-  const _Driver = driver;
+  const __driver = driver;
+
+  /**
+   */
+
+  __insert = function(log){
+    if(__driver){
+      return __driver.insert(log);
+    }
+  }
+
+  __fetch = function(criteria){
+    if(__driver){
+      return __driver.fetch(criteria);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////
 
   /**
    * live event is a valid event with the a message
@@ -28,7 +45,15 @@ function Logging(driver) {
     let _log = defaultLog();
         _log.log_type = 'event';
         _log.content = content;
-    return _Driver.insert(_log);
+    return __insert(_log);
+  }
+
+  this.generalError = function (content) {
+    let _log = defaultLog();
+        _log.log_type = 'error';
+        _log.error_type = 'generel-error';
+        _log.content = content;
+    return __insert(_log);
   }
 
   this.errorInvalidEvent = function (content) {
@@ -36,7 +61,7 @@ function Logging(driver) {
         _log.log_type = 'error';
         _log.error_type = 'invalid-event';
         _log.content = content;
-    return _Driver.insert(_log);
+    return __insert(_log);
   }
 
   this.erroBadRequest = function (content) {
@@ -44,7 +69,7 @@ function Logging(driver) {
         _log.log_type = 'error';
         _log.error_type = 'bad-request';
         _log.content = content;
-    return _Driver.insert(_log);
+    return __insert(_log);
   }
 
   this.errorDispatch = function (content) {
@@ -52,11 +77,11 @@ function Logging(driver) {
         _log.log_type = 'error';
         _log.error_type = 'dispatch-error';
         _log.content = content;
-    return _Driver.insert(_log);
+    return __insert(_log);
   }
 
   this.fetch = function (criteria) {
-    return _Driver.fetch(criteria);
+    return __fetch(criteria);
   }
 }
 
