@@ -1,2 +1,2 @@
 ## Event Server
-An HTTP PubSub Server.
+An HTTP EventServer Server.
