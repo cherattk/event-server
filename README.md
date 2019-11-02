@@ -1,2 +1,1 @@
-## Event Server
-An HTTP Event Server.
+### Work in Progress
