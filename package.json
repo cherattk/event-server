@@ -1,7 +1,7 @@
 {
     "name": "plaid",
     "version": "0.1.0",
-    "description": "An HTTP Event Dispatcher",
+    "description": "An HTTP Event Server",
     "author": "Karim Cheratt",
     "keywords": [
         "event server",
@@ -33,12 +33,21 @@
     },
     "repository": {
         "type": "git",
+<<<<<<< HEAD
         "url": "git+https://github.com/cherattk/pleiad.git"
     },
     "bugs": {
         "url": "https://github.com/cherattk/pleiad/issues"
     },
     "homepage": "https://github.com/cherattk/pleiad#readme",
+=======
+        "url": "git+https://github.com/cherattk/event-server.git"
+    },
+    "bugs": {
+        "url": "https://github.com/cherattk/event-server/issues"
+    },
+    "homepage": "https://github.com/cherattk/event-server#readme",
+>>>>>>> 0cc1e5695c8a00863e35dca91b85e74d59d01479
     "dependencies": {
         "body-parser": "^1.19.0",
         "cookie-parser": "^1.4.4",
