@@ -1,2 +1,2 @@
 ## Event Server
-An HTTP EventServer Server.
+An HTTP Event Server.
