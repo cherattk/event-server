@@ -1,12 +1,20 @@
 ### Event Server
 An HTTP PubSub Server with GUI.
 
-:warning: This project is functional but still work in progress. See [project's todo List](https://github.com/cherattk/event-server/projects/1). Any contribution is welcomed.
+:warning: This project is work in progress. See [project's todo List](https://github.com/cherattk/event-server/projects/1). Any contribution is welcomed.
 
 ### Requirement:
   - Nodejs
   - Couchdb
   - Interested about event-driven architecture.
+  
+### Usage:
+```bash
+$ git clone https://github.com/cherattk/event-server.git
+$ cd event-server
+$ npm install
+$ npm start
+```
   
 ### Configuration Files:
 - **config/app.config.js**
