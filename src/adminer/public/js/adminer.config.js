@@ -1,4 +1,4 @@
-const app_url = window.location.protocol +'//'+ window.location.hostname;
+const app_url = window.location.origin;
 const eventmap_url = `${app_url}/event-map`;
 const activity_url = `${app_url}/activity`;
 const login_url = `${app_url}/login`;
