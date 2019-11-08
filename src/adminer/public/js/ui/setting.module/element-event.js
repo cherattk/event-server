@@ -85,9 +85,9 @@ export default class ElementEvent extends React.Component {
           <p>
             <label>Event :</label>{event.event_name}
           </p>
-          {/* <p>
+          <p>
               <label>ID :</label>{event.id}
-            </p> */}
+            </p>
           <p>
             <label>Published By :</label>{event.service_name}
           </p>

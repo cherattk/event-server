@@ -1,0 +1,43 @@
+html , body{
+  width:100%;
+  height:100%;
+  background-color:aliceblue;
+}
+
+.container{
+  border:1px solid #ccc;
+  padding:20px;
+  background-color:#ffffff;
+  width:980px;
+  margin-top:30px;
+  margin-bottom:30px;
+}
+.panel-central{
+  margin:auto;
+}
+.panel-central h3{
+  background-color: aliceblue;
+  padding:20px;
+}
+.panel-central p{
+  padding:20px;
+  background-color:aliceblue;
+}
+.panel-central span{
+  background-color: cornflowerblue;
+  padding:3px 10px;
+  color:#fff;
+  border-radius:5px;
+}
+.panel-central > div{
+  margin:20px 0;
+  padding:20px;
+}
+
+.pub-result ul{
+  padding:0;
+  list-style:none;
+  margin:20px 0;
+  border:1px solid #ccc;
+  padding:20px;
+}

@@ -1,1 +1,1 @@
-{"service":[],"event":[],"listener":[]}
+{"service":[{"type":"service","id":"s-1573251516052","name":"email","host":"machin","description":""}],"event":[{"id":"e-1573251525304","type":"event","event_name":"new email","service_id":"s-1573251516052","description":"sasa","service_name":"email","service_host":"machin"}],"listener":[]}

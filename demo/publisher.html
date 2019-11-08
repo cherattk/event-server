@@ -1,12 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>PubSub Demo</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link href="https://fonts.googleapis.com/css?family=Rubik&display=swap" rel="stylesheet">
+
+  <link href="publisher.css" rel="stylesheet">
+
 </head>
+
 <body>
-  
+
+  <div class="app">
+    <div class="container">
+
+      <nav class="navbar navbar-dark bg-primary">
+        <div class="navbar-brand">
+          Event Server Demo
+        </div>
+      </nav>
+
+      <div class="panel-central">
+
+        <!-- <h1>content</h1>
+        <p>
+          Demo Usage
+        </p> -->
+
+        <div class="card pub-form">
+          <h3>Publisher Form</h3>
+
+          <p>
+            Dispatcher Endpoint : 
+            <!-- <span id="dispatch-endpoint" class="badge badge-light"></span> -->
+            <span id="dispatch-endpoint" class="bg-primary"></span>
+            <br/>
+          </p>
+
+          <form id="pub-form">
+            <div class="form-group">
+              <label for="event-id">Event ID</label>
+              <input type="text" class="form-control" 
+                  id="event-id" name="event_id"
+                  placeholder="Enter The Event ID"/>
+            </div>
+
+            <div class="form-group">
+              <label for="pub-msg">Message</label>
+              <input type="text" class="form-control" 
+                  id="pub-msg" name="published_message" 
+                  placeholder="Enter Message"/>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">
+              Publish Event Message
+            </button>
+          </form>
+        </div>
+
+        <div class="card pub-result">
+          <h3>Results</h3>
+          <button id="get-listener-result" type="button" 
+          class="btn btn-primary btn-sm">Refresh</button>
+          <ul id="pub-result-div" class="pub-result-list">
+            <li>No result yet</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <script type="text/javascript" src="publisher.js"></script>
+
 </body>
+
 </html>

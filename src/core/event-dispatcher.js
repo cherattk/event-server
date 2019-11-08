@@ -72,8 +72,9 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
 
     for (let idx = 0, max = listListener.length; idx < max; idx++) {
       HttpClient.post({
-        url: listListener[idx].endpoint,
-        form: JSON.stringify(eventMessage)
+        url: 'http://' + listListener[idx].endpoint,
+        form: JSON.stringify(eventMessage),
+        timeout: 1500
       }).catch(function (dispatchError) {
         Logging.errorDispatch({
           event: _eventObject,

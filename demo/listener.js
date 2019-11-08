@@ -1,7 +1,9 @@
 const http = require('http');
-const queryString = require('querystring');
+
+var DataStore = [];
 
 const listener = [
+  {hostname : 'localhost' , port : '3001'},
   {hostname : 'localhost' , port : '3002'},
   {hostname : 'localhost' , port : '3003'},
   {hostname : 'localhost' , port : '3004'},
@@ -10,29 +12,33 @@ const listener = [
 
 listener.forEach(function(obj, idx){
 
-  var index = idx + 1;
+  var serverIndex = idx + 1;
   http.createServer((Request, Response) => {
+
+    Response.setHeader("Access-Control-Allow-Origin", "*");
+    Response.setHeader('Content-Type', 'text/plain');
 
     if(Request.method === 'POST'){
       var body = '';
       Request.on('data', function(data){
         body += data;
-      }).on('end', () => {
-  
-        console.log(`================= listener ${index} ==================\n`); 
+      }).on('end', () => {  
+        console.log(`================= listener ${serverIndex} ==================\n`); 
         console.log('received message'); 
         console.log(body); 
         console.log(`======================================================\n`); 
-        Response.end(`Hello From Listener (${index}) - Data : ${JSON.stringify(body)}`);
+        Response.statusCode = 200;
       });
     }
-  
-    Response.statusCode = 200;
-    Response.setHeader("Access-Control-Allow-Origin", "*");
-    Response.setHeader('Content-Type', 'text/plain');
-    Response.end('end');
+    else{
+      Response.statusCode = 404;
+    }
+
+    Response.end(JSON.stringify(body));
+    
   })
-  .listen(obj.port, obj.hostname, () => {
-    console.log(`listener (${index}) running at http://${obj.hostname}:${obj.port}/`);
+  .listen(obj.port, obj.hostname, () => {    
+    console.log(`listener (${serverIndex}) running at http://${obj.hostname}:${obj.port}/`);
   });
+
 });

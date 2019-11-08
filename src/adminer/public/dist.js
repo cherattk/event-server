@@ -106134,7 +106134,7 @@ function (_React$Component) {
         className: "card element"
       }, _react["default"].createElement("div", {
         className: "element-content"
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Published By :"), event.service_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "ID :"), event.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Published By :"), event.service_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
