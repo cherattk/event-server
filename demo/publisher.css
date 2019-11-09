@@ -34,10 +34,15 @@ html , body{
   padding:20px;
 }
 
-.pub-result ul{
+.listener-result{
   padding:0;
   list-style:none;
   margin:20px 0;
-  border:1px solid #ccc;
-  padding:20px;
+}
+
+.listener-result li{
+  background-color:#fff6da;
+  margin-bottom:15px;
+  padding:10px 20px;
+  border:1px solid #f9ecc3;
 }
