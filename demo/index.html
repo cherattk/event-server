@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'self'; font-src https://fonts.googleapis.com;"> -->
+
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>PubSub Demo</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link href="//fonts.googleapis.com/css?family=Rubik&display=swap" rel="stylesheet">
+
+  <link href="publisher.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="app">
+    <div class="container rounded-lg">
+
+      <nav class="navbar navbar-dark bg-primary">
+        <div class="navbar-brand">
+          Event Server Demo
+        </div>
+      </nav>
+
+      <!-- <p> Demo Usage </p> -->
+
+      <div class="card panel rounded-lg pub-form">
+        <h3>Publisher Form</h3>
+
+        <p>
+          Dispatcher Endpoint :
+          <!-- <span id="dispatch-endpoint" class="badge badge-light"></span> -->
+          <span id="dispatch-endpoint" class="bg-primary"></span>
+          <br />
+        </p>
+
+        <form id="pub-form">
+          <div class="form-group">
+            <label for="event-id">Event ID</label>
+            <input type="text" class="form-control" id="event-id" name="event_id" placeholder="Enter The Event ID" />
+          </div>
+
+          <div class="form-group">
+            <label for="pub-msg">Message</label>
+            <input type="text" class="form-control" id="pub-msg" name="published_message" placeholder="Enter Message" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">
+            Submit
+          </button>
+        </form>
+      </div>
+
+      <div class="card panel rounded-lg pub-result">
+        <h3>Results</h3>
+        <ul id="listener-result" class="listener-result">
+        </ul>
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <script type="text/javascript" src="publisher.js"></script>
+
+</body>
+
+</html>

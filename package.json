@@ -12,6 +12,7 @@
     "main": "index.js",
     "scripts": {
         "start": "node ./src/index.js",
+        "demo": "node ./demo/server.js",
         "mocha": "node_modules/.bin/_mocha",
         "test:unit": "npm run mocha --colors test/unit/*.js"
     },

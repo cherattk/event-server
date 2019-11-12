@@ -5,35 +5,25 @@ html , body{
 }
 
 .container{
-  border:1px solid #ccc;
-  padding:20px;
-  background-color:#ffffff;
   width:980px;
   margin-top:30px;
   margin-bottom:30px;
 }
-.panel-central{
-  margin:auto;
+.panel{
+  margin:20px 0;
+  padding:20px;
 }
-.panel-central h3{
+.panel h3{
   background-color: aliceblue;
   padding:20px;
 }
-.panel-central p{
-  padding:20px;
-  background-color:aliceblue;
-}
-.panel-central span{
+.panel span{
   background-color: cornflowerblue;
   padding:3px 10px;
   color:#fff;
   border-radius:5px;
+  font-weight:normal;
 }
-.panel-central > div{
-  margin:20px 0;
-  padding:20px;
-}
-
 .listener-result{
   padding:0;
   list-style:none;
@@ -41,8 +31,16 @@ html , body{
 }
 
 .listener-result li{
-  background-color:#fff6da;
   margin-bottom:15px;
-  padding:10px 20px;
-  border:1px solid #f9ecc3;
+  padding:15px 20px;
+  border:1px solid #ccc;
+  box-shadow:0 1px 2px #eee;
+}
+.panel .listener-result p{
+  padding:2px 10px;
+  margin:0;
+}
+.panel .listener-result label{
+  font-weight: bold;
+  margin-right:10px;
 }

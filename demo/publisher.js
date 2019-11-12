@@ -1,6 +1,7 @@
 $(function () {
 
-  const dispatcher_url = 'http://localhost:8080/dispatch';
+  // event dispatcher url
+  const dispatcher_url = 'http://localhost:3030/dispatch';
 
   $('#dispatch-endpoint').append(dispatcher_url);
 
@@ -13,11 +14,12 @@ $(function () {
       var list = '';
       if(data.length){
         data.forEach(element => {
-          list += '<li>';
-          list += 'Listener : ' + element.listener + '<br/>';
-          list += 'Description : ' + element.description + '<br/>';
-          list += 'Original : ' + element.event_data + '<br/>';
-          list += 'Result : ' + element.processed_data;
+          list += '<li class="rounded-lg">';
+          list += '<p><label>Listener : </label>' + element.listener + '</p>';
+          list += '<p><label>Description : </label>' + element.description + '</p>';
+          list += '<p><label>Original Message: </label>' + element.event_message + '</p>';
+          list += '<p><label>Event Name : </label>' + element.event_name + '</p>';
+          list += '<p><label>Processed message : </label>' + element.processed_data + '</p>';
           list += '</li>';
         });
       }

@@ -10,5 +10,5 @@ const EventMapFile = path.resolve('./config/data-eventmap.json');
 module.exports = {
   Logging: Logging(loggingDriver),
   EventMapFile,
-  HOSTNAME: "127.0.0.1", PORT: "8080"
+  HOSTNAME: "127.0.0.1", PORT: "3030"
 };

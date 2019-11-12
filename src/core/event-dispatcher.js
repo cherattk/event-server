@@ -68,12 +68,17 @@ function __EventDispatcher(mapFilePath, HttpClient, Logging) {
       event_message: eventMessage
     });
 
-    var listListener = this.getListener(event_id);
+    var dispatchBody = {
+      event_name : _eventObject.event_name,
+      event_message : eventMessage
+    }
 
+    var listListener = this.getListener(event_id);
     for (let idx = 0, max = listListener.length; idx < max; idx++) {
       HttpClient.post({
         url: 'http://' + listListener[idx].endpoint,
-        form: JSON.stringify(eventMessage),
+        form: {event : dispatchBody},
+        // form: dispatchBody,
         timeout: 1500
       }).catch(function (dispatchError) {
         Logging.errorDispatch({
