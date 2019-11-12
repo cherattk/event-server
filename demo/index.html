@@ -26,24 +26,39 @@
   <div class="app">
     <div class="container rounded-lg">
 
-      <nav class="navbar navbar-dark bg-primary">
-        <div class="navbar-brand">
-          Event Server Demo
+      <div class="card rounded-lg panel">
+        <div class='alert alert-warning'>
+          Warning : before starting the demo, make sure that the event server is running.
         </div>
-      </nav>
-
-      <!-- <p> Demo Usage </p> -->
+        <h5> Usage : </h5>
+        <ol>
+          <li>
+            Go to <b>[Event-Server GUI] </b> >> <b>[Setting]</b>
+            and register a
+            <b>Service</b> and the <b>Event</b> that it triggers.
+          </li>
+          <li>Attach the following <b> 3 Listeners Endpoints</b> to the <b>Event : </b>
+            <br /><a href="http://localhost:3001" target="_blank">http://localhost:3001</a>,
+            <br /><a href="http://localhost:3002" target="_blank"> http://localhost:3002 </a>,
+            <br /><a href="http://localhost:3003" target="_blank"> http://localhost:3003 </a>.
+          </li>
+          <li>Copy the generated <b>event ID</b> and past it
+            in the the Event ID input.</li>
+          <li>Write a Message and Submit.</li>
+          <li>
+            <p>
+              The form will make an HTTP POST Request to the Event-Server
+              located by default at :
+              <br/>
+              <a id="dispatch-endpoint" target="_blank"></a>
+              <br />
+            </p>
+          </li>
+        </ol>
+      </div>
 
       <div class="card panel rounded-lg pub-form">
         <h3>Publisher Form</h3>
-
-        <p>
-          Dispatcher Endpoint :
-          <!-- <span id="dispatch-endpoint" class="badge badge-light"></span> -->
-          <span id="dispatch-endpoint" class="bg-primary"></span>
-          <br />
-        </p>
-
         <form id="pub-form">
           <div class="form-group">
             <label for="event-id">Event ID</label>
@@ -54,9 +69,13 @@
             <label for="pub-msg">Message</label>
             <input type="text" class="form-control" id="pub-msg" name="published_message" placeholder="Enter Message" />
           </div>
+          
           <button type="submit" class="btn btn-primary btn-sm">
             Submit
           </button>
+
+          <hr/> <div id="submit-result"></div>
+
         </form>
       </div>
 

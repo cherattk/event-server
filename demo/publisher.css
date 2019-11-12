@@ -14,13 +14,16 @@ html , body{
   padding:20px;
 }
 .panel h3{
-  background-color: aliceblue;
+  background-color: #28819f;
+  color:#ffffff;
   padding:20px;
+  font-size: 20px;
 }
-.panel span{
-  background-color: cornflowerblue;
+.panel ol{
+  padding:0 20px;
+}
+.panel p span{
   padding:3px 10px;
-  color:#fff;
   border-radius:5px;
   font-weight:normal;
 }

@@ -3,7 +3,7 @@ $(function () {
   // event dispatcher url
   const dispatcher_url = 'http://localhost:3030/dispatch';
 
-  $('#dispatch-endpoint').append(dispatcher_url);
+  $('#dispatch-endpoint').attr('href', dispatcher_url).append(dispatcher_url);
 
   ///////////////////////////////////////////////////////////
 
@@ -12,7 +12,7 @@ $(function () {
 
     $.getJSON(dataServer, function (data) {
       var list = '';
-      if(data.length){
+      if (data.length) {
         data.forEach(element => {
           list += '<li class="rounded-lg">';
           list += '<p><label>Listener : </label>' + element.listener + '</p>';
@@ -23,7 +23,7 @@ $(function () {
           list += '</li>';
         });
       }
-      else{
+      else {
         list += '<li>No Listeners data</li>';
       }
 
@@ -32,8 +32,15 @@ $(function () {
   }
 
   ///////////////////////////////////////////////////////
-  $("#pub-form").submit(function (e) {
+  var submitResult = $('#submit-result');
+  submitResult.click(function (e) {
+    submitResult.hide();
+  });
+
+  var pubForm = $("#pub-form");
+  pubForm.submit(function (e) {
     e.preventDefault();
+    submitResult.attr('class' , '').html('');
     var message = {
       event_id: e.target.elements['event_id'].value,
       message: e.target.elements['published_message'].value
@@ -42,11 +49,21 @@ $(function () {
       type: "POST",
       url: dispatcher_url,
       data: message,
-      success: function (data, textStatus) {
+      success: function (data, textStatus, xhr) {
+        console.log(xhr);
+        var msg = `Dispatcher Response : ${xhr.status} : ${textStatus}`;
+        submitResult.attr('class' , 'alert alert-success');
+        submitResult
+        .html(msg)
+        .append('<div class="close"><span aria-hidden="true">&times;</span></div>').show();
         loadListenerData();
       },
-      error : function(error){
-        console.log(error);
+      error: function (error) {
+        var msg = `Dispatcher Response : ${error.status} : ${error.statusText}`;
+        submitResult.attr('class' ,'alert alert-danger');
+        submitResult
+        .html(msg)
+        .append('<div class="close"><span aria-hidden="true">&times;</span></div>').show();
       }
     });
   });

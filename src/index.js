@@ -92,8 +92,6 @@ Server.post('/dispatch', Dispatcher.dispatchRequestController.bind(Dispatcher));
 
 
 /* RUN SERVER */
-Server.listen(appConfig.PORT, appConfig.HOSTNAME, function () {
-  console.log(`EventDispatcher running at http://${appConfig.HOSTNAME}:${appConfig.PORT}/`);
+Server.listen(appConfig.port, appConfig.hostname, function () {
+  console.log(`EventDispatcher running at http://${appConfig.hostname}:${appConfig.port}/`);
 });
-
-return 0;

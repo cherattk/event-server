@@ -105015,12 +105015,16 @@ function Adminer() {
     id: "nav-activity",
     role: "tabpanel",
     "aria-labelledby": "nav-activity-tab"
-  }, _react["default"].createElement("h1", null, "System Activity"), _react["default"].createElement(_containerActivity["default"], null)), _react["default"].createElement("div", {
+  }, _react["default"].createElement("h1", {
+    className: "text-white bg-primary"
+  }, "System Activity"), _react["default"].createElement(_containerActivity["default"], null)), _react["default"].createElement("div", {
     className: "tab-pane fade",
     id: "nav-setting",
     role: "tabpanel",
     "aria-labelledby": "nav-setting-tab"
-  }, _react["default"].createElement("h1", null, "Services Communication Setting"), _react["default"].createElement(_containerSetting["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
+  }, _react["default"].createElement("h1", {
+    className: "text-white bg-primary"
+  }, "Services Communication Setting"), _react["default"].createElement(_containerSetting["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
 } ///////////////////////////////////////////////////////////////////////////
 
 

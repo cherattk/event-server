@@ -10,17 +10,17 @@ var ListenerDataStore = [];
 const listener = [
   {
     hostname: 'localhost', port: '3001',
-    description: 'Convert message to binary notation',
+    description: 'Convert the string to binary notation',
     format: 2
   },
   {
     hostname: 'localhost', port: '3002',
-    description: 'Convert message to octal notation',
+    description: 'Convert the string to octal notation',
     format: 8
   },
   {
     hostname: 'localhost', port: '3003',
-    description: 'Convert message to hexadecimal notation',
+    description: 'Convert the string to hexadecimal notation',
     format: 16
   }
 ];
@@ -65,11 +65,29 @@ listener.forEach(function (obj, idx) {
 
   var serverIndex = idx + 1;
   var listenerEndpoint = `http://${obj.hostname}:${obj.port}`;
-
-  
   
   var server = express();
   server.use(express.urlencoded({ extended: true }));
+  server.get('/' , function(Request , Response){
+
+    var warning = serverIndex == 1 ? `<br/>
+                    <span style="display:block;background-color:#dc3545;color:white;padding : 10px;">
+                    and it look that i have a bug in my code</span>`
+                      : '' ;
+    var msg = `<h1 style="text-align:center">
+                Hi Dear User, i\'m a microservice #${serverIndex},
+                <br/>
+                my job is to 
+                <span style="color:#1483dc;"> ${listener[idx].description}</span>
+                ${warning}
+                <h1>`;
+    Response.format({
+      'text/html': function () {
+        Response.send(msg);
+      },
+    });
+  });
+
   server.post('/push_event', function (Request , Response) {
 
     var dispatchBody = Request.body.event;
@@ -91,42 +109,5 @@ listener.forEach(function (obj, idx) {
   }).listen(obj.port, obj.hostname, () => {
     console.log(`listener (${serverIndex}) running at ${listenerEndpoint}`);
   });
-
-  /*
-  http.createServer((Request, Response) => {
-
-    Response.statusCode = 404;
-    Response.setHeader("Access-Control-Allow-Origin", "*");
-    Response.setHeader('Content-Type', 'text/plain');
-
-    var path = Request.url;
-    if (path === '/push_event' && Request.method === 'POST') {
-      let body = [];
-      Request.on('data', function (chunk) {
-        body.push(chunk);
-      }).on('end', () => {
-
-        body = Buffer.concat(body).toString();
-        console.log(`================= listener ${serverIndex} ==================\n`);
-        console.log('received message');
-        console.log(body);
-        console.log(`======================================================\n`);
-
-        Response.statusCode = 200;
-        ListenerDataStore[idx] = {
-          listener: listenerEndpoint,
-          description: listener[idx].description,
-          event_data: body,
-          processed_data: process(body , obj.format)
-        }
-      });
-    }
-    Response.end();
-  })
-    .listen(obj.port, obj.hostname, () => {
-      console.log(`listener (${serverIndex}) running at ${listenerEndpoint}`);
-    });
-
-  */
 
 });

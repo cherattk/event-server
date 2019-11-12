@@ -142,7 +142,6 @@ APPLICATION
 .app-header{
   margin-bottom:50px;
   height:50px;
-  background-color:#3381d4;
 }
 .app-header .container{
   padding:0;
@@ -161,8 +160,6 @@ APPLICATION
 }
 
 .app-brand {
-  text-transform: capitalize;
-  color: #fff;
   font-size:18px;
 }
 
@@ -173,9 +170,7 @@ APPLICATION
 .tab-content h1 {
   margin: 0 0 20px 0;
   padding:20px;
-  background-color: #3290f5;
   font-size:22px;
-  color:#fff;
 }
 
 .toggle-content {

@@ -34,13 +34,13 @@ function Adminer() {
 
         <div className="tab-pane fade show active" id="nav-activity"
           role="tabpanel" aria-labelledby="nav-activity-tab">
-          <h1>System Activity</h1>
+          <h1 className="text-white bg-primary">System Activity</h1>
           <ContainerActivity />
         </div>
 
         <div className="tab-pane fade" id="nav-setting"
           role="tabpanel" aria-labelledby="nav-setting-tab">
-          <h1>Services Communication Setting</h1>
+          <h1 className="text-white bg-primary">Services Communication Setting</h1>
           <ContainerSetting />
         </div>
       </div>
