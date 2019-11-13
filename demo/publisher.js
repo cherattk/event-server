@@ -50,7 +50,6 @@ $(function () {
       url: dispatcher_url,
       data: message,
       success: function (data, textStatus, xhr) {
-        console.log(xhr);
         var msg = `Dispatcher Response : ${xhr.status} : ${textStatus}`;
         submitResult.attr('class' , 'alert alert-success');
         submitResult
@@ -58,8 +57,10 @@ $(function () {
         .append('<div class="close"><span aria-hidden="true">&times;</span></div>').show();
         loadListenerData();
       },
-      error: function (error) {
-        var msg = `Dispatcher Response : ${error.status} : ${error.statusText}`;
+      error: function (xhr ,  textStatus) {
+
+        var msg = xhr.status == 0 ? `${textStatus}, be sure that the Event Server is running`:
+              `Dispatcher Response : ${xhr.status} : ${textStatus}`;
         submitResult.attr('class' ,'alert alert-danger');
         submitResult
         .html(msg)
