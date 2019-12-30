@@ -73,21 +73,29 @@ export default class ElementEvent extends React.Component {
     UIEvent.dispatch('show-listener-form', { event_id: event_id });
   }
 
+  toggleContent() {
+
+  }
+
+
   render() {
     let event = this.state.event;
     return (
       <li key={event.id} className="card element">
 
-        {/* <h5 className="card-header element-card-header theme-bg-blue">
-        Event : {event.event_name}
-        </h5> */}
-        <div className="element-content">
+        <h5 className="card-header element-card-header theme-bg-blue"
+          data-toggle="collapse"
+          data-target={"#event-" + event.id}
+          onClick={this.toggleContent.bind(this)}>
+          {"#" + this.props.index + " - "+ event.event_name}
+        </h5>
+        <div className="collapse element-content" id={"event-" + event.id}>
           <p>
             <label>Event :</label>{event.event_name}
           </p>
           <p>
-              <label>ID :</label>{event.id}
-            </p>
+            <label>ID :</label>{event.id}
+          </p>
           <p>
             <label>Published By :</label>{event.service_name}
           </p>
@@ -109,8 +117,8 @@ export default class ElementEvent extends React.Component {
               Add Listener
             </button>
           </div>
-        
-        <ListListener event_id={this.state.event.id} />
+
+          <ListListener event_id={this.state.event.id} />
 
         </div>
 

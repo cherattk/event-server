@@ -75,21 +75,24 @@ export default class ListActivityError extends React.Component {
       );
     }, this);
 
-    return (
-      <ul className="list-activity">
-        <li className="activity-head theme-bg-blue">
-          <span>error</span>
-          <span>time</span>
-        </li>
-        {list}
-      </ul>
-    );
+    return list;
   }
 
   render() {
     return (
       <React.Fragment>
-        {this.state.list_activity_error.length ? this.renderList() : this.emptyState()}
+        <button type="button"
+          className="btn btn-primary btn-sm"
+          onClick={this.fetchList.bind(this)}>
+          Refresh
+        </button>
+        <ul className="list-element list-activity">
+          <li className="activity-head theme-bg-blue">
+            <span>error</span>
+            <span>time</span>
+          </li>
+          {this.state.list_activity_error.length ? this.renderList() : this.emptyState()}
+        </ul>        
       </React.Fragment>
     );
   }

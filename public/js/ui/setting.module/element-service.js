@@ -74,11 +74,13 @@ export default class ElementService extends React.Component {
     return (
       <li key={service.id} id={service.id} className="card element">
 
-        {/* <h5 className="card-header element-card-header theme-bg-blue">
-        Service : {service.name} 
-        </h5> */}
+        <h5 className="card-header element-card-header theme-bg-blue"
+          data-toggle="collapse"
+          data-target={"#service-" + service.id}>
+          {"#" + this.props.index + " - " + service.name}
+        </h5>
 
-        <div className="element-content">
+        <div className="collapse element-content" id={"service-" + service.id}>
           <p>
             <label>Service :</label>{service.name}
           </p>

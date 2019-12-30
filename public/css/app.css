@@ -102,14 +102,27 @@ OVERRIDE BOOTSTRAP
   display:none;
 }
 /********************************************************************/
-
+.list-element{
+  padding-top:20px;
+  margin-top:10px;
+  border-top:1px solid #ccc;
+}
 .element{
-  margin:0 0 20px 0;
-  padding:10px;
+  margin:0 0 10px 0;
+  padding:0px;
+  border:0;
+}
+.element-card-header{
+  border-radius:0 !important;
+  cursor:pointer;
+  font-size:1rem;
+}
+.element-card-header:hover{
+  background-color:#0576ec;
 }
 .element-content{
   background-color:#e6f2ff;
-  padding:20px;
+  padding:30px;
   box-shadow:0 1px 1px #f5f8fb;
   border-radius:.2em;
 }

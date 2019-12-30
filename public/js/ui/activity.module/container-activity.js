@@ -10,7 +10,7 @@ export default class ContainerActivity extends React.Component {
 
   render() {
     return (
-      <div>
+      <>
         <nav>
           <div className="nav nav-tabs" id="nav-activity" role="tablist">
             <a className="nav-item nav-link active" data-toggle="tab"
@@ -30,7 +30,7 @@ export default class ContainerActivity extends React.Component {
             <ListActivityError/>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }

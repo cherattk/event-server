@@ -46,7 +46,7 @@ export default class ListActivity extends React.Component {
   toggleElement(id) {
     $('#' + id).collapse('toggle');
   }
-  
+
   renderList() {
     let list = [];
     this.state.list_activity_event.forEach(function (activity, idx) {
@@ -66,7 +66,7 @@ export default class ListActivity extends React.Component {
             <label>Content : </label>
             <pre>
               <code>
-                {JSON.stringify(activity.content , null , 2)}
+                {JSON.stringify(activity.content, null, 2)}
               </code>
             </pre>
           </div>
@@ -75,22 +75,25 @@ export default class ListActivity extends React.Component {
       );
     }, this);
 
-    return (
-      <ul className="list-activity">
-        <li className="activity-head theme-bg-blue">
-          <span>event</span>
-          <span>service</span>
-          <span>time</span>
-        </li>
-        {list}
-      </ul>
-    );
+    return list;
   }
 
   render() {
     return (
       <React.Fragment>
-        {this.state.list_activity_event.length ? this.renderList() : this.emptyState()}
+        <button type="button" 
+                className="btn btn-primary btn-sm" 
+                onClick={this.fetchList.bind(this)}>
+          Refresh
+        </button>
+        <ul className="list-element list-activity">
+          <li className="activity-head theme-bg-blue">
+            <span>event</span>
+            <span>service</span>
+            <span>time</span>
+          </li>
+          {this.state.list_activity_event.length ? this.renderList() : this.emptyState()}
+        </ul>
       </React.Fragment>
     );
   }

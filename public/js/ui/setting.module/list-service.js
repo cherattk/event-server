@@ -45,7 +45,7 @@ export default class ListService extends React.Component {
     var list = [];
     this.state.list_service.forEach(function (service, idx) {
       let _key = (new Date()).getTime() + '-' + idx + '-service-list-';
-      list.push(<ElementService key={_key} service_id={service.id} />);
+      list.push(<ElementService key={_key} service_id={service.id} index={idx+1}/>);
     }, this);
 
     return list;
@@ -62,7 +62,7 @@ export default class ListService extends React.Component {
           onClick={this.getForm.bind(this)}>
           New Service
       </button>
-      <ul className="list-service">
+      <ul className="list-element">
         {this.state.list_service.length > 0 ? this.renderList() : this.renderEmptyState()}
       </ul>
       </React.Fragment>

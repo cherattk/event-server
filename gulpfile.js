@@ -3,7 +3,7 @@
 const browserify = require("browserify");
 const fs = require('fs');
 
-function build_js(){
+function build_ui(){
  return browserify("./public/js/app.js")
  .transform("babelify", { 
    presets: ["@babel/preset-env", "@babel/preset-react"],
@@ -21,5 +21,4 @@ function build_js(){
 // }
 
 // exports.css = build_css;
-exports.js = build_js;
-exports.default = build_js;
+exports.build_ui = build_ui;

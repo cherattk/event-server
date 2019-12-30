@@ -117126,7 +117126,7 @@ function (_React$Component) {
   _createClass(ContainerActivity, [{
     key: "render",
     value: function render() {
-      return _react["default"].createElement("div", null, _react["default"].createElement("nav", null, _react["default"].createElement("div", {
+      return _react["default"].createElement(_react["default"].Fragment, null, _react["default"].createElement("nav", null, _react["default"].createElement("div", {
         className: "nav nav-tabs",
         id: "nav-activity",
         role: "tablist"
@@ -117272,16 +117272,20 @@ function (_React$Component) {
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Request : "), _react["default"].createElement("pre", null, JSON.stringify(activity.content, null, 2)))));
       }, this);
-      return _react["default"].createElement("ul", {
-        className: "list-activity"
-      }, _react["default"].createElement("li", {
-        className: "activity-head theme-bg-blue"
-      }, _react["default"].createElement("span", null, "error"), _react["default"].createElement("span", null, "time")), list);
+      return list;
     }
   }, {
     key: "render",
     value: function render() {
-      return _react["default"].createElement(_react["default"].Fragment, null, this.state.list_activity_error.length ? this.renderList() : this.emptyState());
+      return _react["default"].createElement(_react["default"].Fragment, null, _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-primary btn-sm",
+        onClick: this.fetchList.bind(this)
+      }, "Refresh"), _react["default"].createElement("ul", {
+        className: "list-element list-activity"
+      }, _react["default"].createElement("li", {
+        className: "activity-head theme-bg-blue"
+      }, _react["default"].createElement("span", null, "error"), _react["default"].createElement("span", null, "time")), this.state.list_activity_error.length ? this.renderList() : this.emptyState()));
     }
   }]);
 
@@ -117400,16 +117404,20 @@ function (_React$Component) {
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Content : "), _react["default"].createElement("pre", null, _react["default"].createElement("code", null, JSON.stringify(activity.content, null, 2))))));
       }, this);
-      return _react["default"].createElement("ul", {
-        className: "list-activity"
-      }, _react["default"].createElement("li", {
-        className: "activity-head theme-bg-blue"
-      }, _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "time")), list);
+      return list;
     }
   }, {
     key: "render",
     value: function render() {
-      return _react["default"].createElement(_react["default"].Fragment, null, this.state.list_activity_event.length ? this.renderList() : this.emptyState());
+      return _react["default"].createElement(_react["default"].Fragment, null, _react["default"].createElement("button", {
+        type: "button",
+        className: "btn btn-primary btn-sm",
+        onClick: this.fetchList.bind(this)
+      }, "Refresh"), _react["default"].createElement("ul", {
+        className: "list-element list-activity"
+      }, _react["default"].createElement("li", {
+        className: "activity-head theme-bg-blue"
+      }, _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "time")), this.state.list_activity_event.length ? this.renderList() : this.emptyState()));
     }
   }]);
 
@@ -117774,14 +117782,23 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "toggleContent",
+    value: function toggleContent() {}
+  }, {
     key: "render",
     value: function render() {
       var event = this.state.event;
       return _react["default"].createElement("li", {
         key: event.id,
         className: "card element"
-      }, _react["default"].createElement("div", {
-        className: "element-content"
+      }, _react["default"].createElement("h5", {
+        className: "card-header element-card-header theme-bg-blue",
+        "data-toggle": "collapse",
+        "data-target": "#event-" + event.id,
+        onClick: this.toggleContent.bind(this)
+      }, "#" + this.props.index + " - " + event.event_name), _react["default"].createElement("div", {
+        className: "collapse element-content",
+        id: "event-" + event.id
       }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "ID :"), event.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Published By :"), event.service_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
@@ -118058,8 +118075,13 @@ function (_React$Component) {
         key: service.id,
         id: service.id,
         className: "card element"
-      }, _react["default"].createElement("div", {
-        className: "element-content"
+      }, _react["default"].createElement("h5", {
+        className: "card-header element-card-header theme-bg-blue",
+        "data-toggle": "collapse",
+        "data-target": "#service-" + service.id
+      }, "#" + this.props.index + " - " + service.name), _react["default"].createElement("div", {
+        className: "collapse element-content",
+        id: "service-" + service.id
       }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service :"), service.name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host :"), service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), service.description), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
@@ -118828,7 +118850,8 @@ function (_React$Component) {
 
         list.push(_react["default"].createElement(_elementEvent["default"], {
           key: _key,
-          event_id: event.id
+          event_id: event.id,
+          index: idx + 1
         }));
       });
       return list;
@@ -118848,7 +118871,7 @@ function (_React$Component) {
         className: "btn btn-info btn-sm btn-add",
         onClick: this.getEventForm.bind(this)
       }, "new event"), _react["default"].createElement("ul", {
-        className: "list-event-content"
+        className: "list-element"
       }, this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState()));
     }
   }]);
@@ -119071,7 +119094,8 @@ function (_React$Component) {
 
         list.push(_react["default"].createElement(_elementService["default"], {
           key: _key,
-          service_id: service.id
+          service_id: service.id,
+          index: idx + 1
         }));
       }, this);
       return list;
@@ -119091,7 +119115,7 @@ function (_React$Component) {
         className: "btn btn-info btn-sm btn-add",
         onClick: this.getForm.bind(this)
       }, "New Service"), _react["default"].createElement("ul", {
-        className: "list-service"
+        className: "list-element"
       }, this.state.list_service.length > 0 ? this.renderList() : this.renderEmptyState()));
     }
   }]);

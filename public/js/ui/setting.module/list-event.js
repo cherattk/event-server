@@ -47,7 +47,7 @@ export default class ListEvent extends React.Component {
     // return event list
     this.state.list_event.forEach(function (event, idx) {
       let _key = (new Date()).getTime() + '-' + idx + '-event-list';
-      list.push(<ElementEvent key={_key} event_id={event.id} />);
+      list.push(<ElementEvent key={_key} event_id={event.id} index={idx + 1}/>);
     });
     return list;
   }
@@ -67,7 +67,7 @@ export default class ListEvent extends React.Component {
           onClick={this.getEventForm.bind(this)}>
           new event
           </button>
-        <ul className="list-event-content">
+        <ul className="list-element">
           {this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState()}
         </ul>
       </React.Fragment>
