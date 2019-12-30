@@ -29,7 +29,7 @@ const Dispatcher = EventDispatcher(
 );
 
 /**************** ADMINER ************************************/
-Server.use('/', express.static('./src/adminer/public'));
+Server.use('/', express.static('./public'));
 
 Server.post('/auth_token', function(Request , Response) {
 

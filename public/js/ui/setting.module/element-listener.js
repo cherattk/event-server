@@ -58,11 +58,11 @@ export default class ElementListener extends React.Component {
         <div className="div-control">
           <button type="button" className="btn btn-primary"
             onClick={this.editElement.bind(this)}>
-            E
+            Edit
           </button>
           <button type="button" className="btn btn-danger"
             onClick={this.deleteElement.bind(this)}>
-            D
+            Delete
           </button>
         </div>
       </li>
