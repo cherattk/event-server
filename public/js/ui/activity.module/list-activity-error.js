@@ -2,16 +2,16 @@ import React from 'react';
 import HttpClient from 'request';
 import config from '../../adminer.config';
 import Misc from '../../service/misc';
+import { Spinner, EmptyState } from '../component/message';
 
 export default class ListActivityError extends React.Component {
-
 
   constructor(props) {
     super(props);
     this.state = {
-      list_activity_error: []
+      fetchingStatus: true,
+      data_list: []
     }
-
   }
 
   componentDidMount() {
@@ -22,6 +22,9 @@ export default class ListActivityError extends React.Component {
   }
 
   fetchList() {
+    this.setState(function () {
+      return { fetchingStatus: true }
+    });
     var self = this;
     var endpoint = config.activity_url + '?tag=error';
 
@@ -30,19 +33,12 @@ export default class ListActivityError extends React.Component {
         return console.log(error);
       }
       self.setState(function () {
-        return { list_activity_error: body.data }
+        return {
+          fetchingStatus: false,
+          data_list: body.data
+        }
       });
     });
-  }
-
-  emptyState() {
-    return (
-      <div className="empty-panel">
-        <h3>there is no errors
-          <span className="error-yet">yet</span>
-        </h3>
-      </div>
-    );
   }
 
   toggleElement(id) {
@@ -51,7 +47,7 @@ export default class ListActivityError extends React.Component {
 
   renderList() {
     let list = [];
-    this.state.list_activity_error.forEach(function (activity, idx) {
+    this.state.data_list.forEach(function (activity, idx) {
       let key = (new Date()).getTime() + '-' + idx + '-activity-error';
       list.push(
         <li key={key}>
@@ -75,7 +71,15 @@ export default class ListActivityError extends React.Component {
       );
     }, this);
 
-    return list;
+    return (
+      <ul className="list-element list-activity">
+        <li className="activity-head theme-bg-blue">
+          <span>error</span>
+          <span>time</span>
+        </li>
+        {list}
+      </ul>
+    )
   }
 
   render() {
@@ -86,13 +90,11 @@ export default class ListActivityError extends React.Component {
           onClick={this.fetchList.bind(this)}>
           Refresh
         </button>
-        <ul className="list-element list-activity">
-          <li className="activity-head theme-bg-blue">
-            <span>error</span>
-            <span>time</span>
-          </li>
-          {this.state.list_activity_error.length ? this.renderList() : this.emptyState()}
-        </ul>        
+
+        {this.state.fetchingStatus ? <Spinner text="Loading Error List ..." /> :
+          (this.state.data_list.length ? this.renderList() :
+            <EmptyState text="There is no errors yet" />)
+        }
       </React.Fragment>
     );
   }

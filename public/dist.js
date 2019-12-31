@@ -116617,7 +116617,7 @@ var _containerActivity = _interopRequireDefault(require("./ui/activity.module/co
 
 var _containerSetting = _interopRequireDefault(require("./ui/setting.module/container-setting"));
 
-var _loginForm = _interopRequireDefault(require("./ui/frame/login-form"));
+var _loginForm = _interopRequireDefault(require("./ui/component/login-form"));
 
 var _uiEvent = require("./service/ui-event");
 
@@ -116759,7 +116759,7 @@ document.getElementById('logout').onclick = function (e) {
 
 checkAuthToken();
 
-},{"./adminer.config":387,"./service/event-map":390,"./service/event-map-manager":389,"./service/misc":391,"./service/ui-event":392,"./ui/activity.module/container-activity":393,"./ui/frame/login-form":396,"./ui/setting.module/container-setting":397,"./ui/setting.module/form-event":401,"./ui/setting.module/form-listener.js":402,"./ui/setting.module/form-service":403,"react":267,"react-dom":264,"request":282}],389:[function(require,module,exports){
+},{"./adminer.config":387,"./service/event-map":390,"./service/event-map-manager":389,"./service/misc":391,"./service/ui-event":392,"./ui/activity.module/container-activity":393,"./ui/component/login-form":396,"./ui/setting.module/container-setting":398,"./ui/setting.module/form-event":402,"./ui/setting.module/form-listener.js":403,"./ui/setting.module/form-service":404,"react":267,"react-dom":264,"request":282}],389:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -117177,6 +117177,8 @@ var _adminer = _interopRequireDefault(require("../../adminer.config"));
 
 var _misc = _interopRequireDefault(require("../../service/misc"));
 
+var _message = require("../component/message");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -117209,7 +117211,8 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ListActivityError).call(this, props));
     _this.state = {
-      list_activity_error: []
+      fetchingStatus: true,
+      data_list: []
     };
     return _this;
   }
@@ -117225,6 +117228,11 @@ function (_React$Component) {
   }, {
     key: "fetchList",
     value: function fetchList() {
+      this.setState(function () {
+        return {
+          fetchingStatus: true
+        };
+      });
       var self = this;
       var endpoint = _adminer["default"].activity_url + '?tag=error';
 
@@ -117237,19 +117245,11 @@ function (_React$Component) {
 
         self.setState(function () {
           return {
-            list_activity_error: body.data
+            fetchingStatus: false,
+            data_list: body.data
           };
         });
       });
-    }
-  }, {
-    key: "emptyState",
-    value: function emptyState() {
-      return _react["default"].createElement("div", {
-        className: "empty-panel"
-      }, _react["default"].createElement("h3", null, "there is no errors", _react["default"].createElement("span", {
-        className: "error-yet"
-      }, "yet")));
     }
   }, {
     key: "toggleElement",
@@ -117260,7 +117260,7 @@ function (_React$Component) {
     key: "renderList",
     value: function renderList() {
       var list = [];
-      this.state.list_activity_error.forEach(function (activity, idx) {
+      this.state.data_list.forEach(function (activity, idx) {
         var key = new Date().getTime() + '-' + idx + '-activity-error';
         list.push(_react["default"].createElement("li", {
           key: key
@@ -117272,7 +117272,11 @@ function (_React$Component) {
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Request : "), _react["default"].createElement("pre", null, JSON.stringify(activity.content, null, 2)))));
       }, this);
-      return list;
+      return _react["default"].createElement("ul", {
+        className: "list-element list-activity"
+      }, _react["default"].createElement("li", {
+        className: "activity-head theme-bg-blue"
+      }, _react["default"].createElement("span", null, "error"), _react["default"].createElement("span", null, "time")), list);
     }
   }, {
     key: "render",
@@ -117281,11 +117285,11 @@ function (_React$Component) {
         type: "button",
         className: "btn btn-primary btn-sm",
         onClick: this.fetchList.bind(this)
-      }, "Refresh"), _react["default"].createElement("ul", {
-        className: "list-element list-activity"
-      }, _react["default"].createElement("li", {
-        className: "activity-head theme-bg-blue"
-      }, _react["default"].createElement("span", null, "error"), _react["default"].createElement("span", null, "time")), this.state.list_activity_error.length ? this.renderList() : this.emptyState()));
+      }, "Refresh"), this.state.fetchingStatus ? _react["default"].createElement(_message.Spinner, {
+        text: "Loading Error List ..."
+      }) : this.state.data_list.length ? this.renderList() : _react["default"].createElement(_message.EmptyState, {
+        text: "There is no errors yet"
+      }));
     }
   }]);
 
@@ -117294,7 +117298,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivityError;
 
-},{"../../adminer.config":387,"../../service/misc":391,"react":267,"request":282}],395:[function(require,module,exports){
+},{"../../adminer.config":387,"../../service/misc":391,"../component/message":397,"react":267,"request":282}],395:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -117309,6 +117313,8 @@ var _request = _interopRequireDefault(require("request"));
 var _adminer = _interopRequireDefault(require("../../adminer.config"));
 
 var _misc = _interopRequireDefault(require("../../service/misc"));
+
+var _message = require("../component/message");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -117342,7 +117348,8 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ListActivity).call(this, props));
     _this.state = {
-      list_activity_event: []
+      fetchingStatus: true,
+      data_list: []
     };
     return _this;
   }
@@ -117359,6 +117366,11 @@ function (_React$Component) {
   }, {
     key: "fetchList",
     value: function fetchList() {
+      this.setState(function () {
+        return {
+          fetchingStatus: true
+        };
+      });
       var self = this;
       var endpoint = _adminer["default"].activity_url + '?tag=event';
 
@@ -117371,17 +117383,11 @@ function (_React$Component) {
 
         self.setState(function () {
           return {
-            list_activity_event: body.data
+            fetchingStatus: false,
+            data_list: body.data
           };
         });
       });
-    }
-  }, {
-    key: "emptyState",
-    value: function emptyState() {
-      return _react["default"].createElement("div", {
-        className: "empty-panel"
-      }, _react["default"].createElement("h3", null, "There is no events yet"));
     }
   }, {
     key: "toggleElement",
@@ -117392,7 +117398,7 @@ function (_React$Component) {
     key: "renderList",
     value: function renderList() {
       var list = [];
-      this.state.list_activity_event.forEach(function (activity, idx) {
+      this.state.data_list.forEach(function (activity, idx) {
         var key = new Date().getTime() + '-' + idx + 'activity-event';
         list.push(_react["default"].createElement("li", {
           key: key
@@ -117404,7 +117410,11 @@ function (_React$Component) {
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Content : "), _react["default"].createElement("pre", null, _react["default"].createElement("code", null, JSON.stringify(activity.content, null, 2))))));
       }, this);
-      return list;
+      return _react["default"].createElement("ul", {
+        className: "list-element list-activity"
+      }, _react["default"].createElement("li", {
+        className: "activity-head theme-bg-blue"
+      }, _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "time")), list);
     }
   }, {
     key: "render",
@@ -117413,11 +117423,11 @@ function (_React$Component) {
         type: "button",
         className: "btn btn-primary btn-sm",
         onClick: this.fetchList.bind(this)
-      }, "Refresh"), _react["default"].createElement("ul", {
-        className: "list-element list-activity"
-      }, _react["default"].createElement("li", {
-        className: "activity-head theme-bg-blue"
-      }, _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "time")), this.state.list_activity_event.length ? this.renderList() : this.emptyState()));
+      }, "Refresh"), this.state.fetchingStatus ? _react["default"].createElement(_message.Spinner, {
+        text: "Loading Event List ..."
+      }) : this.state.data_list.length ? this.renderList() : _react["default"].createElement(_message.EmptyState, {
+        text: "There is no Event yet"
+      }));
     }
   }]);
 
@@ -117426,7 +117436,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivity;
 
-},{"../../adminer.config":387,"../../service/misc":391,"react":267,"request":282}],396:[function(require,module,exports){
+},{"../../adminer.config":387,"../../service/misc":391,"../component/message":397,"react":267,"request":282}],396:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -117574,6 +117584,33 @@ exports["default"] = LoginForm;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Spinner = Spinner;
+exports.EmptyState = EmptyState;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function Spinner(props) {
+  return _react["default"].createElement("div", {
+    className: "list-status-panel text-primary"
+  }, _react["default"].createElement("p", null, props.text), _react["default"].createElement("span", {
+    className: "spinner-border"
+  }));
+}
+
+function EmptyState(props) {
+  return _react["default"].createElement("div", {
+    className: "list-status-panel text-primary"
+  }, _react["default"].createElement("h3", null, props.text));
+}
+
+},{"react":267}],398:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports["default"] = void 0;
 
 var _react = _interopRequireDefault(require("react"));
@@ -117651,7 +117688,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerSetting;
 
-},{"./list-event":404,"./list-service":406,"react":267}],398:[function(require,module,exports){
+},{"./list-event":405,"./list-service":407,"react":267}],399:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -117824,7 +117861,7 @@ function (_React$Component) {
 
 exports["default"] = ElementEvent;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./list-listener":405,"react":267}],399:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./list-listener":406,"react":267}],400:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -117914,8 +117951,7 @@ function (_React$Component) {
     value: function deleteElement() {
       var endpoint = this.state.listener.endpoint; // todo : use some modal component
 
-      var msg = "You are going to delete the listener : + ".concat(endpoint, " \n Are you sure ?");
-      var ok = confirm(msg);
+      var ok = window.confirm('You are going to delete the listener : ' + endpoint + '\n Are you sure ?');
 
       if (ok) {
         _eventMapManager["default"].deleteData(this.state.listener);
@@ -117946,7 +117982,7 @@ function (_React$Component) {
 
 exports["default"] = ElementListener;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],400:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],401:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -118101,7 +118137,7 @@ function (_React$Component) {
 
 exports["default"] = ElementService;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],401:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],402:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -118330,7 +118366,7 @@ function (_React$Component) {
 
 exports["default"] = FormEvent;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],402:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],403:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -118519,7 +118555,7 @@ function (_React$Component) {
 
 exports["default"] = FormListener;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],403:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],404:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -118751,7 +118787,7 @@ function (_React$Component) {
 
 exports["default"] = FormService;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],404:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"react":267}],405:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -118881,7 +118917,7 @@ function (_React$Component) {
 
 exports["default"] = ListEvent;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-event":398,"react":267}],405:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-event":399,"react":267}],406:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -118999,7 +119035,7 @@ function (_React$Component) {
 
 exports["default"] = ListListener;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-listener":399,"react":267}],406:[function(require,module,exports){
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-listener":400,"react":267}],407:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -119125,4 +119161,4 @@ function (_React$Component) {
 
 exports["default"] = ListService;
 
-},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-service":400,"react":267}]},{},[388]);
+},{"../../service/event-map-manager":389,"../../service/ui-event":392,"./element-service":401,"react":267}]},{},[388]);

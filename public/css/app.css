@@ -281,21 +281,22 @@ APPLICATION
   color: #004085;
 }
 
-.empty-panel{
+.list-status-panel{
+  margin-top:20px;
   padding:20px;
   background-color:aliceblue;
   text-align:center;
   text-transform:capitalize;
   color:#333;
 }
-.empty-panel *{
-  margin:0;
+.list-status-panel *{
+  margin:0 0 10px 0;
 }
-.empty-panel .error-yet{
+.list-status-panel .error-yet{
   text-decoration:line-through;
   margin-left:10px;
   text-transform:capitalize;
 }
-.list-listener .empty-panel{
+.list-listener .list-status-panel{
   background-color:#fff;
 }

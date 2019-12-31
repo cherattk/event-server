@@ -84,7 +84,9 @@ Server.get('/event-map', Adminer.getEventMap.bind(Adminer));
 
 Server.post('/event-map', Adminer.saveEventMap.bind(Adminer));
 
-Server.get('/activity', Adminer.getActivity.bind(Adminer));
+Server.get('/activity',function(Request , Response){
+  Adminer.getActivity(Request , Response);
+});
 
 
 /***************** DISPATCHER ************************************/

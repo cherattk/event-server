@@ -9,7 +9,7 @@ import FormEvent from './ui/setting.module/form-event';
 import FormListener from './ui/setting.module/form-listener.js';
 import ContainerActivity from './ui/activity.module/container-activity';
 import ContainerSetting from './ui/setting.module/container-setting';
-import LoginForm from './ui/frame/login-form';
+import LoginForm from './ui/component/login-form';
 import { UIEvent } from './service/ui-event';
 import EventMap from './service/event-map';
 import EventMapManager from './service/event-map-manager';

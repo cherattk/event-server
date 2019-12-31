@@ -43,8 +43,7 @@ export default class ElementListener extends React.Component {
   deleteElement() {
     let endpoint = this.state.listener.endpoint;
     // todo : use some modal component
-    var msg = `You are going to delete the listener : + ${endpoint} \n Are you sure ?`;
-    let ok = confirm(msg);
+    let ok = window.confirm('You are going to delete the listener : ' + endpoint + '\n Are you sure ?');
     if (ok) {
       EventMapManager.deleteData(this.state.listener);
     }
