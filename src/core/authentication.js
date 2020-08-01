@@ -3,7 +3,7 @@ const hash = crypto.createHash('sha256');
 const path = require('path');
 const fs = require('fs');
 
-const AuthDataFile = path.resolve('./config/data-auth.json');
+const AuthDataFile = path.resolve('./config/auth.json');
 
 function Authenticate() {
 
@@ -19,6 +19,10 @@ function Authenticate() {
       }
     }
   });
+
+  this.validateServiceToken = function (service_token) {
+    return !!service_token;
+  };
 
   this.validateAuthToken = function (user_token) {
     return (AUTH_DATA.auth_token && (AUTH_DATA.auth_token === user_token));

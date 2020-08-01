@@ -1,14 +1,20 @@
 const path = require('path');
 
-const Logging = require('../src/core/logging');
+const Logger = require('../src/core/logger');
 
-const loggingDriver = require('../src/driver/couchdb')('http://localhost:5984/event_db');
-
-// PROD
-const EventMapFile = path.resolve('./config/data-eventmap.json');
+const eventMapFilePath = path.resolve('./config/eventmap.json');
+const MapLoader = require('../src/core/maploader');
+const _eventMap = MapLoader.ListenerMapLoader(eventMapFilePath);
 
 module.exports = {
-  Logging: Logging(loggingDriver),
-  EventMapFile,
-  hostname: "127.0.0.1", port: "3030"
+  Logger: Logger(),
+  HttpClient : require('axios'),
+  eventMap : _eventMap,
+  eventMapFilePath : eventMapFilePath,
+  adminer : {
+    hostname: "127.0.0.1", port: "8080"
+  },
+  dispatcher : {
+    hostname: "127.0.0.1", port: "3030"
+  }
 };

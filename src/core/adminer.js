@@ -5,10 +5,10 @@
 
 const fs = require('fs');
 
-function Adminer(mapFilePath, Logging) {
+function Adminer(mapFilePath, Logger) {
 
   const _eventMapFile = mapFilePath;
-  const _logging = Logging;
+  const _logger = Logger;
 
   // @see nano package docs at https://www.npmjs.com/package/nano#dbfindselector-callback
   // @see couchDB docs at https://docs.couchdb.org/en/2.3.1/api/database/find.html
@@ -24,6 +24,7 @@ function Adminer(mapFilePath, Logging) {
      * @todo check map's schema
      * dont use require() because it uses a cache
      */
+
     fs.readFile(_eventMapFile, { encoding: 'utf8' }, function(error, data) {
       if (error) {
         console.error(error);
@@ -59,14 +60,20 @@ function Adminer(mapFilePath, Logging) {
         "$eq": activityType
       };
 
-      _logging.fetch(criteria).then(function(data) {
-        // todo : the [data] must be formated by a method implemented by the driver
-        // ex :  couchDBDriver.format(result) : Array<data : Object>
-        Response.json({ activity: activityType, data: data.docs });
-      }).catch(function(error) {
-        _logging.generalError(error);
-        Response.status(404).json({ activity: activityType, data: [] });
-      });
+      Response.status(404).json(
+        { activity: activityType , 
+          data: []
+        }
+      );
+
+      // _logger.fetch(criteria).then(function(data) {
+      //   // todo : the [data] must be formated by a method implemented by the driver
+      //   // ex :  couchDBDriver.format(result) : Array<data : Object>
+      //   Response.json({ activity: activityType, data: data.docs });
+      // }).catch(function(error) {
+      //   _logger.generalError(error);
+      //   Response.status(404).json({ activity: activityType, data: [] });
+      // });
 
     }
 
@@ -85,6 +92,6 @@ function Adminer(mapFilePath, Logging) {
   }
 }
 
-module.exports = function(mapFilePath, Logging) {
-  return new Adminer(mapFilePath, Logging);
+module.exports = function(mapFilePath, Logger) {
+  return new Adminer(mapFilePath, Logger);
 }

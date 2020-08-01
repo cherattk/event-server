@@ -4,13 +4,13 @@ const browserify = require("browserify");
 const fs = require('fs');
 
 function build_ui(){
- return browserify("./public/js/app.js")
+ return browserify("./src/adminer/public/js/app.js")
  .transform("babelify", { 
    presets: ["@babel/preset-env", "@babel/preset-react"],
    plugins : ["babel-plugin-transform-class-properties"]
   })
   .bundle()
-  .pipe(fs.createWriteStream("./public/dist.js"));
+  .pipe(fs.createWriteStream("./src/adminer/public/dist.js"));
 
 }
 
@@ -21,4 +21,4 @@ function build_ui(){
 // }
 
 // exports.css = build_css;
-exports.build_ui = build_ui;
+exports.build = build_ui;
