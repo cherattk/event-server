@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const AuthDataFile = path.resolve('./config/auth.json');
 
-function Authenticate() {
+function AuthUser() {
 
   var AUTH_DATA = { password: 'admin', auth_token: '' };
 
@@ -64,5 +64,5 @@ function Authenticate() {
 }
 
 module.exports = function () {
-  return new Authenticate();
+  return new AuthUser();
 }

@@ -11,9 +11,9 @@
     "license": "MIT",
     "main": "index.js",
     "scripts": {
-        "start" : "npm run dispatcher && npm run adminer",
-        "adminer": "node ./src/adminer/server/index.js",
-        "dispatcher": "node ./src/dispatcher/index.js",
+        "start": "npm run dispatcher && npm run adminer",
+        "adminer": "node ./src/adminer/server/adminer.server.js",
+        "dispatcher": "node ./src/dispatcher/dispatcher.server.js",
         "demo": "node ./demo/index.js",
         "mocha": "node_modules/.bin/_mocha",
         "test:unit": "npm run mocha --colors test/unit/*.js"
