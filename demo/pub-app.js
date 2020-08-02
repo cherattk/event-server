@@ -1,7 +1,7 @@
 $(function () {
 
   // event dispatcher url
-  const dispatcher_url = 'http://localhost:3030/dispatch';
+  const dispatcher_url = 'http://localhost:5000/dispatch';
 
   $('#dispatch-endpoint').attr('href', dispatcher_url).append(dispatcher_url);
 

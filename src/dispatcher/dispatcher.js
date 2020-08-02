@@ -5,7 +5,9 @@
  */
 
 
-function Dispatcher(eventMap , Logger , HttpClient) {
+const queryString = require('querystring');
+
+function Dispatcher(eventMap, Logger, HttpClient) {
 
   const _eventMap = eventMap;
 
@@ -35,22 +37,30 @@ function Dispatcher(eventMap , Logger , HttpClient) {
     var _eventObject = _eventMap.event.get(event_id);
 
     // - LOG THE SUCCESSFULLY-PUBLISHED EVENT
-    var _cpEvent = Object.assign({message : eventMessage } , _eventObject);
+    var _cpEvent = Object.assign({ message: eventMessage }, _eventObject);
     Logger.eventInfo(_cpEvent);
 
     var dispatchBody = {
+      event_id: event_id,
       event_name: _cpEvent.event_name,
       event_message: _cpEvent.message
-    }
+    };
 
     var listListener = this.getListener(event_id);
+
+    // var _data = queryString.stringify({ event : dispatchBody });
+    var _data = queryString.stringify(dispatchBody);
+
     for (let idx = 0, max = listListener.length; idx < max; idx++) {
-      HttpClient.post({
-        url: 'http://' + listListener[idx].endpoint,
-        form: { event : dispatchBody },
-        // form: dispatchBody,
-        timeout: 1500
-      }).catch(function (dispatchError) {
+      var _endpointURL = listListener[idx].endpoint;
+      HttpClient(
+        {
+          method: 'POST',
+          url: _endpointURL,
+          headers: { 'content-type': 'application/x-www-form-urlencoded' },
+          data: _data
+        }
+      ).catch(function (dispatchError) {
         // - LOG THE DISPATCHING ERROR
         Logger.errorDispatch({
           event: _cpEvent,
@@ -58,6 +68,8 @@ function Dispatcher(eventMap , Logger , HttpClient) {
           error: dispatchError.message, // error message from node.js
         });
       });
+
+
     } // end loop
   }
 
@@ -88,6 +100,6 @@ function Dispatcher(eventMap , Logger , HttpClient) {
 };
 
 
-module.exports = function(eventMap , Logger , HttpClient){
-  return new Dispatcher(eventMap , Logger , HttpClient);
+module.exports = function (eventMap, Logger, HttpClient) {
+  return new Dispatcher(eventMap, Logger, HttpClient);
 }
