@@ -1,8 +1,8 @@
 import React from 'react';
-import HttpClient from 'request';
+import HttpClient from 'axios';
 import config from '../../config/adminer.config';
-import Misc from '../../service/misc';
-import {Spinner , EmptyState } from '../component/message';
+import Misc from '../../lib/misc';
+import { Spinner, EmptyState } from '../component/message';
 
 export default class ListActivity extends React.Component {
 
@@ -32,17 +32,22 @@ export default class ListActivity extends React.Component {
     var self = this;
     var endpoint = config.activity_url + '?tag=event';
 
-    HttpClient.get(endpoint, { json: true }, function (error, response, body) {
-      if (error) {
-        return console.log(error);
-      }
-      self.setState(function () {
-        return { 
-          loading : false,
-          data_list: body.data 
-        }
+    HttpClient.get(endpoint, { responseType: true })
+      .then(function (response) {
+        self.setState(function () {
+          return {
+            loading: false,
+            data_list : response.data
+          }
+        });
+      })
+      .catch(function (error) {
+        self.setState(function () {
+          return {
+            loading: false
+          }
+        });        
       });
-    });
   }
 
   toggleElement(id) {
@@ -83,8 +88,8 @@ export default class ListActivity extends React.Component {
           <span>event</span>
           <span>service</span>
           <span>time</span>
-        </li>   
-        {list}     
+        </li>
+        {list}
       </ul>
     );
   }
@@ -100,10 +105,10 @@ export default class ListActivity extends React.Component {
           Refresh
         </button>
 
-        {this.state.loading ? <Spinner text="Loading Event List ..."/> :
-          (this.state.data_list.length ? this.renderList() : 
-          <EmptyState text="There is no Event yet"/>)
-          }
+        {this.state.loading ? <Spinner text="Loading Event List ..." /> :
+          (this.state.data_list.length ? this.renderList() :
+            <EmptyState text="There is no Event yet" />)
+        }
 
       </React.Fragment>
     );

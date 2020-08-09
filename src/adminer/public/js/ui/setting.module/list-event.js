@@ -1,8 +1,8 @@
 import React from 'react';
 import ElementEvent from './element-event';
-import EventMapManager from '../../service/eventmap-manager';
+import EventMapManager from '../../lib/eventmap-manager';
 import { Spinner, EmptyState } from '../component/message';
-import { UIEvent, DataEvent } from '../../service/ui-event';
+import { UIEvent, DataEvent } from '../../lib/ui-event';
 
 export default class ListEvent extends React.Component {
 

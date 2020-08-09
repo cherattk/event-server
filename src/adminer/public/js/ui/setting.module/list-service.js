@@ -1,7 +1,7 @@
 import React from 'react';
 import ElementService from './element-service';
-import EventMapManager from '../../service/eventmap-manager';
-import { UIEvent, DataEvent } from '../../service/ui-event';
+import EventMapManager from '../../lib/eventmap-manager';
+import { UIEvent, DataEvent } from '../../lib/ui-event';
 import {Spinner , EmptyState } from '../component/message';
 
 export default class ListService extends React.Component {

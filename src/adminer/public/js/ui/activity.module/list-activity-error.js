@@ -1,7 +1,7 @@
 import React from 'react';
-import HttpClient from 'request';
+import HttpClient from 'axios';
 import config from '../../config/adminer.config';
-import Misc from '../../service/misc';
+import Misc from '../../lib/misc';
 import { Spinner, EmptyState } from '../component/message';
 
 export default class ListActivityError extends React.Component {
@@ -28,17 +28,22 @@ export default class ListActivityError extends React.Component {
     var self = this;
     var endpoint = config.activity_url + '?tag=error';
 
-    HttpClient.get(endpoint, { json: true }, function (error, response, body) {
-      if (error) {
-        return console.log(error);
-      }
-      self.setState(function () {
-        return {
-          fetchingStatus: false,
-          data_list: body.data
-        }
+    HttpClient.get(endpoint, { responseType: true })
+      .then(function (response) {
+        self.setState(function () {
+          return {
+            fetchingStatus: false,
+            data_list : response.data
+          }
+        });
+      })
+      .catch(function (error) {
+        self.setState(function () {
+          return {
+            fetchingStatus: false
+          }
+        });        
       });
-    });
   }
 
   toggleElement(id) {

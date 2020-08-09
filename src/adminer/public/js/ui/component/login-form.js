@@ -2,7 +2,10 @@ import React from 'react';
 import HttpClient from 'axios';
 
 import AdminerConfig from '../../config/adminer.config';
-import { UIEvent } from '../../service/ui-event';
+import { UIEvent } from '../../lib/ui-event';
+
+import QueryString from 'querystring';
+
 
 export default class LoginForm extends React.Component {
   constructor(props) {
@@ -32,12 +35,14 @@ export default class LoginForm extends React.Component {
       }
     });
 
+    var _data = QueryString.stringify(this.state.login_data);
     // Dev
     HttpClient({
       method: "POST",
       responseType: "json",
       url: AdminerConfig.login_url,
-      data: this.state.login_data // prod
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: _data // prod
     }).then(function (response) {
 
       // default message

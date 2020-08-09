@@ -14,6 +14,9 @@ function build_ui(){
 
 }
 
+// if run as nodejs script
+build_ui();
+
 // function build_css() {
 //   return src('./src/adminer/public/css/sass/*.scss')
 //     .pipe(sass().on('error', sass.logError))
@@ -21,4 +24,4 @@ function build_ui(){
 // }
 
 // exports.css = build_css;
-exports.build = build_ui;
+// exports.build = build_ui;

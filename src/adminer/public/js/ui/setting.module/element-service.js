@@ -1,6 +1,6 @@
 import React from 'react';
-import EventMapManager from '../../service/eventmap-manager';
-import { UIEvent, DataEvent } from '../../service/ui-event';
+import EventMapManager from '../../lib/eventmap-manager';
+import { UIEvent, DataEvent } from '../../lib/ui-event';
 
 
 const __initialState = {

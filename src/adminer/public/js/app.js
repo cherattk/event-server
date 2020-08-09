@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import HttpClient from 'axios';
 
 import AdminerConfig from './config/adminer.config';
-import Misc from './service/misc';
-import { UIEvent } from './service/ui-event';
-import EventMapManager from './service/eventmap-manager';
+import Misc from './lib/misc';
+import { UIEvent } from './lib/ui-event';
+import EventMapManager from './lib/eventmap-manager';
 
 import FormService from './ui/setting.module/form-service';
 import FormEvent from './ui/setting.module/form-event';
