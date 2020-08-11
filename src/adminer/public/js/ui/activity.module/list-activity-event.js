@@ -25,29 +25,33 @@ export default class ListActivity extends React.Component {
 
   fetchList() {
 
-    this.setState(function () {
-      return { loading: true }
-    });
-
     var self = this;
     var endpoint = config.activity_url + '?tag=event';
 
-    HttpClient.get(endpoint, { responseType: true })
-      .then(function (response) {
-        self.setState(function () {
-          return {
-            loading: false,
-            data_list : response.data
-          }
+    this.setState(function () {
+      return { loading: true }
+    }, function () {
+      HttpClient.get(endpoint, { responseType: true })
+        .then(function (response) {
+          self.setState(function () {
+            return {
+              loading: false,
+              data_list: response.data.data
+            }
+          });
+        })
+        .catch(function (error) {
+          self.setState(function () {
+            return {
+              loading: false
+            }
+          });
         });
-      })
-      .catch(function (error) {
-        self.setState(function () {
-          return {
-            loading: false
-          }
-        });        
-      });
+    });
+
+
+
+
   }
 
   toggleElement(id) {
@@ -64,8 +68,8 @@ export default class ListActivity extends React.Component {
 
           <div className="element-activity"
             onClick={this.toggleElement.bind(this, key)}>
-            <span>{activity.content.event.event_name}</span>
-            <span>{activity.content.event.service_name}</span>
+            <span>{activity.content.event_name}</span>
+            <span>{activity.content.service_name}</span>
             <span> {Misc.getDateFormat(activity.log_time)}</span>
           </div>
 
@@ -84,7 +88,7 @@ export default class ListActivity extends React.Component {
 
     return (
       <ul className="list-element list-activity">
-        <li className="activity-head theme-bg-green">
+        <li className="activity-head bg-primary text-white">
           <span>event</span>
           <span>service</span>
           <span>time</span>

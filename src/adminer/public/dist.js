@@ -34975,7 +34975,7 @@ function (_React$Component) {
         self.setState(function () {
           return {
             fetchingStatus: false,
-            data_list: response.data
+            data_list: response.data.data
           };
         });
       })["catch"](function (error) {
@@ -35010,7 +35010,7 @@ function (_React$Component) {
       return _react["default"].createElement("ul", {
         className: "list-element list-activity"
       }, _react["default"].createElement("li", {
-        className: "activity-head theme-bg-blue"
+        className: "activity-head bg-primary text-white"
       }, _react["default"].createElement("span", null, "error"), _react["default"].createElement("span", null, "time")), list);
     }
   }, {
@@ -35101,28 +35101,28 @@ function (_React$Component) {
   }, {
     key: "fetchList",
     value: function fetchList() {
+      var self = this;
+      var endpoint = _adminer["default"].activity_url + '?tag=event';
       this.setState(function () {
         return {
           loading: true
         };
-      });
-      var self = this;
-      var endpoint = _adminer["default"].activity_url + '?tag=event';
-
-      _axios["default"].get(endpoint, {
-        responseType: true
-      }).then(function (response) {
-        self.setState(function () {
-          return {
-            loading: false,
-            data_list: response.data
-          };
-        });
-      })["catch"](function (error) {
-        self.setState(function () {
-          return {
-            loading: false
-          };
+      }, function () {
+        _axios["default"].get(endpoint, {
+          responseType: true
+        }).then(function (response) {
+          self.setState(function () {
+            return {
+              loading: false,
+              data_list: response.data.data
+            };
+          });
+        })["catch"](function (error) {
+          self.setState(function () {
+            return {
+              loading: false
+            };
+          });
         });
       });
     }
@@ -35142,7 +35142,7 @@ function (_React$Component) {
         }, _react["default"].createElement("div", {
           className: "element-activity",
           onClick: this.toggleElement.bind(this, key)
-        }, _react["default"].createElement("span", null, activity.content.event.event_name), _react["default"].createElement("span", null, activity.content.event.service_name), _react["default"].createElement("span", null, " ", _misc["default"].getDateFormat(activity.log_time))), _react["default"].createElement("div", {
+        }, _react["default"].createElement("span", null, activity.content.event_name), _react["default"].createElement("span", null, activity.content.service_name), _react["default"].createElement("span", null, " ", _misc["default"].getDateFormat(activity.log_time))), _react["default"].createElement("div", {
           id: key,
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Content : "), _react["default"].createElement("pre", null, _react["default"].createElement("code", null, JSON.stringify(activity.content, null, 2))))));
@@ -35150,7 +35150,7 @@ function (_React$Component) {
       return _react["default"].createElement("ul", {
         className: "list-element list-activity"
       }, _react["default"].createElement("li", {
-        className: "activity-head theme-bg-green"
+        className: "activity-head bg-primary text-white"
       }, _react["default"].createElement("span", null, "event"), _react["default"].createElement("span", null, "service"), _react["default"].createElement("span", null, "time")), list);
     }
   }, {

@@ -7,7 +7,9 @@
 
 const queryString = require('querystring');
 
-function Dispatcher(eventMap, Logger, HttpClient) {
+const LogFormat = require('./dispatcher-log');
+
+function Dispatcher(eventMap, Activity, HttpClient) {
 
   const _eventMap = eventMap;
 
@@ -38,7 +40,13 @@ function Dispatcher(eventMap, Logger, HttpClient) {
 
     // - LOG THE SUCCESSFULLY-PUBLISHED EVENT
     var _cpEvent = Object.assign({ message: eventMessage }, _eventObject);
-    Logger.eventInfo(_cpEvent);
+
+    // save event data
+    Activity.Insert(LogFormat.EventInfo(_cpEvent)).catch(function(err) {
+      console.log('===== insert event info error =====');
+      console.log(err);
+      console.log('=====================================');
+    });;
 
     var dispatchBody = {
       event_id: event_id,
@@ -62,11 +70,11 @@ function Dispatcher(eventMap, Logger, HttpClient) {
         }
       ).catch(function (dispatchError) {
         // - LOG THE DISPATCHING ERROR
-        Logger.errorDispatch({
+        Activity.Insert(LogFormat.ErrorDispatch({
           event: _cpEvent,
           listener: listListener[idx],
           error: dispatchError.message, // error message from node.js
-        });
+        }));
       });
 
 
@@ -81,13 +89,13 @@ function Dispatcher(eventMap, Logger, HttpClient) {
 
     if (!this.validRequest(requestBody)) {
       // - LOG BAD REQUEST
-      Logger.errorBadRequest(requestBody);
+      Activity.Insert(LogFormat.ErrorBadRequest(requestBody));
       Response.status(400).end();
       return;
     }
     // - CHECK IF IS A VALID EVENT
     if (!_eventMap.event.has(event_id)) {
-      Logger.errorInvalidEvent(requestBody);
+      Activity.Insert(LogFormat.ErrorInvalidEvent(requestBody));
       Response.status(400).end();
       return;
     }
@@ -100,6 +108,6 @@ function Dispatcher(eventMap, Logger, HttpClient) {
 };
 
 
-module.exports = function (eventMap, Logger, HttpClient) {
-  return new Dispatcher(eventMap, Logger, HttpClient);
+module.exports = function (eventMap, Activity, HttpClient) {
+  return new Dispatcher(eventMap, Activity, HttpClient);
 }

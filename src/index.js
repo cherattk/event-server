@@ -26,7 +26,7 @@ const _eventMapFilePath = path.resolve('./src/config/eventmap.json');
 
 const _HttpClient = require('axios');
 
-const _Logger = require('./lib/logger')();
+const Activity = require('./lib/activity');
 const MapLoader = require('./lib/maploader');
 const _eventMap = MapLoader.DispatcherMapLoader(_eventMapFilePath);
 
@@ -37,9 +37,14 @@ const _eventMap = MapLoader.DispatcherMapLoader(_eventMapFilePath);
 
 const AuthUser = require("./adminer/server/auth-user")();
 
+const couchdbDriver = require('./lib/driver/couchdb');
+
+const __couchConfig = "http://localhost:5984/event_db";
+const __AdminerActivity = new Activity(new couchdbDriver(__couchConfig));
+
 const Adminer = require('./adminer/server/adminer')(
   _eventMapFilePath ,
-  _Logger
+  __AdminerActivity
 );
 
 
@@ -106,9 +111,11 @@ Server.get('/activity', Adminer.getActivity.bind(Adminer));
 /******************************************************************
  * DISPATCHER *
 *******************************************************************/
+
+const __DispatcherActivity = new Activity(new couchdbDriver(__couchConfig));
 const Dispatcher = require('./dispatcher/dispatcher')(
   _eventMap,
-  _Logger,
+  __DispatcherActivity,
   _HttpClient
 );
 

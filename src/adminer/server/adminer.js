@@ -5,10 +5,10 @@
 
 const fs = require('fs');
 
-function Adminer(mapFilePath, Logger) {
+function Adminer(mapFilePath, Activity) {
 
   const _eventMapFile = mapFilePath;
-  const _logger = Logger;
+  const _Activity = Activity;
 
   // @see nano package docs at https://www.npmjs.com/package/nano#dbfindselector-callback
   // @see couchDB docs at https://docs.couchdb.org/en/2.3.1/api/database/find.html
@@ -55,25 +55,21 @@ function Adminer(mapFilePath, Logger) {
         });
         return;
       }
-      let criteria = Object.assign({}, __mangoQuery);
-      criteria.selector.log_type = {
+
+      let __criteria = Object.assign({}, __mangoQuery);
+      __criteria.selector.log_type = {
         "$eq": activityType
       };
 
-      Response.status(404).json(
-        { activity: activityType , 
-          data: []
-        }
-      );
-
-      // _logger.fetch(criteria).then(function(data) {
-      //   // todo : the [data] must be formated by a method implemented by the driver
-      //   // ex :  couchDBDriver.format(result) : Array<data : Object>
-      //   Response.json({ activity: activityType, data: data.docs });
-      // }).catch(function(error) {
-      //   _logger.generalError(error);
-      //   Response.status(404).json({ activity: activityType, data: [] });
-      // });
+      _Activity.Fetch(__criteria).then(function(data) {
+        // todo : the [data] must be formated by a method implemented by the driver
+        // ex :  couchDBDriver.format(result) : Array<data : Object>
+        Response.json({ activity: activityType, data: data.docs });
+      }).catch(function(error) {
+        //_Activity.Insert(generalError(error));
+        console.log(error);
+        Response.status(404).json({ activity: activityType, data: [] });
+      });
 
     }
 
@@ -92,6 +88,6 @@ function Adminer(mapFilePath, Logger) {
   }
 }
 
-module.exports = function(mapFilePath, Logger) {
-  return new Adminer(mapFilePath, Logger);
+module.exports = function(mapFilePath, Activity) {
+  return new Adminer(mapFilePath, Activity);
 }

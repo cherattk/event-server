@@ -33,7 +33,7 @@ export default class ListActivityError extends React.Component {
         self.setState(function () {
           return {
             fetchingStatus: false,
-            data_list : response.data
+            data_list : response.data.data
           }
         });
       })
@@ -78,7 +78,7 @@ export default class ListActivityError extends React.Component {
 
     return (
       <ul className="list-element list-activity">
-        <li className="activity-head theme-bg-blue">
+        <li className="activity-head bg-primary text-white">
           <span>error</span>
           <span>time</span>
         </li>

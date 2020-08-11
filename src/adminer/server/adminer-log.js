@@ -1,11 +1,11 @@
 /**
- * @module DispatcherLogger
+ * @module AdminerLog
  * @copyright Copyright (c) 2019-present cheratt karim
  * @license MIT Licence
  */
 
 /**
- * Async DispatcherLogger
+ * Async AdminerLog
  */
 
 
@@ -29,11 +29,12 @@ const __defaultLog = function () {
   let time = new Date().getTime();
   return {
     log_id: time,
-    log_time: time
+    log_time: time,
+    log_domain : 'adminer'
   }
 }
 
-function DispatcherLogger(driver) {
+function AdminerLog(driver) {
 
   const __driver = driver || defaultDriver;
 
@@ -87,5 +88,5 @@ function DispatcherLogger(driver) {
 }
 
 module.exports = function (config) {
-  return new DispatcherLogger(config);
+  return new AdminerLog(config);
 }
