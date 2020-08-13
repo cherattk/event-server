@@ -34345,6 +34345,8 @@ var _containerSetting = _interopRequireDefault(require("./ui/setting.module/cont
 
 var _loginForm = _interopRequireDefault(require("./ui/component/login-form"));
 
+var _querystring = _interopRequireDefault(require("querystring"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function Adminer() {
@@ -34439,12 +34441,17 @@ function checkAuthToken() {
     renderLoginForm();
   } else {
     // check cookie validity
+    var __authData = _querystring["default"].stringify({
+      auth_token: auth_cookie
+    });
+
     (0, _axios["default"])({
       method: "POST",
       url: _adminer["default"].auth_token_url,
-      data: {
-        auth_token: auth_cookie
-      }
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      data: __authData
     }).then(function (response) {
       if (response.status === 200) {
         renderConnectedState(response.data.auth_token);
@@ -34479,7 +34486,7 @@ document.getElementById('logout').onclick = function (e) {
 
 checkAuthToken();
 
-},{"./config/adminer.config":50,"./lib/eventmap-manager":51,"./lib/misc":53,"./lib/ui-event":54,"./ui/activity.module/container-activity":55,"./ui/component/login-form":58,"./ui/setting.module/container-setting":60,"./ui/setting.module/form-event":64,"./ui/setting.module/form-listener.js":65,"./ui/setting.module/form-service":66,"axios":1,"react":42,"react-dom":39}],50:[function(require,module,exports){
+},{"./config/adminer.config":50,"./lib/eventmap-manager":51,"./lib/misc":53,"./lib/ui-event":54,"./ui/activity.module/container-activity":55,"./ui/component/login-form":58,"./ui/setting.module/container-setting":60,"./ui/setting.module/form-event":64,"./ui/setting.module/form-listener.js":65,"./ui/setting.module/form-service":66,"axios":1,"querystring":36,"react":42,"react-dom":39}],50:[function(require,module,exports){
 "use strict";
 
 var app_url = window.location.origin;

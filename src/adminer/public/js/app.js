@@ -14,6 +14,8 @@ import ContainerActivity from './ui/activity.module/container-activity';
 import ContainerSetting from './ui/setting.module/container-setting';
 import LoginForm from './ui/component/login-form';
 
+import QueryString from 'querystring';
+
 function Adminer() {
   return (
 
@@ -97,12 +99,15 @@ function checkAuthToken() {
   }
   else{
     // check cookie validity
+    var __authData = QueryString.stringify({
+      auth_token: auth_cookie
+    });
     HttpClient({
       method: "POST",
       url: AdminerConfig.auth_token_url,
-      data: {
-        auth_token: auth_cookie
-      }
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: __authData
+
     }).then(function (response) {
       if (response.status === 200) {
         renderConnectedState(response.data.auth_token);

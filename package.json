@@ -1,5 +1,5 @@
 {
-    "name": "event-server",
+    "name": "@cherattk/scope",
     "version": "0.1.0",
     "description": "An HTTP Event Server",
     "author": "Karim Cheratt",
