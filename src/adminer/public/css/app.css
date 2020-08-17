@@ -39,12 +39,20 @@ ul {
   background-color:#4381d3;
 }
 
+.btn-info{
+  box-shadow:0 2px 0 #077284 , 0 1px 0 #0dc0dc inset;
+}
+.btn-danger{
+  box-shadow:0 2px 0 #bf0909 , 0 1px 0 #f76161 inset;
+}
+.btn-primary{
+  box-shadow:0 2px 0 #0967cc , 0 1px 0 #95c2f3 inset;
+}
 .btn-add{
   position:relative;
   margin-bottom:10px;
   padding-left:35px;
   padding-right:15px;
-  border-radius:20px;
   text-transform:capitalize;
 }
 .btn-add:before{
@@ -134,11 +142,11 @@ OVERRIDE BOOTSTRAP
 }
 .element-content{
   background-color:#ffffff;
-  padding:15px 15px 30px 15px;
+  padding:30px;
   border:1px solid #ccc;
 }
 .element-content label {
-  margin:0 15px 0 0;
+  margin:0;
   text-transform:capitalize;
   color: #fff;
   background-color:#4381d3;
@@ -147,12 +155,20 @@ OVERRIDE BOOTSTRAP
   text-align:center;
   border:0;
 }
+.element-content span{
+  width:calc(100% - 150px);
+  background-color:#efeff9;
+}
+.element-content p > *{
+  display:inline-block;
+  vertical-align:top;
+  padding:7px 15px;
+  min-height:39px;
+}
 .element-content p{
   background-color:#fff;
-  margin:0;
+  margin:0 0 1px 0;
   padding:0;
-  border-bottom:1px solid #fff;
-  background-color:#efeff9;
 }
 .element-control {
   padding:20px 0;

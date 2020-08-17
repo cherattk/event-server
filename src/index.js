@@ -95,7 +95,7 @@ Server.post('/logout', function (Request, Response) {
   if (AuthUser.validateAuthToken(user_token)) {
     AuthUser.removeAuthToken();
     Response.status(200).json({
-      message: 'successfully loged out'
+      message: 'successfully logged out'
     });
   }
   else {

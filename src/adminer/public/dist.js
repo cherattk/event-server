@@ -35791,7 +35791,7 @@ function (_React$Component) {
       }, "#" + this.props.index + " - " + service.name), _react["default"].createElement("div", {
         className: "collapse element-content",
         id: "service-" + service.id
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Name"), service.name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host "), service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description "), service.description), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Name"), _react["default"].createElement("span", null, service.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host "), _react["default"].createElement("span", null, service.host)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description "), _react["default"].createElement("span", null, service.description)), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
