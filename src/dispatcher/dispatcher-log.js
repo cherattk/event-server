@@ -15,8 +15,8 @@ function DispatcherLog() {
     let time = new Date().getTime();
     return {
       log_id: time,
-      log_time: time,
-      log_domain : 'dispatcher'
+      log_time:time,
+      log_emitter : 'dispatcher'
     }
   }
 

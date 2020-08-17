@@ -43,7 +43,7 @@ const __couchConfig = "http://localhost:5984/event_db";
 const __AdminerActivity = new Activity(new couchdbDriver(__couchConfig));
 
 const Adminer = require('./adminer/server/adminer')(
-  _eventMapFilePath ,
+  _eventMapFilePath,
   __AdminerActivity
 );
 
@@ -52,59 +52,73 @@ const Adminer = require('./adminer/server/adminer')(
 Server.use('/', express.static('./src/adminer/public'));
 
 // ===========================================================
-Server.post('/auth_token', function(Request , Response) {
+
+/**
+ * USer Authentication
+ */
+Server.post('/auth_token', function (Request, Response) {
 
   var user_token = Request.body.auth_token;
 
-  if(AuthUser.validateAuthToken(user_token)){
-    AuthUser.setAuthToken(function(token_hash){
-      Response.status(200).json({
-        auth_token : token_hash
-      });
-    });    
-  }
-  else{
-    Response.status(400).end();
-  }
-});
-
-Server.post('/login', function(Request , Response) {
-  
-  var user_password = Request.body.password;
-
-  if(AuthUser.validatePassword(user_password)){
-      AuthUser.setAuthToken(function(token_hash){
-        Response.status(200).json({
-          auth_token : token_hash
-        });      
+  if (AuthUser.validateAuthToken(user_token)) {
+    Response.status(200).json({
+      auth_token: AuthUser.setAuthToken()
     });
   }
-  else{
-    Response.status(400).end('bad authentication data');
+  else {
+    Response.status(400).json({
+      message: 'bad authentication data'
+    });
+  }
+});
+
+Server.post('/login', function (Request, Response) {
+
+  var user_password = Request.body.password;
+
+  if (AuthUser.validatePassword(user_password)) {
+    Response.status(200).json({
+      auth_token: AuthUser.setAuthToken()
+    });
+  }
+  else {
+    Response.status(400).json({
+      message: 'bad authentication data'
+    });
   }
 
 });
 
-Server.post('/logout', function(Request , Response) {
-  
+Server.post('/logout', function (Request, Response) {
+
   var user_token = Request.body.auth_token;
-  if(AuthUser.validateAuthToken(user_token)){
-    AuthUser.removeAuthToken(function(){
-      Response.status(200).json({
-        success : true
-      });
-    });    
+  if (AuthUser.validateAuthToken(user_token)) {
+    AuthUser.removeAuthToken();
+    Response.status(200).json({
+      message: 'successfully loged out'
+    });
   }
-  else{
-    Response.status(400).end();
+  else {
+    Response.status(400).json({
+      message: 'bad authentication data'
+    });
   }
 
 });
 
+
+/**
+ * EventMap Adminer
+ */
 Server.get('/event-map', Adminer.getEventMap.bind(Adminer));
 
-Server.post('/event-map', Adminer.saveEventMap.bind(Adminer));
+Server.post('/eventmap/entity', Adminer.setEntity.bind(Adminer));
+Server.delete('/eventmap/entity', Adminer.removeEntity.bind(Adminer));
 
+
+/**
+ * Activity reader
+ */
 Server.get('/activity', Adminer.getActivity.bind(Adminer));
 
 
@@ -134,9 +148,8 @@ const Dispatcher = require('./dispatcher/dispatcher')(
 // });
 
 // ==========================================================
-Server.post('/dispatch', function (Request , Response) {
-  Dispatcher.dispatch(Request , Response);
-  console.log('test');
+Server.post('/dispatch', function (Request, Response) {
+  Dispatcher.dispatch(Request, Response);
 });
 
 

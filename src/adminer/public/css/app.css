@@ -123,7 +123,7 @@ OVERRIDE BOOTSTRAP
   list-style: none;
 }
 .element{
-  margin:0 0 15px 0;
+  margin:0 0 1px 0;
   padding:0px;
 }
 .element-card-header{
@@ -134,22 +134,28 @@ OVERRIDE BOOTSTRAP
 }
 .element-content{
   background-color:#ffffff;
-  padding:15px 20px;
-  margin:0;
-  box-shadow:0 1px 2px #ddd;
+  padding:15px 15px 30px 15px;
   border:1px solid #ccc;
 }
-.element-content p{
-  margin:0 0 10px 0;
-}
 .element-content label {
-  /* font-weight: bold; */
-  margin: 0 10px 0 0;
+  margin:0 15px 0 0;
   text-transform:capitalize;
-  color:#004085;
+  color: #fff;
+  background-color:#4381d3;
+  padding:7px 15px;
+  width:150px;
+  text-align:center;
+  border:0;
+}
+.element-content p{
+  background-color:#fff;
+  margin:0;
+  padding:0;
+  border-bottom:1px solid #fff;
+  background-color:#efeff9;
 }
 .element-control {
-  padding: 10px 0;
+  padding:20px 0;
 }
 
 .element-control button {
@@ -219,7 +225,11 @@ APPLICATION
   border:1px solid #ccc;
   margin-top:10px;
   color:#004085;
-  background-color:#eef6fd;
+  background-color:#f3f5f7;
+}
+.list-listener p{
+  background-color:transparent;
+  border-color:transparent;
 }
 .list-listener h5{
   padding:15px 20px;
@@ -230,11 +240,11 @@ APPLICATION
 .list-listener li{
   position:relative;
   padding:15px 15px;
-  border-bottom:1px solid #d6e9fd;
+  border-bottom:1px solid #c4c8cc;
 }
 .list-listener p{
-  margin: 0 80px 0 0;
-  padding:5px;
+  margin: 0 150px 0 0;
+  padding:5px 15px;
   text-decoration:underline;
 }
 .list-listener .div-control{
@@ -261,6 +271,9 @@ APPLICATION
 .activity-head {
   color: #fff;
   text-transform:capitalize;
+}
+.activity-head span{
+  border:1px solid #fff;
 }
 .activity-head span, .element-activity span {
   width: 20%;

@@ -35,31 +35,20 @@ function AuthUser() {
   /**
    * generate a new token hash for each call
    */
-  this.setAuthToken = function (callback) {
+  this.setAuthToken = function () {
+
+    // generate a new token
     AUTH_DATA.auth_token = (new Date()).getTime().toString(16);
-    this.saveAuthData(function (error) {
-      if (error) {
-        console.error(error);
-      }
-      callback(AUTH_DATA.auth_token);
-    });
+    return AUTH_DATA.auth_token;
   };
 
-  this.removeAuthToken = function (callback) {
-    AUTH_DATA.auth_token = "";
-    this.saveAuthData(function(error){
-      if (error) {
-        console.error(error);
-      }
-      callback();
-    });
+  this.removeAuthToken = function () {
+    AUTH_DATA.auth_token = (new Date()).getTime().toString(16);
   };
 
-  this.saveAuthData = function (callback) {
-    var data = JSON.stringify(AUTH_DATA);
-    fs.writeFile(AuthDataFile, data, 'utf8', function (error) {
-      callback(error);
-    });
+  this.saveAuthData = function (__data , callback) {
+    var data = JSON.stringify(__data);
+    fs.writeFile(AuthDataFile, data, 'utf8', callback);
   };
 }
 

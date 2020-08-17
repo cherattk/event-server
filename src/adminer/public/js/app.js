@@ -24,11 +24,15 @@ function Adminer() {
         <div className="nav nav-tabs container" id="nav-tab" role="tablist">
           <a className="nav-item nav-link active" id="nav-activity-tab"
             data-toggle="tab" href="#nav-activity" role="tab"
-            aria-controls="nav-activity" aria-selected="true">Activity</a>
+            aria-controls="nav-activity" aria-selected="true">
+            Activity
+          </a>
 
           <a className="nav-item nav-link" id="nav-setting-tab"
             data-toggle="tab" href="#nav-setting" role="tab"
-            aria-controls="nav-setting" aria-selected="false">setting</a>
+            aria-controls="nav-setting" aria-selected="false">
+            setting
+          </a>
         </div>
       </nav>
 
@@ -36,13 +40,17 @@ function Adminer() {
 
         <div className="tab-pane fade show active" id="nav-activity"
           role="tabpanel" aria-labelledby="nav-activity-tab">
-          <h1 className="text-white theme-bg-bluegray">System Activity</h1>
+          {/* <h1 className="text-white theme-bg-bluegray">
+            System Activity
+          </h1> */}
           <ContainerActivity />
         </div>
 
         <div className="tab-pane fade" id="nav-setting"
           role="tabpanel" aria-labelledby="nav-setting-tab">
-          <h1 className="text-white theme-bg-bluegray">Services Communication Setting</h1>
+          {/* <h1 className="text-white theme-bg-bluegray">
+            Services Communication Setting
+          </h1> */}
           <ContainerSetting />
         </div>
       </div>
@@ -70,16 +78,8 @@ function renderConnectedState(auth_token) {
 
 function RenderApp() {
   // load eventmap
-  HttpClient({
-    method : "GET",
-    url : AdminerConfig.eventmap_url
-  }).then(function (response) {
-    if (response.status === 200) {
-      EventMapManager.init(response.data);
-      ReactDOM.render(<Adminer />, document.getElementById('app'));
-    }
-  }).catch(function(error){
-    console.log(error);
+  EventMapManager.loadEventMap(function () {
+    ReactDOM.render(<Adminer />, document.getElementById('app'));
   });
 }
 
@@ -97,7 +97,7 @@ function checkAuthToken() {
   if (!auth_cookie) {
     renderLoginForm();
   }
-  else{
+  else {
     // check cookie validity
     var __authData = QueryString.stringify({
       auth_token: auth_cookie
@@ -112,7 +112,7 @@ function checkAuthToken() {
       if (response.status === 200) {
         renderConnectedState(response.data.auth_token);
       }
-    }).catch(function(){
+    }).catch(function () {
       renderLoginForm();
     });
 
@@ -121,28 +121,30 @@ function checkAuthToken() {
 
 // LOG OUT ACTION
 document.getElementById('logout').onclick = function (e) {
+
   var auth_cookie = Misc.getCookie('eser-auth');
-  HttpClient({
-    method : "POST",
-    url: AdminerConfig.log_out_url,
-    data : {
+  if (auth_cookie) {
+    var __authData = QueryString.stringify({
       auth_token: auth_cookie
-    }
-  }).then(function (response) {
-      // valid auth cookie
-      if (response.statusCode === 200) {
-        renderLoginForm();
-        e.target.style.visibility = 'hidden';
-      }
-    }).catch(function(error){
+    });
+    HttpClient({
+      method: "POST",
+      url: AdminerConfig.log_out_url,
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: __authData
+    }).then(function (response) {
+      renderLoginForm();
+      e.target.style.visibility = 'hidden';
+    }).catch(function (error) {
       console.log(error);
     });
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 checkAuthToken();
-
+// RenderApp();
 
 
 

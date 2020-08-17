@@ -5,26 +5,35 @@
  */
 
 const DataEvent = require('./ui-event').DataEvent;
-const HttpClient =  require('axios');
+const HttpClient = require('axios');
 const config = require('../config/adminer.config');
-const EventMap =  require('./eventmap');
+const QueryString = require('querystring');
 
-var _eventMap = undefined;
+const EventMap = require('../../../server/eventmap');
+const __EventMap = new EventMap();
 
 const EventMapManager = {
 
-  init : function init(entities){
-    if(!_eventMap){
-      _eventMap = new EventMap(entities);
-    }
-
+  loadEventMap: function (callback) {
+    HttpClient({
+      method: "GET",
+      responseType: "json",
+      url: config.eventmap_url
+    }).then(function (response) {      
+      __EventMap.buildMap(response.data);
+      callback();
+    }).catch(function (error) {
+      console.log(error);
+    });
   },
 
   ////////////////////////////////////////////////////////////
-  addData : function addData (entity) {
-    _eventMap.setEntity(entity);
+  addData: function addData(entity) {
 
-    // notify listeners
+    // set entity localy
+    // __EventMap.setEntity(entity);
+
+    // message to notify listeners
     var message = {};
     if (entity.type === 'event') {
       message.service_id = entity.service_id;
@@ -34,27 +43,29 @@ const EventMapManager = {
     }
 
     var eventName = 'update-list-' + entity.type;
-    DataEvent.dispatch(eventName, message);
-    this.saveEventMap();
+    this.saveEntityChange(entity, 'set', function () {
+      DataEvent.dispatch(eventName, message);
+    });
 
   },
 
-  updateData : function updateData(entity) {
+  updateData: function updateData(entity) {
 
-    _eventMap.setEntity(_entity);
-
+    // __EventMap.setEntity(_entity);
     // notify listeners
     var _entity = Object.assign({}, entity);
     var eventName = 'update-element-' + _entity.type;
 
-    DataEvent.dispatch(eventName, { id: _entity.id });
-    this.saveEventMap();
+    this.saveEntityChange(entity, 'set', function () {
+      DataEvent.dispatch(eventName, { id: _entity.id });
+    });
+
 
   },
 
   ///////////////////////////////////////////////////////////
-  deleteData : function deleteData(entity) {
-    _eventMap.removeById(entity.type, entity.id);
+  deleteData: function deleteData(entity) {
+    // __EventMap.removeById(entity.type, entity.id);
 
     // notify listeners
     let eventName = 'update-list-' + entity.type;
@@ -62,47 +73,62 @@ const EventMapManager = {
     if (entity.type === 'listener') {
       message.event_id = entity.event_id;
     }
-    DataEvent.dispatch(eventName, message);
-    this.saveEventMap();
+
+    this.saveEntityChange(entity, 'remove', function () {
+      DataEvent.dispatch(eventName, message);
+    });
   },
 
   ////////////////////////////////////////////////////////////
-  getData : function getData(type, id) {
-    return _eventMap.getById(type, id);
+  getData: function (type, id) {
+    return __EventMap.getById(type, id);
   },
 
   ///////////////////////////////////////////////////////////
-  getDataList : function getDataList(type, criteria) {
-    const list = _eventMap.getList(type, criteria);
+  getDataList: function (type, criteria) {
+    const list = __EventMap.getList(type, criteria);
     return list;
   },
 
-  saveEventMap : function saveEventMap() {
+  /**
+   * EventMap Client
+   */
+  saveEntityChange: function (entity, action, callback) {
 
-    var mapStore = {
-      service: _eventMap.getList('service'),
-      event: _eventMap.getList('event'),
-      listener: _eventMap.getList('listener'),
+    var __method = "POST";
+    var __requestParam = "";
+    if (action === "remove") {
+      __method = "DELETE";
+      __requestParam = QueryString.stringify({
+        entity_id: entity.id,
+        entity_type: entity.type
+      });
+    }
+    else if (action === "set") {
+      __method = "POST";
+      __requestParam = QueryString.stringify(entity);
+    }
+    else {
+      throw new Error('bad action');
     }
 
-    // HttpClient({
-    //   method : "POST",
-    //   responseType: "json",
-    //   url: config.eventmap_url,
-    //   data : {
-    //     event_map: JSON.stringify(mapStore)
-    //   }
-    // })
-    HttpClient.post(config.eventmap_url,
-      {
-        event_map : JSON.stringify(mapStore)
-      }
-    )
-    .then(function (err) {
-      if (err) {
-        return console.log(err);
-      }
-    });
+    HttpClient({
+      method: __method,
+      responseType: "json",
+      url: config.entity_url,
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: __requestParam
+    }).then(function (response) {
+        // 1 - Firstly update local EventMap
+        // the callback may need of updated eventmap
+        __EventMap.buildMap(response.data.eventmap);
+
+        // 2 - run callback
+        callback(response);
+
+      }).catch(function (error) {
+        console.error(error);
+      });
   }
 
 }

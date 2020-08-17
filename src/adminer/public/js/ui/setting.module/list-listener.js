@@ -17,25 +17,31 @@ export default class ListListener extends React.Component {
 
   componentDidMount() {
     var self = this;
-
-    this.setState(function () {
-      return {
-        list_listener:
-          EventMapManager.getDataList('listener', { event_id: self.props.event_id })
-      }
-    });
-
+    var __event_id = this.props.event_id;
     DataEvent.addListener('update-list-listener', function (dataEvent) {
-      if (dataEvent.message.event_id === self.props.event_id) {
+      if (dataEvent.message.event_id === __event_id) {
         self.setState(function () {
-          return {
-            list_listener:
-              EventMapManager.getDataList('listener', { event_id: self.props.event_id })
-          }
+          var data = EventMapManager.getDataList('listener', { event_id: __event_id });
+          return { list_listener: data }
         });
       }
     });
+
+    this.setState(function () {
+      var data = EventMapManager.getDataList('listener', { event_id: __event_id });
+      return { list_listener: data };
+    });
   }
+
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.event_id !== prevProps.event_id) {
+  //     let __event_id = this.props.event_id;
+  //     this.setState(function () {
+  //       var data = EventMapManager.getDataList('listener', { event_id: __event_id });
+  //     return { list_listener: data };
+  //     });
+  //   }
+  // }
 
   renderEmptyState() {
     return (

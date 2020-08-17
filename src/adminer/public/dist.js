@@ -866,7 +866,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this,require('_process'))
-},{"./adapters/http":2,"./adapters/xhr":2,"./helpers/normalizeHeaderName":23,"./utils":26,"_process":31}],17:[function(require,module,exports){
+},{"./adapters/http":2,"./adapters/xhr":2,"./helpers/normalizeHeaderName":23,"./utils":26,"_process":32}],17:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -1554,6 +1554,8 @@ module.exports = {
 };
 
 },{"./helpers/bind":17}],27:[function(require,module,exports){
+
+},{}],28:[function(require,module,exports){
 /**
  * @module EventSet
  * @license MIT Licence
@@ -1594,7 +1596,7 @@ function EventSet() {
 
 module.exports = new EventSet();
 
-},{"./topic.js":28,"./util.js":29}],28:[function(require,module,exports){
+},{"./topic.js":29,"./util.js":30}],29:[function(require,module,exports){
 /**
  * @module Topic
  * @license MIT Licence
@@ -1769,7 +1771,7 @@ function Topic(topicName) {
 }
 
 module.exports = Topic;
-},{"./util.js":29}],29:[function(require,module,exports){
+},{"./util.js":30}],30:[function(require,module,exports){
 /**
  * @module Util
  * @license MIT Licence
@@ -1802,7 +1804,7 @@ const Util = {
 };
 
 module.exports = Util;
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -1894,7 +1896,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -2080,7 +2082,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (process){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -2186,7 +2188,7 @@ checkPropTypes.resetWarningCache = function() {
 module.exports = checkPropTypes;
 
 }).call(this,require('_process'))
-},{"./lib/ReactPropTypesSecret":33,"_process":31}],33:[function(require,module,exports){
+},{"./lib/ReactPropTypesSecret":34,"_process":32}],34:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -2200,7 +2202,7 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
 module.exports = ReactPropTypesSecret;
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2286,7 +2288,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2373,13 +2375,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":34,"./encode":35}],37:[function(require,module,exports){
+},{"./decode":35,"./encode":36}],38:[function(require,module,exports){
 (function (process){
 /** @license React v16.11.0
  * react-dom.development.js
@@ -30110,7 +30112,7 @@ module.exports = reactDom;
 }
 
 }).call(this,require('_process'))
-},{"_process":31,"object-assign":30,"prop-types/checkPropTypes":32,"react":42,"scheduler":47,"scheduler/tracing":48}],38:[function(require,module,exports){
+},{"_process":32,"object-assign":31,"prop-types/checkPropTypes":33,"react":43,"scheduler":48,"scheduler/tracing":49}],39:[function(require,module,exports){
 /** @license React v16.11.0
  * react-dom.production.min.js
  *
@@ -30402,7 +30404,7 @@ xe,ye,Ca.injectEventPluginsByName,fa,Sc,function(a){ya(a,Rc)},cb,db,Pd,Ba,Sj,{cu
 (function(a){var b=a.findFiberByHostInstance;return ok(n({},a,{overrideHookState:null,overrideProps:null,setSuspenseHandler:null,scheduleUpdate:null,currentDispatcherRef:Ea.ReactCurrentDispatcher,findHostInstanceByFiber:function(a){a=ic(a);return null===a?null:a.stateNode},findFiberByHostInstance:function(a){return b?b(a):null},findHostInstancesForRefresh:null,scheduleRefresh:null,scheduleRoot:null,setRefreshHandler:null,getCurrentFiber:null}))})({findFiberByHostInstance:Fc,bundleType:0,version:"16.11.0",
 rendererPackageName:"react-dom"});var Dk={default:Ck},Ek=Dk&&Ck||Dk;module.exports=Ek.default||Ek;
 
-},{"object-assign":30,"react":42,"scheduler":47}],39:[function(require,module,exports){
+},{"object-assign":31,"react":43,"scheduler":48}],40:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -30444,7 +30446,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this,require('_process'))
-},{"./cjs/react-dom.development.js":37,"./cjs/react-dom.production.min.js":38,"_process":31}],40:[function(require,module,exports){
+},{"./cjs/react-dom.development.js":38,"./cjs/react-dom.production.min.js":39,"_process":32}],41:[function(require,module,exports){
 (function (process){
 /** @license React v16.11.0
  * react.development.js
@@ -32766,7 +32768,7 @@ module.exports = react;
 }
 
 }).call(this,require('_process'))
-},{"_process":31,"object-assign":30,"prop-types/checkPropTypes":32}],41:[function(require,module,exports){
+},{"_process":32,"object-assign":31,"prop-types/checkPropTypes":33}],42:[function(require,module,exports){
 /** @license React v16.11.0
  * react.production.min.js
  *
@@ -32793,7 +32795,7 @@ b,c){return W().useImperativeHandle(a,b,c)},useDebugValue:function(){},useLayout
 if(null!=b){void 0!==b.ref&&(g=b.ref,l=J.current);void 0!==b.key&&(d=""+b.key);if(a.type&&a.type.defaultProps)var f=a.type.defaultProps;for(k in b)K.call(b,k)&&!L.hasOwnProperty(k)&&(e[k]=void 0===b[k]&&void 0!==f?f[k]:b[k])}var k=arguments.length-2;if(1===k)e.children=c;else if(1<k){f=Array(k);for(var m=0;m<k;m++)f[m]=arguments[m+2];e.children=f}return{$$typeof:p,type:a.type,key:d,ref:g,props:e,_owner:l}},createFactory:function(a){var b=M.bind(null,a);b.type=a;return b},isValidElement:N,version:"16.11.0",
 __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentDispatcher:I,ReactCurrentBatchConfig:{suspense:null},ReactCurrentOwner:J,IsSomeRendererActing:{current:!1},assign:h}},Y={default:X},Z=Y&&X||Y;module.exports=Z.default||Z;
 
-},{"object-assign":30}],42:[function(require,module,exports){
+},{"object-assign":31}],43:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -32804,7 +32806,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this,require('_process'))
-},{"./cjs/react.development.js":40,"./cjs/react.production.min.js":41,"_process":31}],43:[function(require,module,exports){
+},{"./cjs/react.development.js":41,"./cjs/react.production.min.js":42,"_process":32}],44:[function(require,module,exports){
 (function (process){
 /** @license React v0.17.0
  * scheduler-tracing.development.js
@@ -33229,7 +33231,7 @@ exports.unstable_unsubscribe = unstable_unsubscribe;
 }
 
 }).call(this,require('_process'))
-},{"_process":31}],44:[function(require,module,exports){
+},{"_process":32}],45:[function(require,module,exports){
 /** @license React v0.17.0
  * scheduler-tracing.production.min.js
  *
@@ -33241,7 +33243,7 @@ exports.unstable_unsubscribe = unstable_unsubscribe;
 
 'use strict';Object.defineProperty(exports,"__esModule",{value:!0});var b=0;exports.__interactionsRef=null;exports.__subscriberRef=null;exports.unstable_clear=function(a){return a()};exports.unstable_getCurrent=function(){return null};exports.unstable_getThreadID=function(){return++b};exports.unstable_trace=function(a,d,c){return c()};exports.unstable_wrap=function(a){return a};exports.unstable_subscribe=function(){};exports.unstable_unsubscribe=function(){};
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function (process){
 /** @license React v0.17.0
  * scheduler.development.js
@@ -34270,7 +34272,7 @@ exports.unstable_Profiling = unstable_Profiling;
 }
 
 }).call(this,require('_process'))
-},{"_process":31}],46:[function(require,module,exports){
+},{"_process":32}],47:[function(require,module,exports){
 /** @license React v0.17.0
  * scheduler.production.min.js
  *
@@ -34294,7 +34296,7 @@ exports.unstable_scheduleCallback=function(a,b,c){var d=exports.unstable_now();i
 exports.unstable_wrapCallback=function(a){var b=S;return function(){var c=S;S=b;try{return a.apply(this,arguments)}finally{S=c}}};exports.unstable_getCurrentPriorityLevel=function(){return S};exports.unstable_shouldYield=function(){var a=exports.unstable_now();W(a);var b=M(O);return b!==R&&null!==R&&null!==b&&null!==b.callback&&b.startTime<=a&&b.expirationTime<R.expirationTime||k()};exports.unstable_requestPaint=aa;exports.unstable_continueExecution=function(){U||T||(U=!0,f(Y))};
 exports.unstable_pauseExecution=function(){};exports.unstable_getFirstCallbackNode=function(){return M(O)};exports.unstable_Profiling=null;
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -34305,7 +34307,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this,require('_process'))
-},{"./cjs/scheduler.development.js":45,"./cjs/scheduler.production.min.js":46,"_process":31}],48:[function(require,module,exports){
+},{"./cjs/scheduler.development.js":46,"./cjs/scheduler.production.min.js":47,"_process":32}],49:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -34316,7 +34318,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 }).call(this,require('_process'))
-},{"./cjs/scheduler-tracing.development.js":43,"./cjs/scheduler-tracing.production.min.js":44,"_process":31}],49:[function(require,module,exports){
+},{"./cjs/scheduler-tracing.development.js":44,"./cjs/scheduler-tracing.production.min.js":45,"_process":32}],50:[function(require,module,exports){
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -34381,16 +34383,12 @@ function Adminer() {
     id: "nav-activity",
     role: "tabpanel",
     "aria-labelledby": "nav-activity-tab"
-  }, _react["default"].createElement("h1", {
-    className: "text-white theme-bg-bluegray"
-  }, "System Activity"), _react["default"].createElement(_containerActivity["default"], null)), _react["default"].createElement("div", {
+  }, _react["default"].createElement(_containerActivity["default"], null)), _react["default"].createElement("div", {
     className: "tab-pane fade",
     id: "nav-setting",
     role: "tabpanel",
     "aria-labelledby": "nav-setting-tab"
-  }, _react["default"].createElement("h1", {
-    className: "text-white theme-bg-bluegray"
-  }, "Services Communication Setting"), _react["default"].createElement(_containerSetting["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
+  }, _react["default"].createElement(_containerSetting["default"], null))), _react["default"].createElement(_formService["default"], null), _react["default"].createElement(_formEvent["default"], null), _react["default"].createElement(_formListener["default"], null));
 } ///////////////////////////////////////////////////////////////////////////
 
 
@@ -34410,17 +34408,8 @@ function renderConnectedState(auth_token) {
 
 function RenderApp() {
   // load eventmap
-  (0, _axios["default"])({
-    method: "GET",
-    url: _adminer["default"].eventmap_url
-  }).then(function (response) {
-    if (response.status === 200) {
-      _eventmapManager["default"].init(response.data);
-
-      _reactDom["default"].render(_react["default"].createElement(Adminer, null), document.getElementById('app'));
-    }
-  })["catch"](function (error) {
-    console.log(error);
+  _eventmapManager["default"].loadEventMap(function () {
+    _reactDom["default"].render(_react["default"].createElement(Adminer, null), document.getElementById('app'));
   });
 }
 
@@ -34466,27 +34455,31 @@ function checkAuthToken() {
 document.getElementById('logout').onclick = function (e) {
   var auth_cookie = _misc["default"].getCookie('eser-auth');
 
-  (0, _axios["default"])({
-    method: "POST",
-    url: _adminer["default"].log_out_url,
-    data: {
+  if (auth_cookie) {
+    var __authData = _querystring["default"].stringify({
       auth_token: auth_cookie
-    }
-  }).then(function (response) {
-    // valid auth cookie
-    if (response.statusCode === 200) {
+    });
+
+    (0, _axios["default"])({
+      method: "POST",
+      url: _adminer["default"].log_out_url,
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      data: __authData
+    }).then(function (response) {
       renderLoginForm();
       e.target.style.visibility = 'hidden';
-    }
-  })["catch"](function (error) {
-    console.log(error);
-  });
+    })["catch"](function (error) {
+      console.log(error);
+    });
+  }
 }; //////////////////////////////////////////////////////////////////////////
 
 
-checkAuthToken();
+checkAuthToken(); // RenderApp();
 
-},{"./config/adminer.config":50,"./lib/eventmap-manager":51,"./lib/misc":53,"./lib/ui-event":54,"./ui/activity.module/container-activity":55,"./ui/component/login-form":58,"./ui/setting.module/container-setting":60,"./ui/setting.module/form-event":64,"./ui/setting.module/form-listener.js":65,"./ui/setting.module/form-service":66,"axios":1,"querystring":36,"react":42,"react-dom":39}],50:[function(require,module,exports){
+},{"./config/adminer.config":51,"./lib/eventmap-manager":52,"./lib/misc":53,"./lib/ui-event":54,"./ui/activity.module/container-activity":55,"./ui/component/login-form":58,"./ui/setting.module/container-setting":60,"./ui/setting.module/form-event":64,"./ui/setting.module/form-listener.js":65,"./ui/setting.module/form-service":66,"axios":1,"querystring":37,"react":43,"react-dom":40}],51:[function(require,module,exports){
 "use strict";
 
 var app_url = window.location.origin;
@@ -34495,16 +34488,18 @@ var activity_url = "".concat(app_url, "/activity");
 var login_url = "".concat(app_url, "/login");
 var auth_token_url = "".concat(app_url, "/auth_token");
 var log_out_url = "".concat(app_url, "/logout");
+var entity_url = "".concat(app_url, "/eventmap/entity");
 module.exports = {
   app_url: app_url,
   eventmap_url: eventmap_url,
   activity_url: activity_url,
   login_url: login_url,
   auth_token_url: auth_token_url,
-  log_out_url: log_out_url
+  log_out_url: log_out_url,
+  entity_url: entity_url
 };
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 "use strict";
 
 /**
@@ -34518,20 +34513,31 @@ var HttpClient = require('axios');
 
 var config = require('../config/adminer.config');
 
-var EventMap = require('./eventmap');
+var QueryString = require('querystring');
 
-var _eventMap = undefined;
+var EventMap = require('../../../server/eventmap');
+
+var __EventMap = new EventMap();
+
 var EventMapManager = {
-  init: function init(entities) {
-    if (!_eventMap) {
-      _eventMap = new EventMap(entities);
-    }
+  loadEventMap: function loadEventMap(callback) {
+    HttpClient({
+      method: "GET",
+      responseType: "json",
+      url: config.eventmap_url
+    }).then(function (response) {
+      __EventMap.buildMap(response.data);
+
+      callback();
+    })["catch"](function (error) {
+      console.log(error);
+    });
   },
   ////////////////////////////////////////////////////////////
   addData: function addData(entity) {
-    _eventMap.setEntity(entity); // notify listeners
-
-
+    // set entity localy
+    // __EventMap.setEntity(entity);
+    // message to notify listeners
     var message = {};
 
     if (entity.type === 'event') {
@@ -34541,26 +34547,26 @@ var EventMapManager = {
     }
 
     var eventName = 'update-list-' + entity.type;
-    DataEvent.dispatch(eventName, message);
-    this.saveEventMap();
+    this.saveEntityChange(entity, 'set', function () {
+      DataEvent.dispatch(eventName, message);
+    });
   },
   updateData: function updateData(entity) {
-    _eventMap.setEntity(_entity); // notify listeners
-
-
+    // __EventMap.setEntity(_entity);
+    // notify listeners
     var _entity = Object.assign({}, entity);
 
     var eventName = 'update-element-' + _entity.type;
-    DataEvent.dispatch(eventName, {
-      id: _entity.id
+    this.saveEntityChange(entity, 'set', function () {
+      DataEvent.dispatch(eventName, {
+        id: _entity.id
+      });
     });
-    this.saveEventMap();
   },
   ///////////////////////////////////////////////////////////
   deleteData: function deleteData(entity) {
-    _eventMap.removeById(entity.type, entity.id); // notify listeners
-
-
+    // __EventMap.removeById(entity.type, entity.id);
+    // notify listeners
     var eventName = 'update-list-' + entity.type;
     var message = {};
 
@@ -34568,184 +34574,64 @@ var EventMapManager = {
       message.event_id = entity.event_id;
     }
 
-    DataEvent.dispatch(eventName, message);
-    this.saveEventMap();
+    this.saveEntityChange(entity, 'remove', function () {
+      DataEvent.dispatch(eventName, message);
+    });
   },
   ////////////////////////////////////////////////////////////
   getData: function getData(type, id) {
-    return _eventMap.getById(type, id);
+    return __EventMap.getById(type, id);
   },
   ///////////////////////////////////////////////////////////
   getDataList: function getDataList(type, criteria) {
-    var list = _eventMap.getList(type, criteria);
+    var list = __EventMap.getList(type, criteria);
 
     return list;
   },
-  saveEventMap: function saveEventMap() {
-    var mapStore = {
-      service: _eventMap.getList('service'),
-      event: _eventMap.getList('event'),
-      listener: _eventMap.getList('listener')
-    }; // HttpClient({
-    //   method : "POST",
-    //   responseType: "json",
-    //   url: config.eventmap_url,
-    //   data : {
-    //     event_map: JSON.stringify(mapStore)
-    //   }
-    // })
 
-    HttpClient.post(config.eventmap_url, {
-      event_map: JSON.stringify(mapStore)
-    }).then(function (err) {
-      if (err) {
-        return console.log(err);
-      }
+  /**
+   * EventMap Client
+   */
+  saveEntityChange: function saveEntityChange(entity, action, callback) {
+    var __method = "POST";
+    var __requestParam = "";
+
+    if (action === "remove") {
+      __method = "DELETE";
+      __requestParam = QueryString.stringify({
+        entity_id: entity.id,
+        entity_type: entity.type
+      });
+    } else if (action === "set") {
+      __method = "POST";
+      __requestParam = QueryString.stringify(entity);
+    } else {
+      throw new Error('bad action');
+    }
+
+    HttpClient({
+      method: __method,
+      responseType: "json",
+      url: config.entity_url,
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      data: __requestParam
+    }).then(function (response) {
+      // 1 - Firstly update local EventMap
+      // the callback may need of updated eventmap
+      __EventMap.buildMap(response.data.eventmap); // 2 - run callback
+
+
+      callback(response);
+    })["catch"](function (error) {
+      console.error(error);
     });
   }
 };
 module.exports = EventMapManager;
 
-},{"../config/adminer.config":50,"./eventmap":52,"./ui-event":54,"axios":1}],52:[function(require,module,exports){
-"use strict";
-
-/**
- * @module EventMap
- * @copyright Copyright (c) 2019-present cheratt karim
- * @license MIT Licence
- */
-
-/**
- * Used to manage (set/delete) entities
- * It converts entities JSON Object to a Map Object to manage entities
- * @params {Object} entitiesMap
- */
-
-/**
- * Schema : 
- * event : { "id" , type , "service_id"  , "name", "description" }
- * listener : { "id" , "event_id"  , "endpoint", "description" }
- */
-module.exports = function EventMap(entities) {
-  var prefix = {
-    service: 's-',
-    event: 'e-',
-    listener: 'l-'
-  }; // var _entitySchema = {
-  //   service: { id: "", type: "", name: "", host: "", description: "" },
-  //   event : { id : "" , type : "" , service_id: "" , name : "" , description : ""},
-  //   listener : { id : "" , type : "" , event_id: "" , endpoint : "" , description : ""}
-  // };
-
-  var _eventMap = {
-    service: new Map(),
-    event: new Map(),
-    listener: new Map()
-  };
-  ['service', 'event', 'listener'].map(function (type) {
-    entities[type].map(function (item) {
-      var _item = Object.assign({}, item);
-
-      _eventMap[type].set(_item.id, _item);
-    });
-  });
-
-  this.generateID = function (entityType) {
-    return prefix[entityType] + new Date().getTime();
-  };
-
-  this.setEntity = function (entityData) {
-    var entity = Object.assign({}, entityData);
-
-    if (typeof entityData.id === 'undefined' || !entityData.id) {
-      entity.id = this.generateID(entityData.type);
-    }
-
-    var _map = _eventMap[entity.type];
-
-    if (entityData.type === 'event') {
-      var _serviceEntity = _eventMap.service.get(entityData.service_id);
-
-      entity.service_name = _serviceEntity.name;
-      entity.service_host = _serviceEntity.host;
-    }
-
-    _map.set(entity.id, entity);
-
-    return entity;
-  };
-  /**
-   * Remove one entry of type 'type' from the Map And 
-   * set its 'reference_id' into the children entities to empty value
-   * 
-   * @param {string} type The type of the entity
-   * @param {string} id The id of the entity
-   * 
-   * @returns {boolean} the returned value is the value of Map.delete()
-   */
-
-
-  this.removeById = function (type, id) {
-    var _map = _eventMap[type];
-
-    var result = _map["delete"](id);
-
-    if (type === 'service') {
-      _eventMap.event.forEach(function (event) {
-        if (event.service_id === id) {
-          _eventMap.event["delete"](event.id);
-        }
-      });
-    }
-
-    if (type === 'event') {
-      _eventMap.listener.forEach(function (listener) {
-        if (listener.event_id === id) {
-          _eventMap.listener["delete"](listener.id);
-        }
-      });
-    }
-
-    return result;
-  };
-
-  this.getById = function (type, id) {
-    var _map = _eventMap[type];
-    return _map.get(id);
-  };
-  /**
-   * 
-   * @returns Array<entity>
-   */
-
-
-  this.getList = function (type, criteria) {
-    var _map = _eventMap[type];
-    var result = []; // todo : buggy code , must be changed
-
-    var field = !!criteria && Object.keys(criteria);
-
-    if (field.length > 0) {
-      _map.forEach(function (element) {
-        var ok = true;
-        field.forEach(function (_field) {
-          ok = ok && element[_field] === criteria[_field];
-        });
-
-        if (ok) {
-          result.push(element);
-        }
-      });
-    } else {
-      // return all entries
-      result = Array.from(_map.values());
-    }
-
-    return result;
-  };
-};
-
-},{}],53:[function(require,module,exports){
+},{"../../../server/eventmap":70,"../config/adminer.config":51,"./ui-event":54,"axios":1,"querystring":37}],53:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -34818,7 +34704,7 @@ exports.DataEvent = DataEvent;
   DataEvent.addEvent('update-element-' + type);
 });
 
-},{"eventset":27}],55:[function(require,module,exports){
+},{"eventset":28}],55:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34901,7 +34787,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerActivity;
 
-},{"./list-activity-error":56,"./list-activity-event":57,"react":42}],56:[function(require,module,exports){
+},{"./list-activity-error":56,"./list-activity-event":57,"react":43}],56:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35009,7 +34895,7 @@ function (_React$Component) {
         }, _react["default"].createElement("div", {
           className: "element-activity",
           onClick: this.toggleElement.bind(this, key)
-        }, _react["default"].createElement("span", null, activity.error_type), _react["default"].createElement("span", null, _misc["default"].getDateFormat(activity.log_time))), _react["default"].createElement("div", {
+        }, _react["default"].createElement("span", null, activity.error_type), _react["default"].createElement("span", null, activity.log_emitter), _react["default"].createElement("span", null, _misc["default"].getDateFormat(activity.log_time))), _react["default"].createElement("div", {
           id: key,
           className: "element-activity-content collapse"
         }, _react["default"].createElement("label", null, "Request : "), _react["default"].createElement("pre", null, JSON.stringify(activity.content, null, 2)))));
@@ -35018,7 +34904,7 @@ function (_React$Component) {
         className: "list-element list-activity"
       }, _react["default"].createElement("li", {
         className: "activity-head bg-primary text-white"
-      }, _react["default"].createElement("span", null, "error"), _react["default"].createElement("span", null, "time")), list);
+      }, _react["default"].createElement("span", null, "error"), _react["default"].createElement("span", null, "Emitter"), _react["default"].createElement("span", null, "time")), list);
     }
   }, {
     key: "render",
@@ -35040,7 +34926,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivityError;
 
-},{"../../config/adminer.config":50,"../../lib/misc":53,"../component/message":59,"axios":1,"react":42}],57:[function(require,module,exports){
+},{"../../config/adminer.config":51,"../../lib/misc":53,"../component/message":59,"axios":1,"react":43}],57:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35180,7 +35066,7 @@ function (_React$Component) {
 
 exports["default"] = ListActivity;
 
-},{"../../config/adminer.config":50,"../../lib/misc":53,"../component/message":59,"axios":1,"react":42}],58:[function(require,module,exports){
+},{"../../config/adminer.config":51,"../../lib/misc":53,"../component/message":59,"axios":1,"react":43}],58:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35337,7 +35223,7 @@ function (_React$Component) {
 
 exports["default"] = LoginForm;
 
-},{"../../config/adminer.config":50,"../../lib/ui-event":54,"axios":1,"querystring":36,"react":42}],59:[function(require,module,exports){
+},{"../../config/adminer.config":51,"../../lib/ui-event":54,"axios":1,"querystring":37,"react":43}],59:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35364,7 +35250,7 @@ function EmptyState(props) {
   }, _react["default"].createElement("h3", null, props.text));
 }
 
-},{"react":42}],60:[function(require,module,exports){
+},{"react":43}],60:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35447,7 +35333,7 @@ function (_React$Component) {
 
 exports["default"] = ContainerSetting;
 
-},{"./list-event":67,"./list-service":69,"react":42}],61:[function(require,module,exports){
+},{"./list-event":67,"./list-service":69,"react":43}],61:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35494,15 +35380,34 @@ function (_React$Component) {
     _classCallCheck(this, ElementEvent);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ElementEvent).call(this, props));
+
+    _this.updateState = function (event_id) {
+      this.setState(function () {
+        var __event = _eventmapManager["default"].getData('event', event_id);
+
+        var __service = _eventmapManager["default"].getData('service', __event.service_id);
+
+        return {
+          event: __event,
+          service: {
+            name: __service.name,
+            host: __service.host
+          }
+        };
+      });
+    };
+
     _this.state = {
       event: {
         id: '',
         type: 'event',
         event_name: '',
         service_id: '',
-        service_name: '',
-        service_host: '',
         description: ''
+      },
+      service: {
+        name: '',
+        host: ''
       }
     };
     _this.listenerArray = [];
@@ -35514,21 +35419,33 @@ function (_React$Component) {
     value: function componentDidMount() {
       var event_id = this.props.event_id;
       var self = this; ////////////////////////////////////////////////////////
+      // triggered event updating the event data
 
-      var _listener_for_update = _uiEvent.DataEvent.addListener('update-element-event', function () {
-        self.setState(function () {
-          return {
-            event: _eventmapManager["default"].getData('event', event_id)
-          };
-        });
-      });
+      var __updaterListener = _uiEvent.DataEvent.addListener('update-element-event', function () {
+        self.updateState(event_id);
+      }); // triggered when updating the service data
 
-      this.setState(function () {
-        return {
-          event: _eventmapManager["default"].getData('event', event_id)
-        };
-      });
-      this.listenerArray.push(_listener_for_update);
+
+      var __updaterListener = _uiEvent.DataEvent.addListener('update-element-service', function (event) {
+        if (event.message.id === self.state.event.service_id) {
+          // update local service state
+          self.setState(function () {
+            var __service = _eventmapManager["default"].getData('service', self.state.event.service_id);
+
+            return {
+              service: {
+                name: __service.name,
+                host: __service.host
+              }
+            };
+          });
+        }
+      }); // init state
+
+
+      self.updateState(event_id); // to remove listener
+
+      this.listenerArray.push(__updaterListener);
     }
   }, {
     key: "componentWillUnmount",
@@ -35581,6 +35498,7 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       var event = this.state.event;
+      var service = this.state.service;
       return _react["default"].createElement("li", {
         key: event.id,
         className: "element"
@@ -35591,7 +35509,7 @@ function (_React$Component) {
       }, "#" + this.props.index + " - " + event.event_name), _react["default"].createElement("div", {
         className: "collapse element-content",
         id: "event-" + event.id
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event :"), event.event_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "ID :"), event.id), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Published By :"), event.service_name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), event.description), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "ID "), _react["default"].createElement("span", null, event.id)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Name"), _react["default"].createElement("span", null, " ", event.event_name, " ")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Publisher"), _react["default"].createElement("span", null, service.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Source"), _react["default"].createElement("span", null, service.host)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Spec Version "), _react["default"].createElement("span", null, "1.0")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Type "), _react["default"].createElement("span", null, "String")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Content Type "), _react["default"].createElement("span", null, "JSON")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Description "), _react["default"].createElement("span", null, event.description)), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -35616,7 +35534,7 @@ function (_React$Component) {
 
 exports["default"] = ElementEvent;
 
-},{"../../lib/eventmap-manager":51,"../../lib/ui-event":54,"./list-listener":68,"react":42}],62:[function(require,module,exports){
+},{"../../lib/eventmap-manager":52,"../../lib/ui-event":54,"./list-listener":68,"react":43}],62:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35737,7 +35655,7 @@ function (_React$Component) {
 
 exports["default"] = ElementListener;
 
-},{"../../lib/eventmap-manager":51,"../../lib/ui-event":54,"react":42}],63:[function(require,module,exports){
+},{"../../lib/eventmap-manager":52,"../../lib/ui-event":54,"react":43}],63:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35873,7 +35791,7 @@ function (_React$Component) {
       }, "#" + this.props.index + " - " + service.name), _react["default"].createElement("div", {
         className: "collapse element-content",
         id: "service-" + service.id
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service :"), service.name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host :"), service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description :"), service.description), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Name"), service.name), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host "), service.host), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description "), service.description), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -35892,7 +35810,7 @@ function (_React$Component) {
 
 exports["default"] = ElementService;
 
-},{"../../lib/eventmap-manager":51,"../../lib/ui-event":54,"react":42}],64:[function(require,module,exports){
+},{"../../lib/eventmap-manager":52,"../../lib/ui-event":54,"react":43}],64:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36121,7 +36039,7 @@ function (_React$Component) {
 
 exports["default"] = FormEvent;
 
-},{"../../lib/eventmap-manager":51,"../../lib/ui-event":54,"react":42}],65:[function(require,module,exports){
+},{"../../lib/eventmap-manager":52,"../../lib/ui-event":54,"react":43}],65:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36310,7 +36228,7 @@ function (_React$Component) {
 
 exports["default"] = FormListener;
 
-},{"../../lib/eventmap-manager":51,"../../lib/ui-event":54,"react":42}],66:[function(require,module,exports){
+},{"../../lib/eventmap-manager":52,"../../lib/ui-event":54,"react":43}],66:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36542,7 +36460,7 @@ function (_React$Component) {
 
 exports["default"] = FormService;
 
-},{"../../lib/eventmap-manager":51,"../../lib/ui-event":54,"react":42}],67:[function(require,module,exports){
+},{"../../lib/eventmap-manager":52,"../../lib/ui-event":54,"react":43}],67:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36673,7 +36591,7 @@ function (_React$Component) {
 
 exports["default"] = ListEvent;
 
-},{"../../lib/eventmap-manager":51,"../../lib/ui-event":54,"../component/message":59,"./element-event":61,"react":42}],68:[function(require,module,exports){
+},{"../../lib/eventmap-manager":52,"../../lib/ui-event":54,"../component/message":59,"./element-event":61,"react":43}],68:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36730,26 +36648,41 @@ function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       var self = this;
-      this.setState(function () {
-        return {
-          list_listener: _eventmapManager["default"].getDataList('listener', {
-            event_id: self.props.event_id
-          })
-        };
-      });
+      var __event_id = this.props.event_id;
 
       _uiEvent.DataEvent.addListener('update-list-listener', function (dataEvent) {
-        if (dataEvent.message.event_id === self.props.event_id) {
+        if (dataEvent.message.event_id === __event_id) {
           self.setState(function () {
+            var data = _eventmapManager["default"].getDataList('listener', {
+              event_id: __event_id
+            });
+
             return {
-              list_listener: _eventmapManager["default"].getDataList('listener', {
-                event_id: self.props.event_id
-              })
+              list_listener: data
             };
           });
         }
       });
-    }
+
+      this.setState(function () {
+        var data = _eventmapManager["default"].getDataList('listener', {
+          event_id: __event_id
+        });
+
+        return {
+          list_listener: data
+        };
+      });
+    } // componentDidUpdate(prevProps) {
+    //   if (this.props.event_id !== prevProps.event_id) {
+    //     let __event_id = this.props.event_id;
+    //     this.setState(function () {
+    //       var data = EventMapManager.getDataList('listener', { event_id: __event_id });
+    //     return { list_listener: data };
+    //     });
+    //   }
+    // }
+
   }, {
     key: "renderEmptyState",
     value: function renderEmptyState() {
@@ -36785,7 +36718,7 @@ function (_React$Component) {
 
 exports["default"] = ListListener;
 
-},{"../../lib/eventmap-manager":51,"../../lib/ui-event":54,"./element-listener":62,"react":42}],69:[function(require,module,exports){
+},{"../../lib/eventmap-manager":52,"../../lib/ui-event":54,"./element-listener":62,"react":43}],69:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36921,4 +36854,173 @@ function (_React$Component) {
 
 exports["default"] = ListService;
 
-},{"../../lib/eventmap-manager":51,"../../lib/ui-event":54,"../component/message":59,"./element-service":63,"react":42}]},{},[49]);
+},{"../../lib/eventmap-manager":52,"../../lib/ui-event":54,"../component/message":59,"./element-service":63,"react":43}],70:[function(require,module,exports){
+"use strict";
+
+/**
+ * @module EventMap
+ * @copyright Copyright (c) 2019-present cheratt karim
+ * @license MIT Licence
+ */
+
+/**
+ * Used to manage (set/delete) entities
+ * It converts entities JSON Object to a Map Object to manage entities
+ * @params {Object} entitiesMap
+ */
+
+/**
+ * Schema : 
+ * event : { "id" , type , "service_id"  , "name", "description" }
+ * listener : { "id" , "event_id"  , "endpoint", "description" }
+ */
+var fs = require('fs');
+
+module.exports = function EventMap() {
+  var prefix = {
+    service: 's-',
+    event: 'e-',
+    listener: 'l-'
+  }; // var _entitySchema = {
+  //   service: { id: "", type: "", name: "", host: "", description: "" },
+  //   event : { id : "" , type : "" , service_id: "" , name : "" , description : ""},
+  //   listener : { id : "" , type : "" , event_id: "" , endpoint : "" , description : ""}
+  // };
+
+  var _eventMap = {
+    service: new Map(),
+    event: new Map(),
+    listener: new Map()
+  };
+
+  this.initFromFile = function (_eventMapFile) {
+    var self = this;
+    fs.readFile(_eventMapFile, {
+      encoding: 'utf8'
+    }, function (error, fileContent) {
+      if (error) {
+        return console.log(error);
+      }
+
+      var __JSONEntities = JSON.parse(fileContent);
+
+      self.buildMap(__JSONEntities);
+    });
+  };
+  /**
+   * 
+   * @param {*} __JSONEntities A JSON Object
+   */
+
+
+  this.buildMap = function (__JSONEntities) {
+    ['service', 'event', 'listener'].map(function (type) {
+      _eventMap[type].clear();
+
+      __JSONEntities[type].map(function (item) {
+        var _item = Object.assign({}, item);
+
+        _eventMap[type].set(_item.id, _item);
+      });
+    });
+  };
+
+  this.toJSON = function () {
+    var __eventMapJSON = {
+      service: Array.from(_eventMap.service.values()),
+      event: Array.from(_eventMap.event.values()),
+      listener: Array.from(_eventMap.listener.values())
+    };
+    return __eventMapJSON;
+  };
+
+  this.generateID = function (entityType) {
+    return prefix[entityType] + new Date().getTime();
+  };
+
+  this.setEntity = function (entityData) {
+    var entity = Object.assign({}, entityData);
+
+    if (typeof entityData.id === 'undefined' || !entityData.id) {
+      entity.id = this.generateID(entityData.type);
+    }
+
+    var _map = _eventMap[entity.type];
+
+    _map.set(entity.id, entity);
+
+    return entity;
+  };
+  /**
+   * Remove one entry of type 'type' from the EventMap And 
+   * its linked entities, ex : event <---> listener
+   * 
+   * @param {string} type The type of the entity
+   * @param {string} id The id of the entity
+   * 
+   * @returns {boolean} the returned value is the value of Map.delete()
+   */
+
+
+  this.removeById = function (type, id) {
+    var _map = _eventMap[type];
+
+    var result = _map["delete"](id);
+
+    if (type === 'service') {
+      _eventMap.event.forEach(function (event) {
+        if (event.service_id === id) {
+          _eventMap.event["delete"](event.id);
+        }
+      });
+    }
+
+    if (type === 'event') {
+      _eventMap.listener.forEach(function (listener) {
+        if (listener.event_id === id) {
+          _eventMap.listener["delete"](listener.id);
+        }
+      });
+    }
+
+    return result;
+  };
+
+  this.getById = function (type, id) {
+    var _map = _eventMap[type];
+    return _map.get(id);
+  };
+  /**
+   * 
+   * @returns Array<entity>
+   */
+
+
+  this.getList = function (type, criteria) {
+    var _map = _eventMap[type];
+    var result = []; // todo : buggy code , must be changed
+
+    var field = !!criteria && Object.keys(criteria);
+
+    if (field.length > 0) {
+      _map.forEach(function (element) {
+        var ok = true;
+        field.forEach(function (_field) {
+          ok = ok && element[_field] === criteria[_field];
+        });
+
+        if (ok) {
+          // @todo push a copy of the element
+          result.push(element);
+        }
+      });
+    } else {
+      // return all entries
+      result = Array.from(_map.values());
+    }
+
+    return result;
+  };
+};
+
+},{"fs":27}]},{},[50]);

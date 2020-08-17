@@ -17,7 +17,9 @@
  * listener : { "id" , "event_id"  , "endpoint", "description" }
  */
 
-module.exports = function EventMap(entities) {
+const fs = require('fs');
+
+module.exports = function EventMap() {
 
   const prefix = { service: 's-', event: 'e-', listener: 'l-' };
 
@@ -33,12 +35,41 @@ module.exports = function EventMap(entities) {
     listener: new Map()
   };
 
-  ['service', 'event', 'listener'].map(function (type) {
-    entities[type].map(function (item) {
-      let _item = Object.assign({} , item);
-      _eventMap[type].set(_item.id, _item);
+  this.initFromFile = function (_eventMapFile) {
+    var self = this;
+    fs.readFile(_eventMapFile, { encoding: 'utf8' }, function (error, fileContent) {
+      if(error){
+        return console.log(error);
+      }
+      var __JSONEntities = JSON.parse(fileContent);
+      self.buildMap(__JSONEntities);
     });
-  });
+  }
+
+  /**
+   * 
+   * @param {*} __JSONEntities A JSON Object
+   */
+  this.buildMap = function (__JSONEntities) {
+
+    ['service', 'event', 'listener'].map(function (type) {
+      _eventMap[type].clear();
+      __JSONEntities[type].map(function (item) {
+        let _item = Object.assign({}, item);
+        _eventMap[type].set(_item.id, _item);
+      });
+    });
+  }
+
+
+  this.toJSON = function () {
+    var __eventMapJSON = {
+      service: Array.from(_eventMap.service.values()),
+      event: Array.from(_eventMap.event.values()),
+      listener: Array.from(_eventMap.listener.values())
+    }
+    return __eventMapJSON;
+  }
 
   this.generateID = function (entityType) {
     return prefix[entityType] + (new Date().getTime());
@@ -50,19 +81,13 @@ module.exports = function EventMap(entities) {
       entity.id = this.generateID(entityData.type);
     }
     var _map = _eventMap[entity.type];
-
-    if (entityData.type === 'event') {
-      let _serviceEntity  = _eventMap.service.get(entityData.service_id);
-      entity.service_name = _serviceEntity.name;
-      entity.service_host = _serviceEntity.host;
-    }
     _map.set(entity.id, entity);
     return entity;
   }
 
   /**
-   * Remove one entry of type 'type' from the Map And 
-   * set its 'reference_id' into the children entities to empty value
+   * Remove one entry of type 'type' from the EventMap And 
+   * its linked entities, ex : event <---> listener
    * 
    * @param {string} type The type of the entity
    * @param {string} id The id of the entity
@@ -113,6 +138,7 @@ module.exports = function EventMap(entities) {
           ok = ok && (element[_field] === criteria[_field]);
         });
         if (ok) {
+          // @todo push a copy of the element
           result.push(element);
         }
       });

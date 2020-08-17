@@ -60,6 +60,7 @@ export default class ListActivityError extends React.Component {
           <div className="element-activity"
             onClick={this.toggleElement.bind(this, key)}>
             <span>{activity.error_type}</span>
+            <span>{activity.log_emitter}</span>
             <span>
               {Misc.getDateFormat(activity.log_time)}
             </span>
@@ -80,6 +81,7 @@ export default class ListActivityError extends React.Component {
       <ul className="list-element list-activity">
         <li className="activity-head bg-primary text-white">
           <span>error</span>
+          <span>Emitter</span>
           <span>time</span>
         </li>
         {list}

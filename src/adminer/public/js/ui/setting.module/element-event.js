@@ -13,9 +13,11 @@ export default class ElementEvent extends React.Component {
         type: 'event',
         event_name: '',
         service_id: '',
-        service_name: '',
-        service_host: '',
         description: ''
+      },
+      service : {
+        name: '',
+        host: ''
       }
     };
 
@@ -23,20 +25,52 @@ export default class ElementEvent extends React.Component {
 
   }
 
+
+  updateState = function(event_id){
+    this.setState(function () {
+
+      var __event = EventMapManager.getData('event', event_id);
+      var __service = EventMapManager.getData('service', __event.service_id);
+      return { 
+        event : __event,
+        service : {
+          name: __service.name,
+          host: __service.host,
+        }
+      }
+    });
+  }
+
   componentDidMount() {
     let event_id = this.props.event_id;
     var self = this;
     ////////////////////////////////////////////////////////
-    var _listener_for_update = DataEvent.addListener('update-element-event', function () {
-      self.setState(function () {
-        return { event: EventMapManager.getData('event', event_id) }
-      });
-    });
-    this.setState(function () {
-      return { event: EventMapManager.getData('event', event_id) }
+    // triggered event updating the event data
+    var __updaterListener = DataEvent.addListener('update-element-event', function () {
+      self.updateState(event_id);
     });
 
-    this.listenerArray.push(_listener_for_update);
+    // triggered when updating the service data
+    var __updaterListener = DataEvent.addListener('update-element-service', function (event) {
+      if(event.message.id === self.state.event.service_id){
+        // update local service state
+        self.setState(function () {
+          var __service = EventMapManager.getData('service', self.state.event.service_id);
+          return {
+            service : {
+              name: __service.name,
+              host: __service.host,
+            }
+          }
+        })
+      }
+    });
+
+    // init state
+    self.updateState(event_id);
+
+    // to remove listener
+    this.listenerArray.push(__updaterListener);
   }
 
   componentWillUnmount() {
@@ -75,26 +109,47 @@ export default class ElementEvent extends React.Component {
 
   render() {
     let event = this.state.event;
+    let service = this.state.service;
     return (
       <li key={event.id} className="element">
 
         <h5 className="element-card-header theme-bg-bluegray"
           data-toggle="collapse"
           data-target={"#event-" + event.id}>
-          {"#" + this.props.index + " - "+ event.event_name}
+          {"#" + this.props.index + " - " + event.event_name}
         </h5>
         <div className="collapse element-content" id={"event-" + event.id}>
           <p>
-            <label>Event :</label>{event.event_name}
+            <label>ID </label>
+            <span>{event.id}</span>
           </p>
           <p>
-            <label>ID :</label>{event.id}
+            <label>Event Name</label>
+            <span> {event.event_name} </span>
           </p>
           <p>
-            <label>Published By :</label>{event.service_name}
+            <label>Publisher</label>
+            <span>{service.name}</span>
           </p>
           <p>
-            <label>description :</label>{event.description}
+            <label>Source</label>
+            <span>{service.host}</span>
+          </p>
+          <p>
+            <label>Spec Version </label>
+            <span>1.0</span>
+          </p>
+          <p>
+            <label>Event Type </label>
+            <span>String</span>
+          </p>
+          <p>
+            <label>Content Type </label>
+            <span>JSON</span>
+          </p>
+          <p>
+            <label>Description </label>
+            <span>{event.description}</span>
           </p>
 
           <div className="element-control">

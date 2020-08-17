@@ -82,16 +82,16 @@ export default class ElementService extends React.Component {
 
         <div className="collapse element-content" id={"service-" + service.id}>
           <p>
-            <label>Service :</label>{service.name}
+            <label>Service Name</label>{service.name}
           </p>
           {/* <p>
               <label>ID</label> : {service.id}
             </p> */}
           <p>
-            <label>host :</label>{service.host}
+            <label>host </label>{service.host}
           </p>
           <p>
-            <label>description :</label>{service.description}
+            <label>description </label>{service.description}
           </p>
 
           <div className="element-control">
