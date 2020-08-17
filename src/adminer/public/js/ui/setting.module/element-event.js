@@ -15,7 +15,7 @@ export default class ElementEvent extends React.Component {
         service_id: '',
         description: ''
       },
-      service : {
+      service: {
         name: '',
         host: ''
       }
@@ -26,14 +26,14 @@ export default class ElementEvent extends React.Component {
   }
 
 
-  updateState = function(event_id){
+  updateState = function (event_id) {
     this.setState(function () {
 
       var __event = EventMapManager.getData('event', event_id);
       var __service = EventMapManager.getData('service', __event.service_id);
-      return { 
-        event : __event,
-        service : {
+      return {
+        event: __event,
+        service: {
           name: __service.name,
           host: __service.host,
         }
@@ -52,12 +52,12 @@ export default class ElementEvent extends React.Component {
 
     // triggered when updating the service data
     var __updaterListener = DataEvent.addListener('update-element-service', function (event) {
-      if(event.message.id === self.state.event.service_id){
+      if (event.message.id === self.state.event.service_id) {
         // update local service state
         self.setState(function () {
           var __service = EventMapManager.getData('service', self.state.event.service_id);
           return {
-            service : {
+            service: {
               name: __service.name,
               host: __service.host,
             }
@@ -120,31 +120,27 @@ export default class ElementEvent extends React.Component {
         </h5>
         <div className="collapse element-content" id={"event-" + event.id}>
           <p>
-            <label>ID </label>
-            <span>{event.id}</span>
+            <label>Spec Version </label>
+            <span>1.0</span>
           </p>
           <p>
             <label>Event Name</label>
             <span> {event.event_name} </span>
           </p>
           <p>
-            <label>Publisher</label>
+            <label>Event Type</label>
+            <span> {event.ce_type} </span>
+          </p>
+          <p>
+            <label>Service Name</label>
             <span>{service.name}</span>
           </p>
           <p>
-            <label>Source</label>
-            <span>{service.host}</span>
+            <label>Service Context</label>
+            <span>{service.host /** deprecated , use service.ce_source */}</span>
           </p>
           <p>
-            <label>Spec Version </label>
-            <span>1.0</span>
-          </p>
-          <p>
-            <label>Event Type </label>
-            <span>String</span>
-          </p>
-          <p>
-            <label>Content Type </label>
+            <label>Data Content Type </label>
             <span>JSON</span>
           </p>
           <p>

@@ -151,12 +151,12 @@ OVERRIDE BOOTSTRAP
   color: #fff;
   background-color:#4381d3;
   padding:7px 15px;
-  width:150px;
+  width:180px;
   text-align:center;
   border:0;
 }
 .element-content span{
-  width:calc(100% - 150px);
+  width:calc(100% - 180px);
   background-color:#efeff9;
 }
 .element-content p > *{
