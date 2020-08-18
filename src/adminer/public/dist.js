@@ -35387,11 +35387,11 @@ function (_React$Component) {
 
         var __service = _eventmapManager["default"].getData('service', __event.service_id);
 
+        __event.ce_source = __service.host;
         return {
           event: __event,
           service: {
-            name: __service.name,
-            host: __service.host
+            name: __service.name
           }
         };
       });
@@ -35399,15 +35399,25 @@ function (_React$Component) {
 
     _this.state = {
       event: {
+        /**
+         * EventMap Attributes
+         */
         id: '',
         type: 'event',
-        event_name: '',
         service_id: '',
-        description: ''
+        // the service that the event is belong to
+        description: '',
+
+        /** 
+         * cloudevent attributes
+         * */
+        ce_specversion: "1.0",
+        ce_type: '',
+        ce_source: '',
+        ce_datacontenttype: ''
       },
       service: {
-        name: '',
-        host: ''
+        name: ''
       }
     };
     _this.listenerArray = [];
@@ -35421,23 +35431,16 @@ function (_React$Component) {
       var self = this; ////////////////////////////////////////////////////////
       // triggered event updating the event data
 
-      var __updaterListener = _uiEvent.DataEvent.addListener('update-element-event', function () {
+      var __updaterListener = _uiEvent.DataEvent.addListener('update-element-event', function (ev) {
         self.updateState(event_id);
       }); // triggered when updating the service data
 
 
-      var __updaterListener = _uiEvent.DataEvent.addListener('update-element-service', function (event) {
-        if (event.message.id === self.state.event.service_id) {
+      var __updaterListener = _uiEvent.DataEvent.addListener('update-element-service', function (ev) {
+        if (ev.message.id === self.state.event.service_id) {
           // update local service state
           self.setState(function () {
-            var __service = _eventmapManager["default"].getData('service', self.state.event.service_id);
-
-            return {
-              service: {
-                name: __service.name,
-                host: __service.host
-              }
-            };
+            self.updateState(event_id);
           });
         }
       }); // init state
@@ -35476,9 +35479,9 @@ function (_React$Component) {
   }, {
     key: "deleteEvent",
     value: function deleteEvent() {
-      var event_name = this.state.event.event_name; // todo : use some modal component
+      var ce_type = this.state.event.ce_type; // todo : use some modal component
 
-      var msg = "You are going to delete the event : + ".concat(event_name, " \n Are you sure ?");
+      var msg = "You are going to delete the event : + ".concat(ce_type, " \n Are you sure ?");
       var ok = confirm(msg);
 
       if (ok) {
@@ -35506,12 +35509,10 @@ function (_React$Component) {
         className: "element-card-header theme-bg-bluegray",
         "data-toggle": "collapse",
         "data-target": "#event-" + event.id
-      }, "#" + this.props.index + " - " + event.event_name), _react["default"].createElement("div", {
+      }, "#" + this.props.index + " - " + event.ce_type), _react["default"].createElement("div", {
         className: "collapse element-content",
         id: "event-" + event.id
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Spec Version "), _react["default"].createElement("span", null, "1.0")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Name"), _react["default"].createElement("span", null, " ", event.event_name, " ")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Type"), _react["default"].createElement("span", null, " ", event.ce_type, " ")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Name"), _react["default"].createElement("span", null, service.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Context"), _react["default"].createElement("span", null, service.host
-      /** deprecated , use service.ce_source */
-      )), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Data Content Type "), _react["default"].createElement("span", null, "JSON")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Description "), _react["default"].createElement("span", null, event.description)), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Spec Version "), _react["default"].createElement("span", null, event.ce_specversion)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Name"), _react["default"].createElement("span", null, service.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Type"), _react["default"].createElement("span", null, " ", event.ce_type, " ")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Source"), _react["default"].createElement("span", null, event.ce_source)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Data Content Type "), _react["default"].createElement("span", null, event.ce_datacontenttype)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Description "), _react["default"].createElement("span", null, event.description)), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -35860,9 +35861,13 @@ function (_React$Component) {
     _this.initialState = {
       id: '',
       type: 'event',
-      event_name: '',
       service_id: '',
-      description: ''
+      description: '',
+      // cloudevent attributes
+      ce_specversion: '1.0',
+      ce_type: '',
+      ce_source: '',
+      ce_datacontenttype: ''
     };
     _this.state = {
       event: _this.initialState
@@ -35911,7 +35916,7 @@ function (_React$Component) {
         return alert('You must select a service that trigger the event');
       }
 
-      if (!event.event_name) {
+      if (!event.ce_type) {
         return alert('The event must have a name');
       }
 
@@ -35933,6 +35938,16 @@ function (_React$Component) {
   }, {
     key: "formValue",
     value: function formValue(event) {
+      if (event.target.name === "service_id") {
+        // set the cloudevent.source vaklues to 
+        // ce_source field
+        var __service_id = event.target.value;
+
+        var _service = _eventmapManager["default"].getData('service', __service_id);
+
+        this.state.event.ce_source = _service.host;
+      }
+
       this.state.event[event.target.name] = event.target.value;
       this.setState(this.state);
     }
@@ -36002,21 +36017,45 @@ function (_React$Component) {
       }, "List of Services"), this.listService())), _react["default"].createElement("div", {
         className: "form-group"
       }, _react["default"].createElement("label", {
+        htmlFor: "event-ce_source",
+        className: "col-form-label"
+      }, "Source :"), _react["default"].createElement("input", {
+        id: "event-ce_source",
+        type: "text",
+        className: "form-control",
+        name: "ce_source",
+        value: this.state.event.ce_source,
+        disabled: true
+      })), _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
         htmlFor: "event-name",
         className: "col-form-label"
-      }, "Name:"), _react["default"].createElement("input", {
+      }, "Event Type :"), _react["default"].createElement("input", {
         id: "event-name",
         type: "text",
         className: "form-control",
-        name: "event_name",
-        value: this.state.event.event_name,
+        name: "ce_type",
+        value: this.state.event.ce_type,
+        onChange: this.formValue.bind(this)
+      })), _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "event-ce_datacontenttype",
+        className: "col-form-label"
+      }, "Data Content Type :"), _react["default"].createElement("input", {
+        id: "event-ce_datacontenttype",
+        type: "text",
+        className: "form-control",
+        name: "ce_datacontenttype",
+        value: this.state.event.ce_datacontenttype,
         onChange: this.formValue.bind(this)
       })), _react["default"].createElement("div", {
         className: "form-group"
       }, _react["default"].createElement("label", {
         htmlFor: "event-description",
         className: "col-form-label"
-      }, "Description:"), _react["default"].createElement("textarea", {
+      }, "Description :"), _react["default"].createElement("textarea", {
         id: "event-description",
         className: "form-control",
         name: "description",
@@ -36945,6 +36984,14 @@ module.exports = function EventMap() {
 
     if (typeof entityData.id === 'undefined' || !entityData.id) {
       entity.id = this.generateID(entityData.type);
+    }
+
+    if (entityData.type === "service") {
+      _eventMap.event.forEach(function (event) {
+        if (event.service_id === entityData.id) {
+          event.ce_source = entityData.host;
+        }
+      });
     }
 
     var _map = _eventMap[entity.type];

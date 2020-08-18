@@ -80,6 +80,14 @@ module.exports = function EventMap() {
     if (typeof entityData.id === 'undefined' || !entityData.id) {
       entity.id = this.generateID(entityData.type);
     }
+
+    if(entityData.type === "service"){
+      _eventMap.event.forEach(function(event){
+        if(event.service_id === entityData.id){
+          event.ce_source = entityData.host;
+        }
+      });
+    }
     var _map = _eventMap[entity.type];
     _map.set(entity.id, entity);
     return entity;

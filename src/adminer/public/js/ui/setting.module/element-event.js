@@ -9,15 +9,24 @@ export default class ElementEvent extends React.Component {
     super(props);
     this.state = {
       event: {
+        /**
+         * EventMap Attributes
+         */
         id: '',
         type: 'event',
-        event_name: '',
-        service_id: '',
-        description: ''
+        service_id: '', // the service that the event is belong to
+        description: '', 
+
+        /** 
+         * cloudevent attributes
+         * */
+        ce_specversion: "1.0",
+        ce_type: '',
+        ce_source : '',
+        ce_datacontenttype : ''
       },
       service: {
-        name: '',
-        host: ''
+        name: ''
       }
     };
 
@@ -31,11 +40,11 @@ export default class ElementEvent extends React.Component {
 
       var __event = EventMapManager.getData('event', event_id);
       var __service = EventMapManager.getData('service', __event.service_id);
+      __event.ce_source = __service.host;
       return {
         event: __event,
         service: {
-          name: __service.name,
-          host: __service.host,
+          name: __service.name
         }
       }
     });
@@ -46,22 +55,16 @@ export default class ElementEvent extends React.Component {
     var self = this;
     ////////////////////////////////////////////////////////
     // triggered event updating the event data
-    var __updaterListener = DataEvent.addListener('update-element-event', function () {
+    var __updaterListener = DataEvent.addListener('update-element-event', function (ev) {
       self.updateState(event_id);
     });
 
     // triggered when updating the service data
-    var __updaterListener = DataEvent.addListener('update-element-service', function (event) {
-      if (event.message.id === self.state.event.service_id) {
+    var __updaterListener = DataEvent.addListener('update-element-service', function (ev) {
+      if (ev.message.id === self.state.event.service_id) {
         // update local service state
         self.setState(function () {
-          var __service = EventMapManager.getData('service', self.state.event.service_id);
-          return {
-            service: {
-              name: __service.name,
-              host: __service.host,
-            }
-          }
+          self.updateState(event_id);
         })
       }
     });
@@ -93,9 +96,9 @@ export default class ElementEvent extends React.Component {
   }
 
   deleteEvent() {
-    let event_name = this.state.event.event_name;
+    let ce_type = this.state.event.ce_type;
     // todo : use some modal component
-    var msg = `You are going to delete the event : + ${event_name} \n Are you sure ?`;
+    var msg = `You are going to delete the event : + ${ce_type} \n Are you sure ?`;
     let ok = confirm(msg);
     if (ok) {
       EventMapManager.deleteData(this.state.event);
@@ -116,32 +119,28 @@ export default class ElementEvent extends React.Component {
         <h5 className="element-card-header theme-bg-bluegray"
           data-toggle="collapse"
           data-target={"#event-" + event.id}>
-          {"#" + this.props.index + " - " + event.event_name}
+          {"#" + this.props.index + " - " + event.ce_type}
         </h5>
         <div className="collapse element-content" id={"event-" + event.id}>
           <p>
             <label>Spec Version </label>
-            <span>1.0</span>
-          </p>
-          <p>
-            <label>Event Name</label>
-            <span> {event.event_name} </span>
-          </p>
-          <p>
-            <label>Event Type</label>
-            <span> {event.ce_type} </span>
+            <span>{event.ce_specversion}</span>
           </p>
           <p>
             <label>Service Name</label>
             <span>{service.name}</span>
           </p>
           <p>
-            <label>Service Context</label>
-            <span>{service.host /** deprecated , use service.ce_source */}</span>
+            <label>Event Type</label>
+            <span> {event.ce_type} </span>
+          </p>
+          <p>
+            <label>Event Source</label>
+            <span>{event.ce_source}</span>
           </p>
           <p>
             <label>Data Content Type </label>
-            <span>JSON</span>
+            <span>{event.ce_datacontenttype}</span>
           </p>
           <p>
             <label>Description </label>
