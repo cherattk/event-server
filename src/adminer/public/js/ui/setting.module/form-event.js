@@ -75,8 +75,7 @@ export default class FormEvent extends React.Component {
 
   formValue(event) {
     if(event.target.name === "service_id"){
-      // set the cloudevent.source vaklues to 
-      // ce_source field
+      // set the cloudevent.source vaklues to ce_source field
       let __service_id = event.target.value;
       var _service = EventMapManager.getData('service', __service_id);
       this.state.event.ce_source = _service.host;
@@ -138,9 +137,19 @@ export default class FormEvent extends React.Component {
 
                 <div className="form-group">
                   <label htmlFor="event-name" className="col-form-label">
-                    Event Type :
+                    Event Name :
                   </label>
                   <input id="event-name" type="text" className="form-control"
+                    name="name"
+                    value={this.state.event.name}
+                    onChange={this.formValue.bind(this)} />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="event-ce_type" className="col-form-label">
+                    Event Type :
+                  </label>
+                  <input id="event-ce_type" type="text" className="form-control"
                     name="ce_type"
                     value={this.state.event.ce_type}
                     onChange={this.formValue.bind(this)} />

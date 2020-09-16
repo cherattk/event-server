@@ -35407,6 +35407,8 @@ function (_React$Component) {
         service_id: '',
         // the service that the event is belong to
         description: '',
+        name: '',
+        // convenient name 
 
         /** 
          * cloudevent attributes
@@ -35418,7 +35420,8 @@ function (_React$Component) {
       },
       service: {
         name: ''
-      }
+      },
+      showElement: false
     };
     _this.listenerArray = [];
     return _this;
@@ -35498,6 +35501,15 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "toggleElement",
+    value: function toggleElement() {
+      this.setState(function (state) {
+        return {
+          showElement: !state.showElement
+        };
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var event = this.state.event;
@@ -35506,13 +35518,12 @@ function (_React$Component) {
         key: event.id,
         className: "element"
       }, _react["default"].createElement("h5", {
-        className: "element-card-header theme-bg-bluegray",
-        "data-toggle": "collapse",
-        "data-target": "#event-" + event.id
-      }, "#" + this.props.index + " - " + event.ce_type), _react["default"].createElement("div", {
-        className: "collapse element-content",
+        className: "element-card-header ".concat(this.state.showElement ? "active" : ""),
+        onClick: this.toggleElement.bind(this)
+      }, event.name), _react["default"].createElement("div", {
+        className: "element-content ".concat(this.state.showElement ? "show" : "hide"),
         id: "event-" + event.id
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Spec Version "), _react["default"].createElement("span", null, event.ce_specversion)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Name"), _react["default"].createElement("span", null, service.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Type"), _react["default"].createElement("span", null, " ", event.ce_type, " ")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Source"), _react["default"].createElement("span", null, event.ce_source)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Data Content Type "), _react["default"].createElement("span", null, event.ce_datacontenttype)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Description "), _react["default"].createElement("span", null, event.description)), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Name"), _react["default"].createElement("span", null, event.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Event Token"), _react["default"].createElement("span", null, event.id)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Publisher"), _react["default"].createElement("span", null, service.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Type"), _react["default"].createElement("span", null, " ", event.ce_type, " ")), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Source"), _react["default"].createElement("span", null, event.ce_source)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Data Content Type "), _react["default"].createElement("span", null, event.ce_datacontenttype)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Description "), _react["default"].createElement("span", null, event.description)), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -35526,9 +35537,7 @@ function (_React$Component) {
         className: "btn btn-info btn-sm",
         type: "button",
         onClick: this.getListenerForm.bind(this)
-      }, "Add Listener")), _react["default"].createElement(_listListener["default"], {
-        event_id: this.state.event.id
-      })));
+      }, "Add Listener"))));
     }
   }]);
 
@@ -35713,7 +35722,7 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ElementService).call(this, props));
     _this.state = {
       service: __initialState,
-      showEventList: false
+      showElement: false
     };
     return _this;
   }
@@ -35748,11 +35757,11 @@ function (_React$Component) {
     value: function componentWillUnmount() {// todo : remove eventset.listener
     }
   }, {
-    key: "toggleEventList",
-    value: function toggleEventList() {
+    key: "toggleElement",
+    value: function toggleElement() {
       this.setState(function (state) {
         return {
-          showEventList: !state.showEventList
+          showElement: !state.showElement
         };
       });
     }
@@ -35788,13 +35797,52 @@ function (_React$Component) {
         id: service.id,
         className: "element"
       }, _react["default"].createElement("h5", {
-        className: "element-card-header theme-bg-bluegray",
-        "data-toggle": "collapse",
-        "data-target": "#service-" + service.id
-      }, "#" + this.props.index + " - " + service.name), _react["default"].createElement("div", {
-        className: "collapse element-content",
+        className: "element-card-header ".concat(this.state.showElement ? "active" : ""),
+        onClick: this.toggleElement.bind(this)
+      }, service.name), _react["default"].createElement("div", {
+        className: "element-content ".concat(this.state.showElement ? "show" : "hide"),
         id: "service-" + service.id
-      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Name"), _react["default"].createElement("span", null, service.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "host "), _react["default"].createElement("span", null, service.host)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description "), _react["default"].createElement("span", null, service.description)), _react["default"].createElement("div", {
+      }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Name"), _react["default"].createElement("span", null, service.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Auth Token"), _react["default"].createElement("span", null, service.id)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description "), _react["default"].createElement("span", null, service.description)), _react["default"].createElement("div", {
+        "class": "container-fluid service-tab"
+      }, _react["default"].createElement("div", {
+        "class": "row"
+      }, _react["default"].createElement("div", {
+        "class": "col"
+      }, _react["default"].createElement("div", {
+        "class": "service-list-event"
+      }, _react["default"].createElement("ul", {
+        "class": "list-group"
+      }, _react["default"].createElement("li", {
+        "class": "list-group-item active"
+      }, _react["default"].createElement("h5", null, "Triggered events")), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "Cras justo odio"), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "Dapibus ac facilisis in"), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "Morbi leo risus"), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "Porta ac consectetur ac"), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "Vestibulum at eros")))), _react["default"].createElement("div", {
+        "class": "col"
+      }, _react["default"].createElement("div", {
+        "class": "service-list-listen"
+      }, _react["default"].createElement("ul", {
+        "class": "list-group"
+      }, _react["default"].createElement("li", {
+        "class": "list-group-item active"
+      }, _react["default"].createElement("h5", null, "Listening endpoints")), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "http://service-name.com/endpoint-1"), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "http://service-name.com/endpoint-2"), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "http://service-name.com/endpoint-3"), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "http://service-name.com/endpoint-4"), _react["default"].createElement("li", {
+        "class": "list-group-item"
+      }, "http://service-name.com/endpoint-5")))))), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
@@ -35939,8 +35987,7 @@ function (_React$Component) {
     key: "formValue",
     value: function formValue(event) {
       if (event.target.name === "service_id") {
-        // set the cloudevent.source vaklues to 
-        // ce_source field
+        // set the cloudevent.source vaklues to ce_source field
         var __service_id = event.target.value;
 
         var _service = _eventmapManager["default"].getData('service', __service_id);
@@ -36031,8 +36078,20 @@ function (_React$Component) {
       }, _react["default"].createElement("label", {
         htmlFor: "event-name",
         className: "col-form-label"
-      }, "Event Type :"), _react["default"].createElement("input", {
+      }, "Event Name :"), _react["default"].createElement("input", {
         id: "event-name",
+        type: "text",
+        className: "form-control",
+        name: "name",
+        value: this.state.event.name,
+        onChange: this.formValue.bind(this)
+      })), _react["default"].createElement("div", {
+        className: "form-group"
+      }, _react["default"].createElement("label", {
+        htmlFor: "event-ce_type",
+        className: "col-form-label"
+      }, "Event Type :"), _react["default"].createElement("input", {
+        id: "event-ce_type",
         type: "text",
         className: "form-control",
         name: "ce_type",

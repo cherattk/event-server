@@ -18,7 +18,7 @@ export default class ElementService extends React.Component {
 
     this.state = {
       service: __initialState,
-      showEventList: false
+      showElement: false
     }
   }
 
@@ -45,9 +45,9 @@ export default class ElementService extends React.Component {
     // todo : remove eventset.listener
   }
 
-  toggleEventList() {
+  toggleElement() {
     this.setState(function (state) {
-      return { showEventList: !state.showEventList };
+      return { showElement: !state.showElement };
     })
   }
 
@@ -74,28 +74,59 @@ export default class ElementService extends React.Component {
     return (
       <li key={service.id} id={service.id} className="element">
 
-        <h5 className="element-card-header theme-bg-bluegray"
-          data-toggle="collapse"
-          data-target={"#service-" + service.id}>
-          {"#" + this.props.index + " - " + service.name}
+        <h5 className={`element-card-header ${this.state.showElement ? "active" : ""}`}
+          onClick={this.toggleElement.bind(this)}>
+          {service.name}
         </h5>
 
-        <div className="collapse element-content" id={"service-" + service.id}>
+        {/* <div className="collapse element-content" id={"service-" + service.id}> */}
+        <div className={`element-content ${this.state.showElement ? "show" : "hide"}`}
+          id={"service-" + service.id}>
           <p>
             <label>Service Name</label>
             <span>{service.name}</span>
           </p>
-          {/* <p>
-              <label>ID</label> : {service.id}
-            </p> */}
           <p>
-            <label>host </label>
-            <span>{service.host}</span>
+            <label>Auth Token</label>
+            <span>{service.id}</span>
           </p>
           <p>
             <label>description </label>
             <span>{service.description}</span>
           </p>
+
+          <div class="container-fluid service-tab">
+            <div class="row">
+              <div class="col">
+                <div class="service-list-event">                  
+                  <ul class="list-group">
+                    <li class="list-group-item active">
+                      <h5>Triggered events</h5>
+                    </li>
+                    <li class="list-group-item">Cras justo odio</li>
+                    <li class="list-group-item">Dapibus ac facilisis in</li>
+                    <li class="list-group-item">Morbi leo risus</li>
+                    <li class="list-group-item">Porta ac consectetur ac</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col">
+                <div class="service-list-listen">                  
+                  <ul class="list-group">
+                    <li class="list-group-item active">
+                    <h5>Listening endpoints</h5>
+                    </li>
+                    <li class="list-group-item">http://service-name.com/endpoint-1</li>
+                    <li class="list-group-item">http://service-name.com/endpoint-2</li>
+                    <li class="list-group-item">http://service-name.com/endpoint-3</li>
+                    <li class="list-group-item">http://service-name.com/endpoint-4</li>
+                    <li class="list-group-item">http://service-name.com/endpoint-5</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className="element-control">
             <button className="btn btn-primary btn-sm" type="button"
@@ -109,7 +140,7 @@ export default class ElementService extends React.Component {
           </div>
 
         </div>
-      </li>
+      </li >
     );
   }
 }

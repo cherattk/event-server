@@ -15,7 +15,8 @@ export default class ElementEvent extends React.Component {
         id: '',
         type: 'event',
         service_id: '', // the service that the event is belong to
-        description: '', 
+        description: '',
+        name : '', // convenient name 
 
         /** 
          * cloudevent attributes
@@ -27,7 +28,8 @@ export default class ElementEvent extends React.Component {
       },
       service: {
         name: ''
-      }
+      },
+      showElement: false
     };
 
     this.listenerArray = [];
@@ -110,32 +112,43 @@ export default class ElementEvent extends React.Component {
     UIEvent.dispatch('show-listener-form', { event_id: event_id });
   }
 
+  toggleElement() {
+    this.setState(function (state) {
+      return { showElement: !state.showElement };
+    })
+  }
+
   render() {
     let event = this.state.event;
     let service = this.state.service;
     return (
       <li key={event.id} className="element">
 
-        <h5 className="element-card-header theme-bg-bluegray"
-          data-toggle="collapse"
-          data-target={"#event-" + event.id}>
-          {"#" + this.props.index + " - " + event.ce_type}
+        <h5 className={`element-card-header ${this.state.showElement ? "active" : ""}`}
+            onClick={this.toggleElement.bind(this)}>         
+          {event.name}
         </h5>
-        <div className="collapse element-content" id={"event-" + event.id}>
+
+        <div className={`element-content ${this.state.showElement ? "show" : "hide"}`} 
+              id={"event-" + event.id}>
           <p>
-            <label>Spec Version </label>
-            <span>{event.ce_specversion}</span>
+            <label>Event Name</label>
+            <span>{event.name}</span>
           </p>
           <p>
-            <label>Service Name</label>
+            <label>Event Token</label>
+            <span>{event.id}</span>
+          </p>
+          <p>
+            <label>Publisher</label>
             <span>{service.name}</span>
           </p>
           <p>
-            <label>Event Type</label>
+            <label>Type</label>
             <span> {event.ce_type} </span>
           </p>
           <p>
-            <label>Event Source</label>
+            <label>Source</label>
             <span>{event.ce_source}</span>
           </p>
           <p>
@@ -162,7 +175,7 @@ export default class ElementEvent extends React.Component {
             </button>
           </div>
 
-          <ListListener event_id={this.state.event.id} />
+          {/* <ListListener event_id={this.state.event.id} /> */}
 
         </div>
 
