@@ -95,39 +95,35 @@ export default class ElementService extends React.Component {
             <span>{service.description}</span>
           </p>
 
-          <div class="container-fluid service-tab">
-            <div class="row">
-              <div class="col">
-                <div class="service-list-event">                  
-                  <ul class="list-group">
-                    <li class="list-group-item active">
-                      <h5>Triggered events</h5>
-                    </li>
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col">
-                <div class="service-list-listen">                  
-                  <ul class="list-group">
-                    <li class="list-group-item active">
-                    <h5>Listening endpoints</h5>
-                    </li>
-                    <li class="list-group-item">http://service-name.com/endpoint-1</li>
-                    <li class="list-group-item">http://service-name.com/endpoint-2</li>
-                    <li class="list-group-item">http://service-name.com/endpoint-3</li>
-                    <li class="list-group-item">http://service-name.com/endpoint-4</li>
-                    <li class="list-group-item">http://service-name.com/endpoint-5</li>
-                  </ul>
-                </div>
-              </div>
+          <div class="service-tab">
+            <h5 data-toggle="collapse" data-target="#service-list-event" class="element-card-header">
+              Triggered events
+            </h5>
+            <div id="service-list-event" class="collapse">
+              <ul class="list-group">
+                <li class="list-group-item">Cras justo odio</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Morbi leo risus</li>
+                <li class="list-group-item">Porta ac consectetur ac</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+              </ul>
             </div>
           </div>
 
+          <div class="service-tab">
+            <h5 data-toggle="collapse" data-target="#service-list-listener" class="element-card-header">
+              Listening endpoints
+            </h5>
+            <div id="service-list-listener" class="collapse">
+              <ul class="list-group">
+                <li class="list-group-item">http://service-name.com/endpoint-1</li>
+                <li class="list-group-item">http://service-name.com/endpoint-2</li>
+                <li class="list-group-item">http://service-name.com/endpoint-3</li>
+                <li class="list-group-item">http://service-name.com/endpoint-4</li>
+                <li class="list-group-item">http://service-name.com/endpoint-5</li>
+              </ul>
+            </div>
+          </div>
           <div className="element-control">
             <button className="btn btn-primary btn-sm" type="button"
               onClick={this.getServiceForm.bind(this)}>

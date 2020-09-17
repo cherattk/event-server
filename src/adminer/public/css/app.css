@@ -175,7 +175,7 @@ OVERRIDE BOOTSTRAP
   background-color:#3d71a6;
   color:#fff;
 }
-.element-content span{
+.element-content p > span{
   width:calc(100% - 180px);
 }
 .element-content p > *{
@@ -257,11 +257,20 @@ APPLICATION
 Service Element
 /**********************************************************/
 .service-tab{
-  padding:20px 10px;
+  margin:15px 0;
+  border-radius:3px;
+  overflow:hidden;
+  box-shadow:0 1px 2px #e3e3e4;
 }
 .service-tab h5{
-  padding: 15px;
-  text-align:center;
+  margin:0;
+}
+.service-tab h5:hover{
+  cursor:pointer;
+  text-decoration:underline;
+}
+.service-tab .list-group-item{
+  border-radius:0;
 }
 /**********************************************************
 Listener Element

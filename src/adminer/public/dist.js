@@ -35803,18 +35803,17 @@ function (_React$Component) {
         className: "element-content ".concat(this.state.showElement ? "show" : "hide"),
         id: "service-" + service.id
       }, _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Service Name"), _react["default"].createElement("span", null, service.name)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "Auth Token"), _react["default"].createElement("span", null, service.id)), _react["default"].createElement("p", null, _react["default"].createElement("label", null, "description "), _react["default"].createElement("span", null, service.description)), _react["default"].createElement("div", {
-        "class": "container-fluid service-tab"
-      }, _react["default"].createElement("div", {
-        "class": "row"
-      }, _react["default"].createElement("div", {
-        "class": "col"
-      }, _react["default"].createElement("div", {
-        "class": "service-list-event"
+        "class": "service-tab"
+      }, _react["default"].createElement("h5", {
+        "data-toggle": "collapse",
+        "data-target": "#service-list-event",
+        "class": "element-card-header"
+      }, "Triggered events"), _react["default"].createElement("div", {
+        id: "service-list-event",
+        "class": "collapse"
       }, _react["default"].createElement("ul", {
         "class": "list-group"
       }, _react["default"].createElement("li", {
-        "class": "list-group-item active"
-      }, _react["default"].createElement("h5", null, "Triggered events")), _react["default"].createElement("li", {
         "class": "list-group-item"
       }, "Cras justo odio"), _react["default"].createElement("li", {
         "class": "list-group-item"
@@ -35825,14 +35824,17 @@ function (_React$Component) {
       }, "Porta ac consectetur ac"), _react["default"].createElement("li", {
         "class": "list-group-item"
       }, "Vestibulum at eros")))), _react["default"].createElement("div", {
-        "class": "col"
-      }, _react["default"].createElement("div", {
-        "class": "service-list-listen"
+        "class": "service-tab"
+      }, _react["default"].createElement("h5", {
+        "data-toggle": "collapse",
+        "data-target": "#service-list-listener",
+        "class": "element-card-header"
+      }, "Listening endpoints"), _react["default"].createElement("div", {
+        id: "service-list-listener",
+        "class": "collapse"
       }, _react["default"].createElement("ul", {
         "class": "list-group"
       }, _react["default"].createElement("li", {
-        "class": "list-group-item active"
-      }, _react["default"].createElement("h5", null, "Listening endpoints")), _react["default"].createElement("li", {
         "class": "list-group-item"
       }, "http://service-name.com/endpoint-1"), _react["default"].createElement("li", {
         "class": "list-group-item"
@@ -35842,7 +35844,7 @@ function (_React$Component) {
         "class": "list-group-item"
       }, "http://service-name.com/endpoint-4"), _react["default"].createElement("li", {
         "class": "list-group-item"
-      }, "http://service-name.com/endpoint-5")))))), _react["default"].createElement("div", {
+      }, "http://service-name.com/endpoint-5")))), _react["default"].createElement("div", {
         className: "element-control"
       }, _react["default"].createElement("button", {
         className: "btn btn-primary btn-sm",
