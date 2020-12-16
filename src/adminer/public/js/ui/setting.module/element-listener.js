@@ -1,6 +1,6 @@
 import React from 'react';
-import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/ui-event';
+import EventMapManager from '../../lib/eventmap-manager';
+import { UIEvent, DataEvent } from '../../lib/ui-event';
 
 export default class ElementListener extends React.Component {
 
@@ -43,8 +43,7 @@ export default class ElementListener extends React.Component {
   deleteElement() {
     let endpoint = this.state.listener.endpoint;
     // todo : use some modal component
-    var msg = `You are going to delete the listener : + ${endpoint} \n Are you sure ?`;
-    let ok = confirm(msg);
+    let ok = window.confirm('You are going to delete the listener : ' + endpoint + '\n Are you sure ?');
     if (ok) {
       EventMapManager.deleteData(this.state.listener);
     }
@@ -58,11 +57,11 @@ export default class ElementListener extends React.Component {
         <div className="div-control">
           <button type="button" className="btn btn-primary"
             onClick={this.editElement.bind(this)}>
-            E
+            Edit
           </button>
           <button type="button" className="btn btn-danger"
             onClick={this.deleteElement.bind(this)}>
-            D
+            Delete
           </button>
         </div>
       </li>

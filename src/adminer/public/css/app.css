@@ -15,14 +15,45 @@ ul {
   display: none;
 }
 
+textarea{
+  min-height:200px;
+}
+
 .theme-bg-blue{
   background-color: #278af3;
   color:#fff;
 }
+.theme-bg-blue{
+  background-color: #278af3;
+}
 
 .theme-bg-green{
-  background-color:#33984a;
+  background-color:#29c74e;
   color:#fff;
+}
+.theme-bg-green:hover{
+  background-color:#24b246;
+}
+
+.theme-bg-bluegray{
+  background-color:#6e8196;
+  color:#fff;
+}
+.theme-bg-bluegray:hover{
+  background-color:#5f7287;
+}
+
+.btn-info{
+  box-shadow:0 2px 0 #077284;
+}
+.btn-danger{
+  box-shadow:0 2px 0 #bf0909;
+}
+.btn-primary{
+  box-shadow:0 2px 0 #0967cc;
+}
+.btn-secondary{
+  box-shadow:0 2px 0 #555;
 }
 
 .btn-add{
@@ -30,7 +61,6 @@ ul {
   margin-bottom:10px;
   padding-left:35px;
   padding-right:15px;
-  border-radius:20px;
   text-transform:capitalize;
 }
 .btn-add:before{
@@ -53,7 +83,7 @@ OVERRIDE BOOTSTRAP
   }
 .app-modal-form .modal-header,
 .app-modal-form .modal-footer{
-  background-color:#eef6fd;
+  background-color:#efefef;
 }
 
 .app-modal-form .modal-header {
@@ -102,36 +132,94 @@ OVERRIDE BOOTSTRAP
   display:none;
 }
 /********************************************************************/
-
 .element{
-  margin:0 0 20px 0;
-  padding:10px;
+  margin:0 0 5px 0;
+  border-radius:3px;
+  overflow:hidden;
+}
+.element-header{
+  cursor:pointer;
+  font-size:1rem;
+  margin:0;
+  padding:15px;
+  background-color:#3d71a6;
+  color:#fff;
+}
+.element-header:hover{
+  background-color:#3d71a6;
+}
+.element-header.active{
+  background-color:#3d71a6;
 }
 .element-content{
-  background-color:#e6f2ff;
+  background-color:#fff;
   padding:20px;
-  box-shadow:0 1px 1px #f5f8fb;
-  border-radius:.2em;
+  margin-bottom:15px;
+  border:1px solid #ccc;
 }
-.element-content p{
-  margin:0 0 10px 0;
+.element-table > div{
+  margin:1px 0;
 }
-.element-content label {
-  /* font-weight: bold; */
-  margin: 0 10px 0 0;
+.element-table label {
+  margin:0;
   text-transform:capitalize;
-  color:#004085;
+  padding:7px 15px;
+  min-width:180px;
+  text-align:center;
+  border-right:1px solid #fff;
+  background-color:#3d71a6;
+  color:#fff;
 }
-.element-control {
-  padding: 10px 0;
+.element-table p{
+  margin:0px;
+  width:100%;
+  padding:7px 10px;
+  background-color:#e4e7ea;
 }
 
+.element-control {
+  padding:20px 0;
+}
 .element-control button {
   padding:3px 10px;
   margin-right:10px;
   font-size:.8rem;
 }
+.element-list{
+  color:#333;
+}
 
+.element-list-header{
+  font-size:1.2rem;
+  background-color:#e4e7ea;
+  color:#2a377b;
+  border:1px solid #fff;
+  font-size:1.1rem;
+  margin:0;
+}
+.element-list-header:hover{
+  cursor:pointer;
+  background-color:#dadde0;
+}
+.element-list > div {
+  background-color:#fff;
+  border-top:0;
+  box-shadow:0 1px 1px #eee;
+  margin-top:-1px;
+}
+.element-list-header,
+.element-list > div{  
+  border:1px solid #ccc;
+}
+
+.element-list .list-group-item{
+  color:#3F51B5;
+  background-color:#f7f7f7;
+}
+.element-list .list-group-item:hover{
+  cursor:pointer;
+  background-color:#f0f2f3;
+}
 /************************************************************************
 APPLICATION
 **************************************************************************/
@@ -187,41 +275,11 @@ APPLICATION
   background-color: #167ff1;
 }
 
-/**********************************************************/
-.list-listener{
-  background-color:#fff;
-  border:1px solid #d5e7fb;
-  margin-top:10px;
-  color:#004085;
-}
-.list-listener h5{
-  padding:15px 20px;
-  margin:0;
-  font-size:1.1rem;
-  border-bottom:1px solid #d6e9fd;
-}
-.list-listener li{
-  position:relative;
-  padding:15px 15px;
-  border-bottom:1px solid #d6e9fd;
-}
-.list-listener p{
-  margin: 0 80px 0 0;
-  padding:5px;
-  text-decoration:underline;
-}
-.list-listener .div-control{
-  float:right;
-  margin-top: -35px;
-}
-.list-listener .div-control button{
-  margin-left:10px;
-  font-size:14px;
-  padding:2px 10px;
-  text-transform:capitalize;
-}
 
-/*******************************************************/
+
+/*******************************************************
+Activity
+*******************************************************/
 .list-activity li{
   border:1px solid #ccdff3;
   border-top:0;
@@ -234,6 +292,9 @@ APPLICATION
 .activity-head {
   color: #fff;
   text-transform:capitalize;
+}
+.activity-head span{
+  border:1px solid #fff;
 }
 .activity-head span, .element-activity span {
   width: 20%;
@@ -268,21 +329,22 @@ APPLICATION
   color: #004085;
 }
 
-.empty-panel{
+.list-status-panel{
+  margin-top:20px;
   padding:20px;
   background-color:aliceblue;
   text-align:center;
   text-transform:capitalize;
   color:#333;
 }
-.empty-panel *{
-  margin:0;
+.list-status-panel *{
+  margin:0 0 10px 0;
 }
-.empty-panel .error-yet{
+.list-status-panel .error-yet{
   text-decoration:line-through;
   margin-left:10px;
   text-transform:capitalize;
 }
-.list-listener .empty-panel{
+.list-listener .list-status-panel{
   background-color:#fff;
 }

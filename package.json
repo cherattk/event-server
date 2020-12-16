@@ -1,5 +1,5 @@
 {
-    "name": "event-server",
+    "name": "@cherattk/event-server",
     "version": "0.1.0",
     "description": "An HTTP Event Server",
     "author": "Karim Cheratt",
@@ -11,7 +11,9 @@
     "license": "MIT",
     "main": "index.js",
     "scripts": {
-        "start": "node ./src/index.js",
+        "start-dev": "npm run build-ui && node ./src/index.js",
+        "build-ui": "node builder.js",
+        "dist-deploy": "node ./builder.js && rm -r ./deploy/dist/* && cp -r src/* ./deploy/dist/",
         "demo": "node ./demo/index.js",
         "mocha": "node_modules/.bin/_mocha",
         "test:unit": "npm run mocha --colors test/unit/*.js"
@@ -39,15 +41,14 @@
     },
     "homepage": "https://github.com/cherattk/event-server#readme",
     "dependencies": {
+        "axios": "^0.19.2",
         "body-parser": "^1.19.0",
         "cookie-parser": "^1.4.4",
         "cors": "^2.8.5",
         "eventset": "^1.7.1",
         "express": "^4.17.1",
-        "nano": "^8.1.0",
+        "nano": "^8.2.2",
         "react": "^16.9.0",
-        "react-dom": "^16.9.0",
-        "request": "^2.88.0",
-        "request-promise-native": "^1.0.7"
+        "react-dom": "^16.9.0"
     }
 }

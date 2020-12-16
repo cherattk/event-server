@@ -5,93 +5,124 @@
 
 const express = require('express');
 const Server = express();
+
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 Server.use(cors());
+
+const cookieParser = require('cookie-parser');
 Server.use(cookieParser());
-Server.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-/******************* CONTROLLER *******************************/
-const Authenticate = require("./core/authentication")();
+// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
+Server.use(bodyParser.urlencoded({ extended: true }));
 
-const appConfig = require('../config/app.config');
-const Adminer = require('./core/adminer')(
-  appConfig.EventMapFile , 
-  appConfig.Logging
-);
-const RequestPromise = require('request-promise-native');
-const EventDispatcher = require('./core/event-dispatcher').EventDispatcher;
-const Dispatcher = EventDispatcher(
-  appConfig.EventMapFile,
-  RequestPromise,
-  appConfig.Logging
-);
 
-/**************** ADMINER ************************************/
+
+/******************************************************************
+ * Adminer *
+*******************************************************************/
 Server.use('/', express.static('./src/adminer/public'));
+const AuthUser = require("./adminer/server/auth-user")();
+const Adminer = require('./adminer/server/adminer')();
 
-Server.post('/auth_token', function(Request , Response) {
+// ===========================================================
 
-  var user_token = Request.body.auth_token;
+/**
+ * Admin Authentication
+ */
+Server.post('/user_token', function (Request, Response) {
 
-  if(Authenticate.validateAuthToken(user_token)){
-    Authenticate.setAuthToken(function(token_hash){
-      Response.status(200).json({
-        auth_token : token_hash
-      });
-    });    
-  }
-  else{
-    Response.status(400).end();
-  }
-});
+  var user_token = Request.body.user_token;
 
-Server.post('/login', function(Request , Response) {
-  
-  var user_password = Request.body.password;
-
-  if(Authenticate.validatePassword(user_password)){
-      Authenticate.setAuthToken(function(token_hash){
-      Response.status(200).json({
-        auth_token : token_hash
-      });
+  if (AuthUser.isValidUserToken(user_token)) {
+    Response.status(200).json({
+      user_token: AuthUser.setAuthToken()
     });
   }
-  else{
-    Response.status(400).end();
+  else {
+    Response.status(400).json({
+      message: 'bad authentication data'
+    });
+  }
+});
+
+Server.post('/login', function (Request, Response) {
+
+  var user_password = Request.body.password;
+
+  if (AuthUser.validatePassword(user_password)) {
+    Response.status(200).json({
+      user_token: AuthUser.setAuthToken()
+    });
+  }
+  else {
+    Response.status(400).json({
+      message: 'bad authentication data'
+    });
   }
 
 });
 
-Server.post('/logout', function(Request , Response) {
-  
-  var user_token = Request.body.auth_token;
-  if(Authenticate.validateAuthToken(user_token)){
-    Authenticate.removeAuthToken(function(){
-      Response.status(200).json({
-        success : true
-      });
-    });    
+Server.post('/logout', function (Request, Response) {
+
+  var user_token = Request.body.user_token;
+  if (AuthUser.isValidUserToken(user_token)) {
+    AuthUser.removeAuthToken();
+    Response.status(200).json({
+      message: 'successfully logged out'
+    });
   }
-  else{
-    Response.status(400).end();
+  else {
+    Response.status(400).json({
+      message: 'bad authentication data'
+    });
   }
 
 });
 
+
+/**
+ * Setting EventMap
+ */
 Server.get('/event-map', Adminer.getEventMap.bind(Adminer));
 
-Server.post('/event-map', Adminer.saveEventMap.bind(Adminer));
+Server.post('/eventmap/entity', Adminer.setEntity.bind(Adminer));
+Server.delete('/eventmap/entity', Adminer.removeEntity.bind(Adminer));
 
+
+/**
+ * Activity
+ */
 Server.get('/activity', Adminer.getActivity.bind(Adminer));
 
+/******************************************************************
+ * DISPATCHER *
+*******************************************************************/
 
-/***************** DISPATCHER ************************************/
-Server.post('/dispatch', Dispatcher.dispatchRequestController.bind(Dispatcher));
+const Dispatcher = require('./dispatcher/dispatcher');
+
+Server.post('/dispatch', function (Request, Response) {
+  const AuthService = require("./dispatcher/auth-service")();
+  var service_token = Request.header("Authorization").substr("Bearer".length).trim();
+  console.log(service_token);
+  if (AuthService.isValidServiceToken(service_token)) {
+    Dispatcher.dispatch(Request, Response);
+  }
+  else {
+    Response.status(401).end();
+  }
+});
 
 
 /* RUN SERVER */
-Server.listen(appConfig.port, appConfig.hostname, function () {
-  console.log(`EventDispatcher running at http://${appConfig.hostname}:${appConfig.port}/`);
+const hostname = "localhost";
+const port = "8080";
+
+Server.listen(port, hostname, function () {
+  console.log(`
+  ========================================================================
+  Scope running at http://${hostname}:${port}/
+  ========================================================================
+  `);
+
 });

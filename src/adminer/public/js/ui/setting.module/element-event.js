@@ -1,7 +1,7 @@
 import React from 'react';
 import ListListener from './list-listener';
-import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/ui-event';
+import EventMapManager from '../../lib/eventmap-manager';
+import { UIEvent, DataEvent } from '../../lib/ui-event';
 
 export default class ElementEvent extends React.Component {
 
@@ -9,34 +9,73 @@ export default class ElementEvent extends React.Component {
     super(props);
     this.state = {
       event: {
+        /**
+         * EventMap Attributes
+         */
         id: '',
         type: 'event',
-        event_name: '',
-        service_id: '',
-        service_name: '',
-        service_host: '',
-        description: ''
-      }
+        service_id: '', // the service that the event is belong to
+        description: '',
+        name : '', // convenient name 
+
+        /** 
+         * cloudevent attributes
+         * */
+        ce_specversion: "1.0",
+        ce_type: '',
+        ce_source : '',
+        ce_datacontenttype : ''
+      },
+      service: {
+        name: ''
+      },
+      showElement: false
     };
 
     this.listenerArray = [];
 
   }
 
+
+  updateState = function (event_id) {
+    this.setState(function () {
+
+      var __event = EventMapManager.getData('event', event_id);
+      var __service = EventMapManager.getData('service', __event.service_id);
+      __event.ce_source = __service.host;
+      return {
+        event: __event,
+        service: {
+          name: __service.name
+        }
+      }
+    });
+  }
+
   componentDidMount() {
     let event_id = this.props.event_id;
     var self = this;
     ////////////////////////////////////////////////////////
-    var _listener_for_update = DataEvent.addListener('update-element-event', function () {
-      self.setState(function () {
-        return { event: EventMapManager.getData('event', event_id) }
-      });
-    });
-    this.setState(function () {
-      return { event: EventMapManager.getData('event', event_id) }
+    // triggered event updating the event data
+    var __updaterListener = DataEvent.addListener('update-element-event', function (ev) {
+      self.updateState(event_id);
     });
 
-    this.listenerArray.push(_listener_for_update);
+    // triggered when updating the service data
+    var __updaterListener = DataEvent.addListener('update-element-service', function (ev) {
+      if (ev.message.id === self.state.event.service_id) {
+        // update local service state
+        self.setState(function () {
+          self.updateState(event_id);
+        })
+      }
+    });
+
+    // init state
+    self.updateState(event_id);
+
+    // to remove listener
+    this.listenerArray.push(__updaterListener);
   }
 
   componentWillUnmount() {
@@ -59,9 +98,9 @@ export default class ElementEvent extends React.Component {
   }
 
   deleteEvent() {
-    let event_name = this.state.event.event_name;
+    let ce_type = this.state.event.ce_type;
     // todo : use some modal component
-    var msg = `You are going to delete the event : + ${event_name} \n Are you sure ?`;
+    var msg = `You are going to delete the event : + ${ce_type} \n Are you sure ?`;
     let ok = confirm(msg);
     if (ok) {
       EventMapManager.deleteData(this.state.event);
@@ -73,26 +112,52 @@ export default class ElementEvent extends React.Component {
     UIEvent.dispatch('show-listener-form', { event_id: event_id });
   }
 
+  toggleElement() {
+    this.setState(function (state) {
+      return { showElement: !state.showElement };
+    })
+  }
+
   render() {
     let event = this.state.event;
+    let service = this.state.service;
     return (
-      <li key={event.id} className="card element">
+      <li key={event.id} className="element">
 
-        {/* <h5 className="card-header element-card-header theme-bg-blue">
-        Event : {event.event_name}
-        </h5> */}
-        <div className="element-content">
+        <h5 className={`element-card-header ${this.state.showElement ? "active" : ""}`}
+            onClick={this.toggleElement.bind(this)}>         
+          {event.name}
+        </h5>
+
+        <div className={`element-content ${this.state.showElement ? "show" : "hide"}`} 
+              id={"event-" + event.id}>
           <p>
-            <label>Event :</label>{event.event_name}
+            <label>Event Name</label>
+            <span>{event.name}</span>
           </p>
           <p>
-              <label>ID :</label>{event.id}
-            </p>
-          <p>
-            <label>Published By :</label>{event.service_name}
+            <label>Event Token</label>
+            <span>{event.id}</span>
           </p>
           <p>
-            <label>description :</label>{event.description}
+            <label>Publisher</label>
+            <span>{service.name}</span>
+          </p>
+          <p>
+            <label>Type</label>
+            <span> {event.ce_type} </span>
+          </p>
+          <p>
+            <label>Source</label>
+            <span>{event.ce_source}</span>
+          </p>
+          <p>
+            <label>Data Content Type </label>
+            <span>{event.ce_datacontenttype}</span>
+          </p>
+          <p>
+            <label>Description </label>
+            <span>{event.description}</span>
           </p>
 
           <div className="element-control">
@@ -109,8 +174,8 @@ export default class ElementEvent extends React.Component {
               Add Listener
             </button>
           </div>
-        
-        <ListListener event_id={this.state.event.id} />
+
+          {/* <ListListener event_id={this.state.event.id} /> */}
 
         </div>
 

@@ -1,8 +1,8 @@
 import React from 'react';
 
 import ElementListener from './element-listener';
-import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/ui-event';
+import EventMapManager from '../../lib/eventmap-manager';
+import { UIEvent, DataEvent } from '../../lib/ui-event';
 
 export default class ListListener extends React.Component {
 
@@ -17,25 +17,31 @@ export default class ListListener extends React.Component {
 
   componentDidMount() {
     var self = this;
-
-    this.setState(function () {
-      return {
-        list_listener:
-          EventMapManager.getDataList('listener', { event_id: self.props.event_id })
-      }
-    });
-
+    var __event_id = this.props.event_id;
     DataEvent.addListener('update-list-listener', function (dataEvent) {
-      if (dataEvent.message.event_id === self.props.event_id) {
+      if (dataEvent.message.event_id === __event_id) {
         self.setState(function () {
-          return {
-            list_listener:
-              EventMapManager.getDataList('listener', { event_id: self.props.event_id })
-          }
+          var data = EventMapManager.getDataList('listener', { event_id: __event_id });
+          return { list_listener: data }
         });
       }
     });
+
+    this.setState(function () {
+      var data = EventMapManager.getDataList('listener', { event_id: __event_id });
+      return { list_listener: data };
+    });
   }
+
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.event_id !== prevProps.event_id) {
+  //     let __event_id = this.props.event_id;
+  //     this.setState(function () {
+  //       var data = EventMapManager.getDataList('listener', { event_id: __event_id });
+  //     return { list_listener: data };
+  //     });
+  //   }
+  // }
 
   renderEmptyState() {
     return (
@@ -63,14 +69,6 @@ export default class ListListener extends React.Component {
           {this.state.list_listener.length > 0 ? this.renderList() : this.renderEmptyState()}
         </ul>
       </div>
-
-      // <div className="card element list-listener">
-      //   <h5 className="card-header element-card-header"> Listeners </h5>
-
-      //   <ul className="list-group list-group-flush element-list">
-      //     { this.state.list_listener.length > 0 ? this.renderList() : this.renderEmptyState()}
-      //   </ul>
-      // </div>
     );
   }
 }
