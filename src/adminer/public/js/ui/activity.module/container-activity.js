@@ -21,13 +21,11 @@ export default class ContainerActivity extends React.Component {
         </nav>
         <div className="tab-content">
 
-          <div className="tab-pane fade show active" id="list-activity-event"
-            role="tabpanel">
-              <ListActivityEvent/>
+          <div className="tab-pane fade show active" id="list-activity-event">
+            <ListActivityEvent />
           </div>
-          <div className="tab-pane fade" id="list-activity-error"
-            role="tabpanel">
-            <ListActivityError/>
+          <div className="tab-pane fade" id="list-activity-error">
+            <ListActivityError />
           </div>
         </div>
       </>

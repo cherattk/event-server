@@ -6,18 +6,29 @@
 
 
 const queryString = require('querystring');
-
 const LogFormat = require('./dispatcher-log');
 
-function Dispatcher(eventMap, Activity, HttpClient) {
+const path = require('path');
+const __eventMapFilePath = path.resolve('./src/config/eventmap.json');
+const __MapLoader = require('../lib/maploader');
 
-  const _eventMap = eventMap;
+
+const EventLog = require('../lib/event-log')(function(){
+  return require('../lib/driver/couchdb')("http://localhost:5984/event_db");
+});
+
+const __axios = require('axios');
+
+module.exports = function Dispatcher() {
+  
+  const __HttpClient = __axios;
+  const ___eventMap = __MapLoader.DispatcherEventMap(__eventMapFilePath);
 
   this.getListener = function (event_id) {
-    var event = _eventMap.event.size > 0 /* if not empty map */
-      && _eventMap.event.has(event_id);
+    var event = __eventMap.event.size > 0 /* if not empty map */
+      && __eventMap.event.has(event_id);
     if (event) {
-      return _eventMap.listener.get(event_id);
+      return __eventMap.listener.get(event_id);
     }
     return [];
   };
@@ -36,13 +47,13 @@ function Dispatcher(eventMap, Activity, HttpClient) {
 
   this.dispatchEvent = function (event_id, eventMessage) {
 
-    var _eventObject = _eventMap.event.get(event_id);
+    var _eventObject = __eventMap.event.get(event_id);
 
     // - LOG THE SUCCESSFULLY-PUBLISHED EVENT
     var _cpEvent = Object.assign({ message: eventMessage }, _eventObject);
 
     // save event data
-    Activity.Insert(LogFormat.EventInfo(_cpEvent)).catch(function(err) {
+    EventLog.Insert(LogFormat.EventInfo(_cpEvent)).catch(function(err) {
       console.log('===== insert event info error =====');
       console.log(err);
       console.log('=====================================');
@@ -61,7 +72,7 @@ function Dispatcher(eventMap, Activity, HttpClient) {
 
     for (let idx = 0, max = listListener.length; idx < max; idx++) {
       var _endpointURL = listListener[idx].endpoint;
-      HttpClient(
+      __HttpClient(
         {
           method: 'POST',
           url: _endpointURL,
@@ -70,7 +81,7 @@ function Dispatcher(eventMap, Activity, HttpClient) {
         }
       ).catch(function (dispatchError) {
         // - LOG THE DISPATCHING ERROR
-        Activity.Insert(LogFormat.ErrorDispatch({
+        EventLog.Insert(LogFormat.ErrorDispatch({
           event: _cpEvent,
           listener: listListener[idx],
           error: dispatchError.message, // error message from node.js
@@ -89,13 +100,13 @@ function Dispatcher(eventMap, Activity, HttpClient) {
 
     if (!this.validRequest(requestBody)) {
       // - LOG BAD REQUEST
-      Activity.Insert(LogFormat.ErrorBadRequest(requestBody));
+      EventLog.Insert(LogFormat.ErrorBadRequest(requestBody));
       Response.status(400).end();
       return;
     }
     // - CHECK IF IS A VALID EVENT
-    if (!_eventMap.event.has(event_id)) {
-      Activity.Insert(LogFormat.ErrorInvalidEvent(requestBody));
+    if (!__eventMap.event.has(event_id)) {
+      EventLog.Insert(LogFormat.ErrorInvalidEvent(requestBody));
       Response.status(400).end();
       return;
     }
@@ -106,8 +117,3 @@ function Dispatcher(eventMap, Activity, HttpClient) {
   }
 
 };
-
-
-module.exports = function (eventMap, Activity, HttpClient) {
-  return new Dispatcher(eventMap, Activity, HttpClient);
-}

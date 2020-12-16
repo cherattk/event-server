@@ -68,6 +68,7 @@ export default class ListService extends React.Component {
           onClick={this.getForm.bind(this)}>
           New Service
       </button>
+      <hr/>
           { this.state.loading ? <Spinner text="Loading Service List ..."/> :
           (this.state.list_service.length ? this.renderList() : 
           <EmptyState text="There is no registered service"/>)

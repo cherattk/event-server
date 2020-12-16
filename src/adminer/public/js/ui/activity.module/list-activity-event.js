@@ -48,10 +48,6 @@ export default class ListActivity extends React.Component {
           });
         });
     });
-
-
-
-
   }
 
   toggleElement(id) {
@@ -87,7 +83,7 @@ export default class ListActivity extends React.Component {
     }, this);
 
     return (
-      <ul className="list-element list-activity">
+      <ul className="list-activity">
         <li className="activity-head bg-primary text-white">
           <span>event</span>
           <span>service</span>
@@ -104,7 +100,7 @@ export default class ListActivity extends React.Component {
       <React.Fragment>
         {/* todo : move refesh button it in its own component  */}
         <button type="button"
-          className="btn btn-primary btn-sm"
+          className="btn btn-primary btn-sm mb-3"
           onClick={this.fetchList.bind(this)}>
           Refresh
         </button>

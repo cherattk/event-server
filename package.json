@@ -11,7 +11,7 @@
     "license": "MIT",
     "main": "index.js",
     "scripts": {
-        "start-dev": "node ./src/index.js",
+        "start-dev": "npm run build-ui && node ./src/index.js",
         "build-ui": "node builder.js",
         "dist-deploy": "node ./builder.js && rm -r ./deploy/dist/* && cp -r src/* ./deploy/dist/",
         "demo": "node ./demo/index.js",

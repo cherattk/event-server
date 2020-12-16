@@ -44,16 +44,16 @@ textarea{
 }
 
 .btn-info{
-  box-shadow:0 2px 0 #077284 , 0 1px 0 #45c5d9 inset;
+  box-shadow:0 2px 0 #077284;
 }
 .btn-danger{
-  box-shadow:0 2px 0 #bf0909 , 0 1px 0 #f26b6b inset;
+  box-shadow:0 2px 0 #bf0909;
 }
 .btn-primary{
-  box-shadow:0 2px 0 #0967cc , 0 1px 0 #75b3f6 inset;
+  box-shadow:0 2px 0 #0967cc;
 }
 .btn-secondary{
-  box-shadow:0 2px 0 #555, 0 1px 0 #a4a1a1 inset;
+  box-shadow:0 2px 0 #555;
 }
 
 .btn-add{
@@ -83,7 +83,7 @@ OVERRIDE BOOTSTRAP
   }
 .app-modal-form .modal-header,
 .app-modal-form .modal-footer{
-  background-color:#eef6fd;
+  background-color:#efefef;
 }
 
 .app-modal-form .modal-header {
@@ -132,72 +132,94 @@ OVERRIDE BOOTSTRAP
   display:none;
 }
 /********************************************************************/
-.list-element{
-  padding-top:20px;
-  margin-top:15px;
-  border-top:1px solid #ccc;
-  list-style: none;
-}
 .element{
   margin:0 0 5px 0;
   border-radius:3px;
   overflow:hidden;
 }
-.element-card-header{
+.element-header{
   cursor:pointer;
   font-size:1rem;
   margin:0;
   padding:15px;
-  background-color:#4c80b4;
+  background-color:#3d71a6;
   color:#fff;
 }
-.element-card-header:hover{
+.element-header:hover{
   background-color:#3d71a6;
 }
-.element-card-header.active{
+.element-header.active{
   background-color:#3d71a6;
 }
 .element-content{
-  background-color:#ffffff;
-  padding:30px;
-  border:1px solid #ccc;
-  border-radius:0 0 3px 3px;
+  background-color:#fff;
+  padding:20px;
   margin-bottom:15px;
+  border:1px solid #ccc;
 }
-.element-content label {
+.element-table > div{
+  margin:1px 0;
+}
+.element-table label {
   margin:0;
   text-transform:capitalize;
   padding:7px 15px;
-  width:180px;
+  min-width:180px;
   text-align:center;
-  position:relative;
   border-right:1px solid #fff;
   background-color:#3d71a6;
   color:#fff;
 }
-.element-content p > span{
-  width:calc(100% - 180px);
-}
-.element-content p > *{
-  display:inline-block;
-  vertical-align:top;
-  padding:7px 15px;
-}
-.element-content p{
-  margin:0 0 2px 0;
-  padding:0px;
+.element-table p{
+  margin:0px;
+  width:100%;
+  padding:7px 10px;
   background-color:#e4e7ea;
 }
+
 .element-control {
   padding:20px 0;
 }
-
 .element-control button {
   padding:3px 10px;
   margin-right:10px;
   font-size:.8rem;
 }
+.element-list{
+  color:#333;
+}
 
+.element-list-header{
+  font-size:1.2rem;
+  background-color:#e4e7ea;
+  color:#2a377b;
+  border:1px solid #fff;
+  font-size:1.1rem;
+  margin:0;
+}
+.element-list-header:hover{
+  cursor:pointer;
+  background-color:#dadde0;
+}
+.element-list > div {
+  background-color:#fff;
+  border-top:0;
+  box-shadow:0 1px 1px #eee;
+  margin-top:-1px;
+}
+.element-list-header,
+.element-list > div{  
+  border:1px solid #ccc;
+}
+
+.element-list .list-group-item{
+  color:#3F51B5;
+  background-color:#f7f7f7;
+}
+.element-list .list-group-item:hover{
+  cursor:pointer;
+  background-color:#f0f2f3;
+}
 /************************************************************************
 APPLICATION
 **************************************************************************/
@@ -253,67 +275,11 @@ APPLICATION
   background-color: #167ff1;
 }
 
-/**********************************************************
-Service Element
-/**********************************************************/
-.service-tab{
-  margin:15px 0;
-  border-radius:3px;
-  overflow:hidden;
-  box-shadow:0 1px 2px #e3e3e4;
-}
-.service-tab h5{
-  margin:0;
-}
-.service-tab h5:hover{
-  cursor:pointer;
-  text-decoration:underline;
-}
-.service-tab .list-group-item{
-  border-radius:0;
-}
-/**********************************************************
-Listener Element
-/**********************************************************/
-.list-listener{
-  background-color:#fff;
-  border:1px solid #ccc;
-  margin-top:10px;
-  color:#004085;
-  background-color:#f3f5f7;
-}
-.list-listener p{
-  background-color:transparent;
-  border-color:transparent;
-}
-.list-listener h5{
-  padding:15px 20px;
-  margin:0;
-  font-size:1.1rem;
-  border-bottom:1px solid #d7dbde;
-}
-.list-listener li{
-  position:relative;
-  padding:15px 15px;
-  border-bottom:1px solid #c4c8cc;
-}
-.list-listener p{
-  margin: 0 150px 0 0;
-  padding:5px 15px;
-  text-decoration:underline;
-}
-.list-listener .div-control{
-  float:right;
-  margin-top: -35px;
-}
-.list-listener .div-control button{
-  margin-left:10px;
-  font-size:14px;
-  padding:2px 10px;
-  text-transform:capitalize;
-}
 
-/*******************************************************/
+
+/*******************************************************
+Activity
+*******************************************************/
 .list-activity li{
   border:1px solid #ccdff3;
   border-top:0;

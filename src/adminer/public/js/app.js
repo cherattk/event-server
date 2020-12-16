@@ -31,7 +31,7 @@ function Adminer() {
           <a className="nav-item nav-link" id="nav-setting-tab"
             data-toggle="tab" href="#nav-setting" role="tab"
             aria-controls="nav-setting" aria-selected="false">
-            setting
+            Services
           </a>
         </div>
       </nav>

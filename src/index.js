@@ -17,52 +17,26 @@ const bodyParser = require('body-parser');
 Server.use(bodyParser.urlencoded({ extended: true }));
 
 
-/***************************************************************
- * DEPENDENCIES *
-****************************************************************/
-
-const path = require('path');
-const _eventMapFilePath = path.resolve('./src/config/eventmap.json');
-
-const _HttpClient = require('axios');
-
-const Activity = require('./lib/activity');
-const MapLoader = require('./lib/maploader');
-const _eventMap = MapLoader.DispatcherMapLoader(_eventMapFilePath);
-
 
 /******************************************************************
  * Adminer *
 *******************************************************************/
-
-const AuthUser = require("./adminer/server/auth-user")();
-
-const couchdbDriver = require('./lib/driver/couchdb');
-
-const __couchConfig = "http://localhost:5984/event_db";
-const __AdminerActivity = new Activity(new couchdbDriver(__couchConfig));
-
-const Adminer = require('./adminer/server/adminer')(
-  _eventMapFilePath,
-  __AdminerActivity
-);
-
-
-// ==========================================================
 Server.use('/', express.static('./src/adminer/public'));
+const AuthUser = require("./adminer/server/auth-user")();
+const Adminer = require('./adminer/server/adminer')();
 
 // ===========================================================
 
 /**
- * USer Authentication
+ * Admin Authentication
  */
-Server.post('/auth_token', function (Request, Response) {
+Server.post('/user_token', function (Request, Response) {
 
-  var user_token = Request.body.auth_token;
+  var user_token = Request.body.user_token;
 
-  if (AuthUser.validateAuthToken(user_token)) {
+  if (AuthUser.isValidUserToken(user_token)) {
     Response.status(200).json({
-      auth_token: AuthUser.setAuthToken()
+      user_token: AuthUser.setAuthToken()
     });
   }
   else {
@@ -78,7 +52,7 @@ Server.post('/login', function (Request, Response) {
 
   if (AuthUser.validatePassword(user_password)) {
     Response.status(200).json({
-      auth_token: AuthUser.setAuthToken()
+      user_token: AuthUser.setAuthToken()
     });
   }
   else {
@@ -91,8 +65,8 @@ Server.post('/login', function (Request, Response) {
 
 Server.post('/logout', function (Request, Response) {
 
-  var user_token = Request.body.auth_token;
-  if (AuthUser.validateAuthToken(user_token)) {
+  var user_token = Request.body.user_token;
+  if (AuthUser.isValidUserToken(user_token)) {
     AuthUser.removeAuthToken();
     Response.status(200).json({
       message: 'successfully logged out'
@@ -108,7 +82,7 @@ Server.post('/logout', function (Request, Response) {
 
 
 /**
- * EventMap Adminer
+ * Setting EventMap
  */
 Server.get('/event-map', Adminer.getEventMap.bind(Adminer));
 
@@ -117,39 +91,26 @@ Server.delete('/eventmap/entity', Adminer.removeEntity.bind(Adminer));
 
 
 /**
- * Activity reader
+ * Activity
  */
 Server.get('/activity', Adminer.getActivity.bind(Adminer));
-
 
 /******************************************************************
  * DISPATCHER *
 *******************************************************************/
 
-const __DispatcherActivity = new Activity(new couchdbDriver(__couchConfig));
-const Dispatcher = require('./dispatcher/dispatcher')(
-  _eventMap,
-  __DispatcherActivity,
-  _HttpClient
-);
+const Dispatcher = require('./dispatcher/dispatcher');
 
-// ===========================================================
-// const AuthService = require("../lib/auth-service")();
-// Server.use('/', function(Request , Response , Next) {
-//   // todo log request activity
-//   var service_token = Request.header("Authorization").substr("Bearer".length).trim();
-//   console.log(service_token);
-//   if(AuthService.validateServiceToken(service_token)){
-//     Next();    
-//   }
-//   else{
-//     Response.status(401).end();
-//   }
-// });
-
-// ==========================================================
 Server.post('/dispatch', function (Request, Response) {
-  Dispatcher.dispatch(Request, Response);
+  const AuthService = require("./dispatcher/auth-service")();
+  var service_token = Request.header("Authorization").substr("Bearer".length).trim();
+  console.log(service_token);
+  if (AuthService.isValidServiceToken(service_token)) {
+    Dispatcher.dispatch(Request, Response);
+  }
+  else {
+    Response.status(401).end();
+  }
 });
 
 

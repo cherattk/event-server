@@ -6,7 +6,7 @@
 
 const nano = require('nano');
 
-module.exports = function CouchDBWrapper(db_address){
+module.exports = function (db_address){
 
   const _nano = nano(db_address);
 
@@ -20,5 +20,4 @@ module.exports = function CouchDBWrapper(db_address){
       return _nano.find(criteria);
     }
   }
-
 }
