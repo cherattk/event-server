@@ -1,7 +1,7 @@
 ### Event Server
 An HTTP PubSub Server with GUI.
 
-:warning: This project is work in progress, any contribution is welcome.
+:warning: This project is work in progress
 
 ### Requirement:
   - Node.js
