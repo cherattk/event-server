@@ -1,6 +1,6 @@
 import React from 'react';
-import EventMapManager from '../../service/event-map-manager';
-import { UIEvent } from '../../service/ui-event';
+import EventMapManager from '../../lib/eventmap-manager';
+import { UIEvent } from '../../lib/ui-event';
 
 export default class FormEvent extends React.Component {
 
@@ -9,10 +9,14 @@ export default class FormEvent extends React.Component {
 
     this.initialState = {
       id: '',
-      type: 'event',
-      event_name: '',
+      type:'event',
       service_id: '',
-      description: ''
+      description: '',
+      // cloudevent attributes
+      ce_specversion : '1.0',
+      ce_type: '',
+      ce_source:'',
+      ce_datacontenttype :''
     };
 
     this.state = {
@@ -52,7 +56,7 @@ export default class FormEvent extends React.Component {
     if (!event.service_id) {
       return alert('You must select a service that trigger the event');
     }
-    if (!event.event_name) {
+    if (!event.ce_type) {
       return alert('The event must have a name');
     }
     if (event.id) {
@@ -70,6 +74,12 @@ export default class FormEvent extends React.Component {
   }
 
   formValue(event) {
+    if(event.target.name === "service_id"){
+      // set the cloudevent.source vaklues to ce_source field
+      let __service_id = event.target.value;
+      var _service = EventMapManager.getData('service', __service_id);
+      this.state.event.ce_source = _service.host;
+    }
     this.state.event[event.target.name] = event.target.value;
     this.setState(this.state);
   }
@@ -118,15 +128,47 @@ export default class FormEvent extends React.Component {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="event-name" className="col-form-label">Name:</label>
+                  <label htmlFor="event-ce_source" className="col-form-label">
+                    Source :
+                  </label>
+                  <input id="event-ce_source" type="text" className="form-control"
+                    name="ce_source" value={this.state.event.ce_source}disabled/>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="event-name" className="col-form-label">
+                    Event Name :
+                  </label>
                   <input id="event-name" type="text" className="form-control"
-                    name="event_name"
-                    value={this.state.event.event_name}
+                    name="name"
+                    value={this.state.event.name}
                     onChange={this.formValue.bind(this)} />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="event-description" className="col-form-label">Description:</label>
+                  <label htmlFor="event-ce_type" className="col-form-label">
+                    Event Type :
+                  </label>
+                  <input id="event-ce_type" type="text" className="form-control"
+                    name="ce_type"
+                    value={this.state.event.ce_type}
+                    onChange={this.formValue.bind(this)} />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="event-ce_datacontenttype" className="col-form-label">
+                    Data Content Type :
+                  </label>
+                  <input id="event-ce_datacontenttype" type="text" className="form-control"
+                    name="ce_datacontenttype"
+                    value={this.state.event.ce_datacontenttype}
+                    onChange={this.formValue.bind(this)} />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="event-description" className="col-form-label">
+                    Description :
+                  </label>
                   <textarea id="event-description" className="form-control"
                     name="description"
                     value={this.state.event.description}

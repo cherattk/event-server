@@ -1,6 +1,8 @@
 import React from 'react';
-import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/ui-event';
+import EventMapManager from '../../lib/eventmap-manager';
+import { UIEvent, DataEvent } from '../../lib/ui-event';
+
+import ListEventV2 from './list-event-v2';
 
 
 const __initialState = {
@@ -18,7 +20,7 @@ export default class ElementService extends React.Component {
 
     this.state = {
       service: __initialState,
-      showEventList: false
+      showElement: false
     }
   }
 
@@ -45,9 +47,9 @@ export default class ElementService extends React.Component {
     // todo : remove eventset.listener
   }
 
-  toggleEventList() {
+  toggleElement() {
     this.setState(function (state) {
-      return { showEventList: !state.showEventList };
+      return { showElement: !state.showElement };
     })
   }
 
@@ -72,25 +74,32 @@ export default class ElementService extends React.Component {
     var service = this.state.service;
     // let target_list_event = '#' + service.id + '-' + 'list-event';
     return (
-      <li key={service.id} id={service.id} className="card element">
+      <li key={service.id} id={service.id} className="element">
 
-        {/* <h5 className="card-header element-card-header theme-bg-blue">
-        Service : {service.name} 
-        </h5> */}
 
-        <div className="element-content">
-          <p>
-            <label>Service :</label>{service.name}
-          </p>
-          {/* <p>
-              <label>ID</label> : {service.id}
-            </p> */}
-          <p>
-            <label>host :</label>{service.host}
-          </p>
-          <p>
-            <label>description :</label>{service.description}
-          </p>
+        <h5 className={`element-header bg-primary text-white ${this.state.showElement ? "active" : ""}`}
+          onClick={this.toggleElement.bind(this)}>
+          {service.name}
+        </h5>
+
+        {/* <div className="collapse element-content" id={"service-" + service.id}> */}
+        <div className={`element-content ${this.state.showElement ? "show" : "hide"}`}
+          id={"service-" + service.id}>
+
+          <div className="element-table">
+            <div className="d-flex">
+              <label>Service Name</label>
+              <p>{service.name}</p>
+            </div>
+            <div className="d-flex">
+              <label>Auth Token</label>
+              <p>{service.id}</p>
+            </div>
+            <div className="d-flex">
+              <label>description </label>
+              <p>{service.description}</p>
+            </div>
+          </div>
 
           <div className="element-control">
             <button className="btn btn-primary btn-sm" type="button"
@@ -103,7 +112,33 @@ export default class ElementService extends React.Component {
             </button>
           </div>
 
+          <div className="element-list my-3">
+            <h5 className="element-list-header p-3" data-toggle="collapse" data-target="#service-list-event">
+              Events
+            </h5>
+            <div className="p-4 collapse" id="service-list-event">
+              <ListEventV2 />
+            </div>
+          </div>
+
+          <div className="element-list my-3">
+            <h5 className="element-list-header p-3" data-toggle="collapse" data-target="#service-list-listener">
+              Listeners
+              </h5>
+            <div className="p-4 collapse" id="service-list-listener">
+              <ul className="list-group">
+                <li className="list-group-item">http://service-name.com/endpoint-1</li>
+                <li className="list-group-item">http://service-name.com/endpoint-2</li>
+                <li className="list-group-item">http://service-name.com/endpoint-3</li>
+                <li className="list-group-item">http://service-name.com/endpoint-4</li>
+                <li className="list-group-item">http://service-name.com/endpoint-5</li>
+              </ul>
+            </div>
+          </div>
+
         </div>
+
+
       </li>
     );
   }

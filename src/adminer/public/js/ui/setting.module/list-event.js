@@ -1,7 +1,8 @@
 import React from 'react';
 import ElementEvent from './element-event';
-import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/ui-event';
+import EventMapManager from '../../lib/eventmap-manager';
+import { Spinner, EmptyState } from '../component/message';
+import { UIEvent, DataEvent } from '../../lib/ui-event';
 
 export default class ListEvent extends React.Component {
 
@@ -9,6 +10,7 @@ export default class ListEvent extends React.Component {
     super(props);
 
     this.state = {
+      loading: true,
       list_event: []
     };
   }
@@ -35,7 +37,10 @@ export default class ListEvent extends React.Component {
   getEventList() {
     // var data = EventMapManager.getDataList('event', { service_id: _service_id });
     var data = EventMapManager.getDataList('event');
-    return { list_event: data }
+    return {
+      loading: false,
+      list_event: data
+    }
   }
 
   getEventForm() {
@@ -47,16 +52,12 @@ export default class ListEvent extends React.Component {
     // return event list
     this.state.list_event.forEach(function (event, idx) {
       let _key = (new Date()).getTime() + '-' + idx + '-event-list';
-      list.push(<ElementEvent key={_key} event_id={event.id} />);
+      list.push(<ElementEvent key={_key} event_id={event.id} index={idx + 1} />);
     });
-    return list;
-  }
-
-  renderEmptyState() {
     return (
-      <li className="empty-panel">
-        <h3>There is no registered Event</h3>
-      </li>
+      <ul className="list-element">
+        {list}
+      </ul>
     );
   }
 
@@ -67,9 +68,10 @@ export default class ListEvent extends React.Component {
           onClick={this.getEventForm.bind(this)}>
           new event
           </button>
-        <ul className="list-event-content">
-          {this.state.list_event.length > 0 ? this.renderList() : this.renderEmptyState()}
-        </ul>
+        {this.state.loading ? <Spinner text="Loading event List ..." /> :
+          (this.state.list_event.length ? this.renderList() :
+            <EmptyState text="There is no registered event" />)
+        }
       </React.Fragment>
     );
   }

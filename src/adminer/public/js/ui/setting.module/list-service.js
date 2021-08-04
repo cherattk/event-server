@@ -1,13 +1,15 @@
 import React from 'react';
 import ElementService from './element-service';
-import EventMapManager from '../../service/event-map-manager';
-import { UIEvent, DataEvent } from '../../service/ui-event';
+import EventMapManager from '../../lib/eventmap-manager';
+import { UIEvent, DataEvent } from '../../lib/ui-event';
+import {Spinner , EmptyState } from '../component/message';
 
 export default class ListService extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      loading : true,
       list_service: []
     }
   }
@@ -28,16 +30,16 @@ export default class ListService extends React.Component {
     });
   }
 
-  renderEmptyState() {
-    return (
-      <li className="empty-panel">
-        <h3>There is no Registered Service</h3>
-      </li>
-    );
-  }
-
   getServiceList() {
-    let result = { list_service: EventMapManager.getDataList('service', null).reverse() };
+    this.setState(function () {
+      return { loading: true }
+    });
+    let result = {
+      list_service: EventMapManager.getDataList('service', null).reverse() 
+    };
+    this.setState(function () {
+      return { loading: false }
+    });
     return result;
   }
 
@@ -45,10 +47,14 @@ export default class ListService extends React.Component {
     var list = [];
     this.state.list_service.forEach(function (service, idx) {
       let _key = (new Date()).getTime() + '-' + idx + '-service-list-';
-      list.push(<ElementService key={_key} service_id={service.id} />);
+      list.push(<ElementService key={_key} service_id={service.id} index={idx+1}/>);
     }, this);
 
-    return list;
+    return (
+      <ul className="list-element">
+        {list}
+      </ul>
+    );
   }
 
   getForm() {
@@ -62,9 +68,11 @@ export default class ListService extends React.Component {
           onClick={this.getForm.bind(this)}>
           New Service
       </button>
-      <ul className="list-service">
-        {this.state.list_service.length > 0 ? this.renderList() : this.renderEmptyState()}
-      </ul>
+      <hr/>
+          { this.state.loading ? <Spinner text="Loading Service List ..."/> :
+          (this.state.list_service.length ? this.renderList() : 
+          <EmptyState text="There is no registered service"/>)
+          }
       </React.Fragment>
     );
   }

@@ -1,14 +1,16 @@
 import React from 'react';
-import HttpClient from 'request';
-import config from '../../adminer.config';
-import Misc from '../../service/misc';
+import HttpClient from 'axios';
+import config from '../../config/adminer.config';
+import Misc from '../../lib/misc';
+import { Spinner, EmptyState } from '../component/message';
 
 export default class ListActivity extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      list_activity_event: []
+      loading: true,
+      data_list: []
     }
 
   }
@@ -22,34 +24,39 @@ export default class ListActivity extends React.Component {
   }
 
   fetchList() {
+
     var self = this;
     var endpoint = config.activity_url + '?tag=event';
 
-    HttpClient.get(endpoint, { json: true }, function (error, response, body) {
-      if (error) {
-        return console.log(error);
-      }
-      self.setState(function () {
-        return { list_activity_event: body.data }
-      });
+    this.setState(function () {
+      return { loading: true }
+    }, function () {
+      HttpClient.get(endpoint, { responseType: true })
+        .then(function (response) {
+          self.setState(function () {
+            return {
+              loading: false,
+              data_list: response.data.data
+            }
+          });
+        })
+        .catch(function (error) {
+          self.setState(function () {
+            return {
+              loading: false
+            }
+          });
+        });
     });
-  }
-
-  emptyState() {
-    return (
-      <div className="empty-panel">
-        <h3>There is no events yet</h3>
-      </div>
-    );
   }
 
   toggleElement(id) {
     $('#' + id).collapse('toggle');
   }
-  
+
   renderList() {
     let list = [];
-    this.state.list_activity_event.forEach(function (activity, idx) {
+    this.state.data_list.forEach(function (activity, idx) {
       let key = (new Date()).getTime() + '-' + idx + 'activity-event';
 
       list.push(
@@ -57,8 +64,8 @@ export default class ListActivity extends React.Component {
 
           <div className="element-activity"
             onClick={this.toggleElement.bind(this, key)}>
-            <span>{activity.content.event.event_name}</span>
-            <span>{activity.content.event.service_name}</span>
+            <span>{activity.content.event_name}</span>
+            <span>{activity.content.service_name}</span>
             <span> {Misc.getDateFormat(activity.log_time)}</span>
           </div>
 
@@ -66,7 +73,7 @@ export default class ListActivity extends React.Component {
             <label>Content : </label>
             <pre>
               <code>
-                {JSON.stringify(activity.content , null , 2)}
+                {JSON.stringify(activity.content, null, 2)}
               </code>
             </pre>
           </div>
@@ -77,7 +84,7 @@ export default class ListActivity extends React.Component {
 
     return (
       <ul className="list-activity">
-        <li className="activity-head theme-bg-blue">
+        <li className="activity-head bg-primary text-white">
           <span>event</span>
           <span>service</span>
           <span>time</span>
@@ -88,9 +95,21 @@ export default class ListActivity extends React.Component {
   }
 
   render() {
+
     return (
       <React.Fragment>
-        {this.state.list_activity_event.length ? this.renderList() : this.emptyState()}
+        {/* todo : move refesh button it in its own component  */}
+        <button type="button"
+          className="btn btn-primary btn-sm mb-3"
+          onClick={this.fetchList.bind(this)}>
+          Refresh
+        </button>
+
+        {this.state.loading ? <Spinner text="Loading Event List ..." /> :
+          (this.state.data_list.length ? this.renderList() :
+            <EmptyState text="There is no Event yet" />)
+        }
+
       </React.Fragment>
     );
   }
